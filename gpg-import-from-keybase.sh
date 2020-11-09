@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Public key export
+# public key export
 keybase pgp export | gpg --import
 
-# Private key export
+# private key export
 # https://gist.github.com/simnalamburt/c921a9e70e9a43f5b4743499370d5a88
 # https://github.com/keybase/keybase-issues/issues/1264
 keybase pgp export --secret | gpg --allow-secret-key-import --import

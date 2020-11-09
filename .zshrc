@@ -1,37 +1,121 @@
-# Path to your oh-my-zsh installation.
-export ZSH=/Users/iwaltgen/.oh-my-zsh
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-ZSH_THEME="iwaltgen"
-DEFAULT_USER=iwaltgen
 
-plugins=(
-	osx
-	xcode
-	brew
-	git
-	zsh-completions
-	zsh-syntax-highlighting
-	zsh-autosuggestions
-	fasd
-	aws
-	docker
-	github
-	gradle
-	mvn
-	npm
-	yarn
-)
+### Added by Zinit's installer
+if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+  print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+  command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+  command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+    print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+    print -P "%F{160}▓▒░ The clone has failed.%f%b"
+fi
 
-export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin"
-export MANPATH="/usr/local/man:/usr/local/opt/coreutils/libexec/gnuman"
+source "$HOME/.zinit/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-export LANG=en_US.UTF-8
-export CLICOLOR=1
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+zinit light-mode for \
+  zinit-zsh/z-a-rust \
+  zinit-zsh/z-a-as-monitor \
+  zinit-zsh/z-a-patch-dl \
+  zinit-zsh/z-a-bin-gem-node
 
-# zsh
-source $ZSH/oh-my-zsh.sh
-autoload -U compinit && compinit
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=60'
+### End of Zinit's installer chunk
+
+# zinit essential
+zinit wait lucid light-mode for \
+  atinit"zicompinit; zicdreplay" \
+    zdharma/fast-syntax-highlighting \
+    zsh-users/zsh-history-substring-search \
+  atload"_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions \
+  blockf atpull'zinit creinstall -q .' \
+    zsh-users/zsh-completions
+
+# junegunn/fzf-bin
+zinit ice from"gh-r" as"program"
+zinit light junegunn/fzf-bin
+
+export FZF_DEFAULT_OPTS="--layout=reverse --inline-info"
+
+# sharkdp/fd
+zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit light sharkdp/fd
+
+# sharkdp/bat
+zinit ice as"command" from"gh-r" mv"bat* -> bat" pick"bat/bat"
+zinit light sharkdp/bat
+
+# BurntSushi/ripgrep
+zinit ice as"command" from"gh-r" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
+zinit light BurntSushi/ripgrep
+
+# dandavison/delta
+zinit ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
+zinit light dandavison/delta
+
+# ogham/exa, replacement for ls
+zinit ice wait"2" lucid from"gh-r" as"command" mv"exa* -> exa"
+zinit light ogham/exa
+
+# All of the above using the for-syntax and also z-a-bin-gem-node annex
+zinit wait"1" lucid from"gh-r" as"null" for \
+  sbin"fzf"          junegunn/fzf-bin \
+  sbin"**/fd"        @sharkdp/fd \
+  sbin"**/bat"       @sharkdp/bat \
+  sbin"**/rg"        BurntSushi/ripgrep \
+  sbin"*/delta"      dandavison/delta \
+  sbin"exa* -> exa"  ogham/exa
+
+setopt promptsubst
+
+zinit wait lucid for \
+  OMZP::git \
+  OMZP::docker-compose \
+  as"completion" \
+    OMZP::docker/_docker
+
+# ls_colors
+zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
+  atpull'%atclone' pick"clrs.zsh" nocompile'!' \
+  atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
+zinit light trapd00r/LS_COLORS
+
+# direnv
+zinit from"gh-r" as"program" mv"direnv* -> direnv" \
+  atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
+  pick"direnv" src="zhook.zsh" for \
+    direnv/direnv
+
+# romkatv/powerlevel10k theme
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx'
+
+# essential
+alias ls=bat
+alias la="exa --all --long --git --group-directories-first --time-style=long-iso"
+alias ll="exa --long --git --group-directories-first --time-style=long-iso"
+alias l=la
+alias less=bat
+alias more=bat
+
+alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+alias drawio=/Applications/draw.io.app/Contents/MacOS/draw.io
+alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
+
+ulimit -n 16384
 
 # Java
 export PATH="$HOME/.jenv/shims:/$HOME/.jenv/bin:$PATH"
@@ -39,58 +123,14 @@ eval "$(jenv init -)"
 
 export JAVA_HOME=`/usr/libexec/java_home`
 
-# Node
-alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
-# export NVM_DIR=~/.nvm
-# . $(brew --prefix nvm)/nvm.sh
-
-# GO
+# Go
 export PATH=$PATH:$GOROOT/bin:$HOME/go/bin
 
 # Rust
 export PATH=$PATH:$HOME/.cargo/bin
 
-# Docker
-alias docker_rm_all="docker rm \`docker ps -a -q\`"
-alias docker_rmi_all="docker rmi \`docker images -q\`"
-
 # Flutter
 export PATH=$PATH:$HOME/flutter/bin
 
-# Direnv
-eval "$(direnv hook zsh)"
-
 # iterm2 shell integration
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-# Fuzzy finder
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export FZF_DEFAULT_OPTS="--layout=reverse --inline-info"
-
-# exa
-alias la="exa --all --long --git --group-directories-first --time-style=long-iso"
-alias ll="exa --long --git --group-directories-first --time-style=long-iso"
-alias l=la
-
-# kubernetes
-export PATH=$PATH:$HOME/.kube/plugin
-source <(kubectl completion zsh)
-
-# google cloud sdk
-source '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc'
-source '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
-
-# tailscale
-alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
-
-# draw.io
-alias drawio=/Applications/draw.io.app/Contents/MacOS/draw.io
-
-# etc
-ulimit -n 4096
-
-# Generated
-autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/local/bin/mc mc
-complete -o nospace -C /usr/local/bin/terraform terraform
-
