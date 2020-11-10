@@ -21,5 +21,5 @@ popd
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 pushd brew
-bundle.sh &
+bundle.sh
 popd

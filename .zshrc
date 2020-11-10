@@ -39,12 +39,6 @@ zinit wait lucid light-mode for \
   blockf atpull'zinit creinstall -q .' \
     zsh-users/zsh-completions
 
-# junegunn/fzf-bin
-zinit ice from"gh-r" as"program"
-zinit light junegunn/fzf-bin
-
-export FZF_DEFAULT_OPTS="--layout=reverse --inline-info"
-
 # sharkdp/fd
 zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
 zinit light sharkdp/fd
@@ -67,7 +61,6 @@ zinit light ogham/exa
 
 # All of the above using the for-syntax and also z-a-bin-gem-node annex
 zinit wait"1" lucid from"gh-r" as"null" for \
-  sbin"fzf"          junegunn/fzf-bin \
   sbin"**/fd"        @sharkdp/fd \
   sbin"**/bat"       @sharkdp/bat \
   sbin"**/rg"        BurntSushi/ripgrep \
@@ -82,11 +75,12 @@ zinit wait lucid for \
   as"completion" \
     OMZP::docker/_docker
 
+# nvm
+export NVM_LAZY_LOAD=true
+zinit light lukechilds/zsh-nvm
+
 # ls_colors
-zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
-  atpull'%atclone' pick"clrs.zsh" nocompile'!' \
-  atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
-zinit light trapd00r/LS_COLORS
+zinit pack for ls_colors
 
 # direnv
 zinit from"gh-r" as"program" mv"direnv* -> direnv" \
@@ -94,17 +88,28 @@ zinit from"gh-r" as"program" mv"direnv* -> direnv" \
   pick"direnv" src="zhook.zsh" for \
     direnv/direnv
 
+# fzf
+# zplugin pack"default+keys" for fzf
+zinit pack"bgn-binary+keys" for fzf
+zinit light Aloxaf/fzf-tab
+
+zstyle ':completion:complete:*:options' sort false
+zstyle ":completion:*:git-checkout:*" sort false
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+
 # romkatv/powerlevel10k theme
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+# typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx'
 
 # essential
-alias ls=bat
+alias ls=exa
 alias la="exa --all --long --git --group-directories-first --time-style=long-iso"
 alias ll="exa --long --git --group-directories-first --time-style=long-iso"
 alias l=la
@@ -113,7 +118,6 @@ alias more=bat
 
 alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
 alias drawio=/Applications/draw.io.app/Contents/MacOS/draw.io
-alias loadnvm=". /usr/local/opt/nvm/nvm.sh"
 
 ulimit -n 16384
 
