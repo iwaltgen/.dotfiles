@@ -9,4 +9,4 @@ ln -sf ~/.dotfiles/.gitconfig ~
 
 # gpg
 mkdir -p ~/.gnupg
-cp ~/.dotfiles/.gnupg/* ~/.gnupg/
+cp ~/.dotfiles/.gnupg/*.conf ~/.gnupg/
