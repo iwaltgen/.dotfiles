@@ -76,7 +76,7 @@ zinit wait lucid for \
     OMZP::docker/_docker
 
 # nvm
-export NVM_LAZY_LOAD=true
+# export NVM_LAZY_LOAD=true
 zinit light lukechilds/zsh-nvm
 
 # ls_colors
