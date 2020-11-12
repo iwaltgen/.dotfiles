@@ -110,13 +110,17 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 # typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx'
 
-# essential
+# misc
 alias ls=exa
 alias la="exa --all --long --git --group-directories-first --time-style=long-iso"
 alias ll="exa --long --git --group-directories-first --time-style=long-iso"
 alias l=la
 alias less=bat
 alias more=bat
+
+HISTSIZE=99999
+SAVEHIST=99999
+HISTFILE=~/.zsh_history
 
 alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
 alias drawio=/Applications/draw.io.app/Contents/MacOS/draw.io
