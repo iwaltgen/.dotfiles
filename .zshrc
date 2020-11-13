@@ -134,7 +134,7 @@ eval "$(jenv init -)"
 export JAVA_HOME=`/usr/libexec/java_home`
 
 # Go
-export PATH=$PATH:$GOROOT/bin:$HOME/go/bin
+export PATH=$PATH:$(go env GOPATH)/bin
 
 # Rust
 export PATH=$PATH:$HOME/.cargo/bin
