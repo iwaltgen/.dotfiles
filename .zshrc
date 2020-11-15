@@ -111,6 +111,12 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx'
 
 # misc
+HISTSIZE=99999
+SAVEHIST=99999
+HISTFILE=~/.zsh_history
+
+ulimit -n 16384
+
 alias ls=exa
 alias la="exa --all --long --git --group-directories-first --time-style=long-iso"
 alias ll="exa --long --git --group-directories-first --time-style=long-iso"
@@ -118,14 +124,11 @@ alias l=la
 alias less=bat
 alias more=bat
 
-HISTSIZE=99999
-SAVEHIST=99999
-HISTFILE=~/.zsh_history
-
 alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
 alias drawio=/Applications/draw.io.app/Contents/MacOS/draw.io
 
-ulimit -n 16384
+# Homebrew
+export PATH=$PATH:/usr/local/sbin
 
 # Java
 export PATH="$HOME/.jenv/shims:/$HOME/.jenv/bin:$PATH"
@@ -142,5 +145,5 @@ export PATH=$PATH:$HOME/.cargo/bin
 # Flutter
 export PATH=$PATH:$HOME/flutter/bin
 
-# iterm2 shell integration
+# iTerm2 shell integration
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
