@@ -144,6 +144,3 @@ export PATH=$PATH:$HOME/.cargo/bin
 
 # Flutter
 export PATH=$PATH:$HOME/flutter/bin
-
-# iTerm2 shell integration
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
