@@ -1,0 +1,17 @@
+# Font configuration (changes require restart)
+font:
+  normal:
+    family: MesloLGS NF
+  bold:
+    family: MesloLGS NF
+  italic:
+    family: MesloLGS NF
+  size: 14.0
+  offset:
+    x: 0
+    y: 0
+  glyph_offset:
+    x: 0
+    y: 0
+  # Thin stroke font rendering (macOS only)
+  use_thin_strokes: true

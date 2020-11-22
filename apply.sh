@@ -3,6 +3,7 @@
 ln -sf ~/.dotfiles/.zshrc ~
 ln -sf ~/.dotfiles/.vimrc ~
 ln -sf ~/.dotfiles/.p10k.zsh ~
+ln -sf ~/.dotfiles/.alacritty.yml ~
 
 # git
 ln -sf ~/.dotfiles/.gitconfig ~
