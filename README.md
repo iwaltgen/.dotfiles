@@ -16,9 +16,10 @@ brew bundle
 
 ...
 
-.gnupg/gpg-import-from-keybase.sh
+./setup.sh
 
 ...
 
-./setup.sh
+.gnupg/gpg-import-from-keybase.sh
+
 ```
