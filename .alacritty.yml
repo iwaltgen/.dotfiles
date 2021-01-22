@@ -18,3 +18,16 @@ font:
     y: 0
   # Thin stroke font rendering (macOS only)
   use_thin_strokes: true
+
+
+selection:
+  semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
+  save_to_clipboard: true
+
+key_bindings:
+  - { key: V,        mods: Command, action: Paste                        }
+  - { key: C,        mods: Command, action: Copy                         }
+  - { key: Q,        mods: Command, action: Quit                         }
+  - { key: W,        mods: Command, action: Quit                         }
+  - { key: Left,     mods: Command, chars: "\x1bOH",   mode: ~AppCursor  }
+  - { key: Right,    mods: Command, chars: "\x1bOF",   mode: ~AppCursor  }
