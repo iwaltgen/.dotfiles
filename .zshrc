@@ -140,7 +140,7 @@ export JAVA_HOME=`/usr/libexec/java_home`
 export PATH=$PATH:$(go env GOPATH)/bin
 
 # Rust
-export PATH=$PATH:$HOME/.cargo/bin
+source "$HOME/.cargo/env"
 
 # Flutter
 export PATH=$PATH:$HOME/flutter/bin
