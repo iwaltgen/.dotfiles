@@ -58,7 +58,7 @@ zinit ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
 zinit light dandavison/delta
 
 # ogham/exa, replacement for ls
-zinit ice wait"2" lucid from"gh-r" as"command" mv"exa* -> exa"
+zinit ice as"command" from"gh-r" mv"exa* -> exa" pick"exa/bin"
 zinit light ogham/exa
 
 # All of the above using the for-syntax and also z-a-bin-gem-node annex
@@ -66,8 +66,8 @@ zinit wait"1" lucid from"gh-r" as"null" for \
   sbin"**/fd"        @sharkdp/fd \
   sbin"**/bat"       @sharkdp/bat \
   sbin"**/rg"        BurntSushi/ripgrep \
-  sbin"*/delta"      dandavison/delta \
-  sbin"exa* -> exa"  ogham/exa
+  sbin"**/delta"     dandavison/delta \
+  sbin"**/exa"       ogham/exa
 
 setopt promptsubst
 
