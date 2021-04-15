@@ -42,32 +42,24 @@ zinit wait lucid light-mode for \
     zsh-users/zsh-completions
 
 # sharkdp/fd
-zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit ice as"program" from"gh-r" mv"fd* -> fd" pick"fd/fd"
 zinit light sharkdp/fd
 
 # sharkdp/bat
-zinit ice as"command" from"gh-r" mv"bat* -> bat" pick"bat/bat"
+zinit ice as"program" from"gh-r" mv"bat* -> bat" pick"bat/bat" atload"alias cat=bat;alias less=bat"
 zinit light sharkdp/bat
 
 # BurntSushi/ripgrep
-zinit ice as"command" from"gh-r" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
+zinit ice as"program" from"gh-r" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
 zinit light BurntSushi/ripgrep
 
 # dandavison/delta
-zinit ice as"command" from"gh-r" mv"delta* -> delta" pick"delta/delta"
+zinit ice as"program" from"gh-r" mv"delta* -> delta" pick"delta/delta"
 zinit light dandavison/delta
 
 # ogham/exa, replacement for ls
-zinit ice as"command" from"gh-r" mv"exa* -> exa" pick"exa/bin"
+zinit ice as"program" from"gh-r" mv"exa* -> exa" pick"bin/exa" atload"alias ls=exa"
 zinit light ogham/exa
-
-# All of the above using the for-syntax and also z-a-bin-gem-node annex
-zinit wait"1" lucid from"gh-r" as"null" for \
-  sbin"**/fd"        @sharkdp/fd \
-  sbin"**/bat"       @sharkdp/bat \
-  sbin"**/rg"        BurntSushi/ripgrep \
-  sbin"**/delta"     dandavison/delta \
-  sbin"**/exa"       ogham/exa
 
 setopt promptsubst
 
@@ -117,12 +109,9 @@ HISTFILE=~/.zsh_history
 
 ulimit -n 16384
 
-alias ls=exa
-alias la="exa --all --long --git --group-directories-first --time-style=long-iso"
-alias ll="exa --long --git --group-directories-first --time-style=long-iso"
+alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
+alias ll="ls --long --git --group-directories-first --time-style=long-iso"
 alias l=la
-alias less=bat
-alias more=bat
 
 alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
 alias drawio=/Applications/draw.io.app/Contents/MacOS/draw.io
@@ -141,6 +130,10 @@ export PATH=$PATH:$(go env GOPATH)/bin
 
 # Rust
 source "$HOME/.cargo/env"
+if ! command -v rustup &> /dev/null
+then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+fi
 
 # Flutter
 export PATH=$PATH:$HOME/flutter/bin
