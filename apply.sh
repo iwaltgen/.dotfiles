@@ -12,3 +12,6 @@ ln -sf ~/.dotfiles/.gitconfig ~
 # gpg
 mkdir -p ~/.gnupg
 cp ~/.dotfiles/.gnupg/*.conf ~/.gnupg/
+
+# tmux
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
