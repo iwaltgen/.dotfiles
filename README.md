@@ -11,8 +11,9 @@
 [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```sh
-cd brew
+pushd brew
 brew bundle
+popd
 
 ...
 
