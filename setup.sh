@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 mkdir -p ~/workspace
 pushd ~/workspace
