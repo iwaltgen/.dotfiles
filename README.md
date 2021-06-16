@@ -15,12 +15,14 @@ pushd brew
 brew bundle
 popd
 
-...
 
 ./setup.sh
 
-...
-
 .gnupg/gpg-import-from-keybase.sh
+
+source .zshrc
+
+zinit self-update
+zinit update
 
 ```
