@@ -40,6 +40,7 @@ set ttyfast
 set ttymouse=xterm2
 set ttyscroll=3
 set laststatus=2
+set expandtab
 set ts=2 sw=2 sts=2 shiftwidth=2 tabstop=2
 set encoding=utf-8
 set autoread
