@@ -111,8 +111,8 @@ HISTFILE=~/.zsh_history
 
 ulimit -n 16384
 
-alias la="ls --all --long --git --group --group-directories-first --time-style=long-iso"
-alias ll="ls --long --git --group --group-directories-first --time-style=long-iso"
+alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
+alias ll="ls --long --git --group-directories-first --time-style=long-iso"
 alias l=la
 
 alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
