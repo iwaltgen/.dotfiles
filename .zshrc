@@ -1,7 +1,4 @@
 export LANG=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
 export TERM=xterm-256color
 export EDITOR=vim
 
@@ -76,7 +73,7 @@ zinit wait lucid for \
 
 # nvm
 # export NVM_LAZY_LOAD=true
-zinit light lukechilds/zsh-nvm
+# zinit light lukechilds/zsh-nvm
 
 # ls_colors
 zinit pack for ls_colors
@@ -114,12 +111,11 @@ HISTFILE=~/.zsh_history
 
 ulimit -n 16384
 
-alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
-alias ll="ls --long --git --group-directories-first --time-style=long-iso"
+alias la="ls --all --long --git --group --group-directories-first --time-style=long-iso"
+alias ll="ls --long --git --group --group-directories-first --time-style=long-iso"
 alias l=la
 
 alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
-alias drawio=/Applications/draw.io.app/Contents/MacOS/draw.io
 
 # Homebrew
 export PATH=$PATH:/usr/local/sbin
