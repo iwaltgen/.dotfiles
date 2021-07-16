@@ -43,25 +43,45 @@ zinit wait lucid light-mode for \
   blockf atpull'zinit creinstall -q .' \
     zsh-users/zsh-completions
 
-# sharkdp/fd
+# sharkdp/fd, fast and user-friendly alternative to 'find'.
 zinit ice as"program" from"gh-r" mv"fd* -> fd" pick"fd/fd"
 zinit light sharkdp/fd
 
-# sharkdp/bat
+# sharkdp/bat, a cat clone with wings.
 zinit ice as"program" from"gh-r" mv"bat* -> bat" pick"bat/bat" atload"alias cat=bat;alias less=bat"
 zinit light sharkdp/bat
 
-# BurntSushi/ripgrep
+# BurntSushi/ripgrep, replacement for grep.
 zinit ice as"program" from"gh-r" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
 zinit light BurntSushi/ripgrep
 
-# dandavison/delta
+# dandavison/delta, a viewer for git and diff output.
 zinit ice as"program" from"gh-r" mv"delta* -> delta" pick"delta/delta"
 zinit light dandavison/delta
 
-# ogham/exa, replacement for ls
+# ogham/exa, replacement for ls.
 zinit ice as"program" from"gh-r" mv"exa* -> exa" pick"bin/exa" atload"alias ls=exa"
 zinit light ogham/exa
+
+# ogham/dog, cli DNS client.
+zinit ice as"program" from"gh-r" mv"dog* -> dog" pick"bin/dog"
+zinit light ogham/dog
+
+# ClementTsang/bottom, cross-platform graphical process/system monitor.
+zinit ice as"program" from"gh-r" mv"bottom* -> bottom" pick"bottom/btm"
+zinit light ClementTsang/bottom
+
+# ducaale/xh, friendly and fast tool for sending HTTP requests. (httpie)
+zinit ice as"program" from"gh-r" mv"xh* -> xh" pick"xh/xh"
+zinit light ducaale/xh
+
+# muesli/duf, a better 'df' alternative.
+zinit ice as"program" from"gh-r" mv"duf* -> duf" pick"duf/duf"
+zinit light muesli/duf
+
+# bootandy/dust, a more intuitive version of du in rust.
+zinit ice as"program" from"gh-r" mv"dust* -> dust" pick"dust/dust"
+zinit light bootandy/dust
 
 setopt promptsubst
 
