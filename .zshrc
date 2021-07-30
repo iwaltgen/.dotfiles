@@ -154,6 +154,28 @@ source "$HOME/.cargo/env"
 if ! command -v rustup &> /dev/null
 then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  source "$HOME/.cargo/env"
+fi
+
+# Deno
+source "$HOME/.deno/env"
+if ! command -v deno &> /dev/null
+then
+  curl -fsSL https://deno.land/x/install/install.sh | sh
+  # curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.0.0
+
+  echo '#!/bin/sh' >> $HOME/.deno/env
+  echo '' >> $HOME/.deno/env
+  echo '# affix colons on either side of $PATH to simplify matching' >>  $HOME/.deno/env
+  echo 'case ":${PATH}:" in' >> $HOME/.deno/env
+  echo '    *:"$HOME/.deno/bin":*)' >> $HOME/.deno/env
+  echo '        ;;' >> $HOME/.deno/env
+  echo '    *)' >> $HOME/.deno/env
+  echo '        # Prepending path in case a system-installed rustc needs to be overridden' >> $HOME/.deno/env
+  echo '        export PATH="$HOME/.deno/bin:$PATH"' >> $HOME/.deno/env
+  echo '        ;;' >> $HOME/.deno/env
+  echo 'esac' >> $HOME/.deno/env
+  source "$HOME/.deno/env"
 fi
 
 # Flutter
