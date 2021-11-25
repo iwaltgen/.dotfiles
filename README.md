@@ -1,10 +1,10 @@
-# My *nix system configuration files
+# My \*nix system configuration files
 
 ## Setup
 
 [Homebrew](https://brew.sh/)
 
-[Zinit](https://github.com/zdharma/zinit)
+[Zinit](https://github.com/zdharma-continuum/zinit)
 
 [Keybase](https://keybase.io/docs/the_app/install_macos)
 
