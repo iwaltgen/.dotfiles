@@ -33,24 +33,42 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-# zinit essential
-zinit wait lucid light-mode for \
-  atinit"zicompinit; zicdreplay" \
-    zdharma-continuum/fast-syntax-highlighting \
-    zsh-users/zsh-history-substring-search \
-  atload"_zsh_autosuggest_start" \
-    zsh-users/zsh-autosuggestions \
-  blockf atpull'zinit creinstall -q .' \
-    zsh-users/zsh-completions
+# Oh My Zsh
+zinit for \
+      OMZL::correction.zsh \
+      OMZL::directories.zsh \
+      OMZL::history.zsh \
+      OMZL::key-bindings.zsh \
+      OMZL::theme-and-appearance.zsh \
+      OMZP::common-aliases
 
 zinit wait lucid for \
-  OMZP::colored-man-pages \
-  OMZP::cp \
-  OMZP::extract \
-  OMZP::git \
-  OMZP::docker-compose \
-  as"completion" \
-    OMZP::docker/_docker
+      OMZP::colored-man-pages \
+      OMZP::cp \
+      OMZP::extract \
+      OMZP::fancy-ctrl-z \
+      OMZP::git \
+      OMZP::sudo
+
+zinit light-mode for \
+      zsh-users/zsh-autosuggestions
+
+zinit wait lucid light-mode for \
+      zsh-users/zsh-history-substring-search \
+      hlissner/zsh-autopair \
+      agkozak/zsh-z
+
+# Completion enhancements
+zinit ice wait lucid atload"zicompinit; zicdreplay" blockf
+zinit light zsh-users/zsh-completions
+
+zinit ice wait lucid atinit"zicompinit; zicdreplay"
+zinit light zdharma-continuum/fast-syntax-highlighting
+
+zinit ice wait lucid from'gh-r' as'program'
+zinit light sei40kr/fast-alias-tips-bin
+zinit ice wait lucid depth"1"
+zinit light sei40kr/zsh-fast-alias-tips
 
 #
 # Utilities
@@ -201,7 +219,18 @@ bind-git-helper() {
 bind-git-helper f b t r h s
 unset -f bind-git-helper
 
-# customizations
+# OS bundles
+if [[ $OSTYPE == darwin* ]]; then
+    zinit snippet PZTM::osx
+elif [[ $OSTYPE == linux* ]]; then
+    if (( $+commands[apt-get] )); then
+        zinit snippet OMZP::ubuntu
+    elif (( $+commands[pacman] )); then
+        zinit snippet OMZP::archlinux
+    fi
+fi
+
+# customizations, e.g. theme, plugins, aliases, etc.
 [ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os
 [ -f $HOME/.zshrc.local ] && source $HOME/.zshrc.local
 
