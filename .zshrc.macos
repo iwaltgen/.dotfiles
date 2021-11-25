@@ -1,0 +1,12 @@
+
+# Java
+export PATH="$HOME/.jenv/shims:/$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+
+export JAVA_HOME=`/usr/libexec/java_home`
+
+# Flutter
+export PATH=$PATH:$HOME/flutter/bin
+
+# tailscale
+alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale

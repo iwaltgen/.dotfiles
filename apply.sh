@@ -6,6 +6,11 @@ ln -sf ~/.dotfiles/.ideavimrc ~
 ln -sf ~/.dotfiles/.p10k.zsh ~
 ln -sf ~/.dotfiles/.alacritty.yml ~
 
+if [[ $OSTYPE == darwin* ]]; then
+	ln -sf ~/.dotfiles/.zshrc.macos ~/.zshrc.os
+fi
+
+
 ln -sf ~/.dotfiles/.tmux.conf ~
 ln -sf ~/.dotfiles/.tmux.theme.conf ~
 ln -sf ~/.dotfiles/.tmux.user.conf ~
