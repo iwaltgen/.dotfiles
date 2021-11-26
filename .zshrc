@@ -9,6 +9,107 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+### Added by Zinit's installer
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+  print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+  command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+  command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+    print -P "%F{33} %F{34}Installation successful.%f%b" || \
+    print -P "%F{160} The clone has failed.%f%b"
+fi
+
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+### End of Zinit's installer chunk
+
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+zinit light-mode for \
+  zdharma-continuum/zinit-annex-as-monitor \
+  zdharma-continuum/zinit-annex-bin-gem-node \
+  zdharma-continuum/zinit-annex-patch-dl \
+  zdharma-continuum/zinit-annex-rust
+
+### End of Zinit's installer chunk
+
+# zinit essential
+zinit wait lucid light-mode for \
+  atinit"zicompinit; zicdreplay" \
+    zdharma-continuum/fast-syntax-highlighting \
+    zsh-users/zsh-history-substring-search \
+  atload"_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions \
+  blockf atpull'zinit creinstall -q .' \
+    zsh-users/zsh-completions
+
+# sharkdp/fd, fast and user-friendly alternative to 'find'.
+zinit ice as"program" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit light sharkdp/fd
+
+# sharkdp/bat, a cat clone with wings.
+zinit ice as"program" from"gh-r" mv"bat* -> bat" pick"bat/bat" atload"alias cat=bat;alias less=bat"
+zinit light sharkdp/bat
+
+# BurntSushi/ripgrep, replacement for grep.
+zinit ice as"program" from"gh-r" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
+zinit light BurntSushi/ripgrep
+
+# dandavison/delta, a viewer for git and diff output.
+zinit ice as"program" from"gh-r" mv"delta* -> delta" pick"delta/delta"
+zinit light dandavison/delta
+
+# ogham/exa, replacement for ls.
+zinit ice as"program" from"gh-r" mv"exa* -> exa" pick"bin/exa" atload"alias ls=exa"
+zinit light ogham/exa
+
+# ogham/dog, cli DNS client.
+zinit ice as"program" from"gh-r" mv"dog* -> dog" pick"bin/dog"
+zinit light ogham/dog
+
+# ClementTsang/bottom, cross-platform graphical process/system monitor.
+zinit ice as"program" from"gh-r" mv"bottom* -> bottom" pick"bottom/btm"
+zinit light ClementTsang/bottom
+
+# ducaale/xh, friendly and fast tool for sending HTTP requests. (httpie)
+zinit ice as"program" from"gh-r" mv"xh* -> xh" pick"xh/xh"
+zinit light ducaale/xh
+
+# muesli/duf, a better 'df' alternative.
+zinit ice as"program" from"gh-r" mv"duf* -> duf" pick"duf/duf"
+zinit light muesli/duf
+
+# bootandy/dust, a more intuitive version of du in rust.
+zinit ice as"program" from"gh-r" mv"dust* -> dust" pick"dust/dust"
+zinit light bootandy/dust
+
+setopt promptsubst
+
+zinit wait lucid for \
+  OMZP::git \
+  OMZP::docker-compose \
+  as"completion" \
+    OMZP::docker/_docker
+
+# ls_colors
+zinit pack for ls_colors
+
+# direnv
+zinit from"gh-r" as"program" mv"direnv* -> direnv" \
+  atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
+  pick"direnv" src="zhook.zsh" for \
+    direnv/direnv
+
+# fzf
+# zplugin pack"default+keys" for fzf
+zinit pack"bgn-binary+keys" for fzf
+zinit light Aloxaf/fzf-tab
+
+zstyle ':completion:complete:*:options' sort false
+zstyle ":completion:*:git-checkout:*" sort false
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 
 # customizations, e.g. theme, plugins, aliases, etc.
 [ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os
