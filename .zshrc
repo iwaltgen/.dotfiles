@@ -95,13 +95,13 @@ zinit wait lucid for \
 
 # OS bundles
 if [[ $OSTYPE == darwin* ]]; then
-    zinit snippet PZTM::osx
+  zinit snippet PZTM::osx
 elif [[ $OSTYPE == linux* ]]; then
-    if (( $+commands[apt-get] )); then
-        zinit snippet OMZP::ubuntu
-    elif (( $+commands[pacman] )); then
-        zinit snippet OMZP::archlinux
-    fi
+  if (( $+commands[apt-get] )); then
+    zinit snippet OMZP::ubuntu
+  elif (( $+commands[pacman] )); then
+    zinit snippet OMZP::archlinux
+  fi
 fi
 
 # ls_colors
@@ -123,10 +123,6 @@ zstyle ":completion:*:git-checkout:*" sort false
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
-
-# customizations, e.g. theme, plugins, aliases, etc.
-[ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os
-[ -f $HOME/.zshrc.local ] && source $HOME/.zshrc.local
 
 # romkatv/powerlevel10k theme
 zinit ice depth=1; zinit light romkatv/powerlevel10k
@@ -178,3 +174,7 @@ then
   echo 'esac' >> $HOME/.deno/env
   source "$HOME/.deno/env"
 fi
+
+# customizations, e.g. theme, plugins, aliases, etc.
+[ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os
+[ -f $HOME/.zshrc.local ] && source $HOME/.zshrc.local
