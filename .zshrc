@@ -43,6 +43,7 @@ zinit wait lucid light-mode for \
   blockf atpull'zinit creinstall -q .' \
     zsh-users/zsh-completions
 
+# modern unix cli (https://github.com/ibraheemdev/modern-unix)
 # sharkdp/fd, fast and user-friendly alternative to 'find'.
 zinit ice as"program" from"gh-r" mv"fd* -> fd" pick"fd/fd"
 zinit light sharkdp/fd
@@ -87,9 +88,21 @@ setopt promptsubst
 
 zinit wait lucid for \
   OMZP::git \
+  OMZP::sudo \
   OMZP::docker-compose \
   as"completion" \
     OMZP::docker/_docker
+
+# OS bundles
+if [[ $OSTYPE == darwin* ]]; then
+    zinit snippet PZTM::osx
+elif [[ $OSTYPE == linux* ]]; then
+    if (( $+commands[apt-get] )); then
+        zinit snippet OMZP::ubuntu
+    elif (( $+commands[pacman] )); then
+        zinit snippet OMZP::archlinux
+    fi
+fi
 
 # ls_colors
 zinit pack for ls_colors
@@ -130,6 +143,10 @@ SAVEHIST=99999
 HISTFILE=~/.zsh_history
 
 ulimit -n 16384
+
+alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
+alias ll="ls --long --git --group-directories-first --time-style=long-iso"
+alias l=la
 
 # Go
 export PATH=$PATH:$(go env GOPATH)/bin

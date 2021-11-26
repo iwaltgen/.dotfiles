@@ -8,5 +8,5 @@ export JAVA_HOME=`/usr/libexec/java_home`
 # Flutter
 export PATH=$PATH:$HOME/flutter/bin
 
-# tailscale
+# Tailscale
 alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale

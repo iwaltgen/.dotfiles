@@ -7,7 +7,7 @@ ln -sf ~/.dotfiles/.p10k.zsh ~
 ln -sf ~/.dotfiles/.alacritty.yml ~
 
 if [[ $OSTYPE == darwin* ]]; then
-	ln -sf ~/.dotfiles/.zshrc.macos ~/.zshrc.os
+	ln -sf ~/.dotfiles/.zshrc.mac ~/.zshrc.os
 fi
 
 
