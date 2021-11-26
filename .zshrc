@@ -26,37 +26,37 @@ autoload -Uz _zinit
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
 zinit light-mode for \
-  zdharma-continuum/zinit-annex-rust \
   zdharma-continuum/zinit-annex-as-monitor \
+  zdharma-continuum/zinit-annex-bin-gem-node \
   zdharma-continuum/zinit-annex-patch-dl \
-  zdharma-continuum/zinit-annex-bin-gem-node
+  zdharma-continuum/zinit-annex-rust
 
 ### End of Zinit's installer chunk
 
 # Oh My Zsh
 zinit for \
-      OMZL::correction.zsh \
-      OMZL::directories.zsh \
-      OMZL::history.zsh \
-      OMZL::key-bindings.zsh \
-      OMZL::theme-and-appearance.zsh \
-      OMZP::common-aliases
+  OMZL::correction.zsh \
+  OMZL::directories.zsh \
+  OMZL::history.zsh \
+  OMZL::key-bindings.zsh \
+  OMZL::theme-and-appearance.zsh \
+  OMZP::common-aliases
 
 zinit wait lucid for \
-      OMZP::colored-man-pages \
-      OMZP::cp \
-      OMZP::extract \
-      OMZP::fancy-ctrl-z \
-      OMZP::git \
-      OMZP::sudo
+  OMZP::colored-man-pages \
+  OMZP::cp \
+  OMZP::extract \
+  OMZP::fancy-ctrl-z \
+  OMZP::git \
+  OMZP::sudo
 
 zinit light-mode for \
-      zsh-users/zsh-autosuggestions
+  zsh-users/zsh-autosuggestions
 
 zinit wait lucid light-mode for \
-      zsh-users/zsh-history-substring-search \
-      hlissner/zsh-autopair \
-      agkozak/zsh-z
+  zsh-users/zsh-history-substring-search \
+  hlissner/zsh-autopair \
+  agkozak/zsh-z
 
 # Completion enhancements
 zinit ice wait lucid atload"zicompinit; zicdreplay" blockf
@@ -116,8 +116,8 @@ zinit ice id-as"fzf-bin" as"program" wait lucid from"gh-r" sbin"**/fzf"
 zinit light junegunn/fzf
 
 zinit ice wait lucid depth"1" as"null" sbin"bin/fzf-tmux" \
-      cp"man/man.1/fzf* -> $ZPFX/share/man/man1" atpull'%atclone' \
-      src'shell/key-bindings.zsh'
+  cp"man/man.1/fzf* -> $ZPFX/share/man/man1" atpull'%atclone' \
+  src'shell/key-bindings.zsh'
 zinit light junegunn/fzf
 
 zinit ice wait lucid atload"zicompinit; zicdreplay" blockf
@@ -147,74 +147,74 @@ export FZF_ALT_C_OPTS="--preview 'tree -NC {} | head -200'"
 # GIT heart FZF
 # @see https://junegunn.kr/2016/07/fzf-git/
 is_in_git_repo() {
-    git rev-parse HEAD > /dev/null 2>&1
+  git rev-parse HEAD > /dev/null 2>&1
 }
 
 fzf-down() {
-    fzf --height 50% --min-height 20 --border --bind ctrl-/:toggle-preview "$@"
+  fzf --height 50% --min-height 20 --border --bind ctrl-/:toggle-preview "$@"
 }
 
 _gf() {
-    is_in_git_repo || return
-    git -c color.status=always status --short |
-        fzf-down -m --ansi --nth 2..,.. \
-                 --preview '(git diff --color=always -- {-1} | sed 1,4d; cat {-1})' |
-        cut -c4- | sed 's/.* -> //'
+  is_in_git_repo || return
+  git -c color.status=always status --short |
+    fzf-down  -m --ansi --nth 2..,.. \
+              --preview '(git diff --color=always -- {-1} | sed 1,4d; cat {-1})' |
+    cut -c4- | sed 's/.* -> //'
 }
 
 _gb() {
-    is_in_git_repo || return
-    git branch -a --color=always | grep -v '/HEAD\s' | sort |
-        fzf-down --ansi --multi --tac --preview-window right:70% \
-                 --preview 'git log --oneline --graph --date=short --color=always --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1)' |
-        sed 's/^..//' | cut -d' ' -f1 |
-        sed 's#^remotes/##'
+  is_in_git_repo || return
+  git branch -a --color=always | grep -v '/HEAD\s' | sort |
+    fzf-down  --ansi --multi --tac --preview-window right:70% \
+              --preview 'git log --oneline --graph --date=short --color=always --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1)' |
+    sed 's/^..//' | cut -d' ' -f1 |
+    sed 's#^remotes/##'
 }
 
 _gt() {
-    is_in_git_repo || return
-    git tag --sort -version:refname |
-        fzf-down --multi --preview-window right:70% \
-                 --preview 'git show --color=always {}'
+  is_in_git_repo || return
+  git tag --sort -version:refname |
+    fzf-down  --multi --preview-window right:70% \
+              --preview 'git show --color=always {}'
 }
 
 _gh() {
-    is_in_git_repo || return
-    git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
-        fzf-down --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
-                 --header 'Press CTRL-S to toggle sort' \
-                 --preview 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always' |
-        grep -o "[a-f0-9]\{7,\}"
+  is_in_git_repo || return
+  git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
+    fzf-down  --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
+              --header 'Press CTRL-S to toggle sort' \
+              --preview 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always' |
+    grep -o "[a-f0-9]\{7,\}"
 }
 
 _gr() {
-    is_in_git_repo || return
-    git remote -v | awk '{print $1 "\t" $2}' | uniq |
-        fzf-down --tac \
-                 --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1}' |
-        cut -d$'\t' -f1
+  is_in_git_repo || return
+  git remote -v | awk '{print $1 "\t" $2}' | uniq |
+    fzf-down  --tac \
+              --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {1}' |
+    cut -d$'\t' -f1
 }
 
 _gs() {
-    is_in_git_repo || return
-    git stash list | fzf-down --reverse -d: --preview 'git show --color=always {1}' |
-        cut -d: -f1
+  is_in_git_repo || return
+  git stash list | fzf-down --reverse -d: --preview 'git show --color=always {1}' |
+    cut -d: -f1
 }
 
 join-lines() {
-    local item
-    while read item; do
-        echo -n "${(q)item} "
-    done
+  local item
+  while read item; do
+    echo -n "${(q)item} "
+  done
 }
 
 bind-git-helper() {
-    local c
-    for c in $@; do
-        eval "fzf-g$c-widget() { local result=\$(_g$c | join-lines); zle reset-prompt; LBUFFER+=\$result }"
-        eval "zle -N fzf-g$c-widget"
-        eval "bindkey '^g^$c' fzf-g$c-widget"
-    done
+  local c
+  for c in $@; do
+    eval "fzf-g$c-widget() { local result=\$(_g$c | join-lines); zle reset-prompt; LBUFFER+=\$result }"
+    eval "zle -N fzf-g$c-widget"
+    eval "bindkey '^g^$c' fzf-g$c-widget"
+  done
 }
 bind-git-helper f b t r h s
 unset -f bind-git-helper
@@ -223,11 +223,11 @@ unset -f bind-git-helper
 if [[ $OSTYPE == darwin* ]]; then
     zinit snippet PZTM::osx
 elif [[ $OSTYPE == linux* ]]; then
-    if (( $+commands[apt-get] )); then
-        zinit snippet OMZP::ubuntu
-    elif (( $+commands[pacman] )); then
-        zinit snippet OMZP::archlinux
-    fi
+  if (( $+commands[apt-get] )); then
+    zinit snippet OMZP::ubuntu
+  elif (( $+commands[pacman] )); then
+    zinit snippet OMZP::archlinux
+  fi
 fi
 
 # customizations, e.g. theme, plugins, aliases, etc.
@@ -266,7 +266,6 @@ source "$HOME/.deno/env"
 if ! command -v deno &> /dev/null
 then
   curl -fsSL https://deno.land/x/install/install.sh | sh
-  # curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.0.0
 
   echo '#!/bin/sh' >> $HOME/.deno/env
   echo '' >> $HOME/.deno/env
