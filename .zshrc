@@ -45,44 +45,52 @@ zinit wait lucid light-mode for \
 
 # modern unix cli (https://github.com/ibraheemdev/modern-unix)
 
+# chmln/sd, Intuitive find & replace CLI (sed alternative).
+zinit ice as"program" from"gh-r" mv"sd* -> sd" sbin"**/sd"
+zinit light chmln/sd
+
 # sharkdp/fd, fast and user-friendly alternative to 'find'.
-zinit ice as"program" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit ice as"program" from"gh-r" sbin"**/fd"
 zinit light sharkdp/fd
 
 # sharkdp/bat, a cat clone with wings.
-zinit ice as"program" from"gh-r" mv"bat* -> bat" pick"bat/bat" atload"alias cat=bat; alias less=bat"
+zinit ice as"program" from"gh-r" sbin"**/bat" atload"alias cat=bat; alias less=bat"
 zinit light sharkdp/bat
 
+# sharkdp/hyperfine, A command-line benchmarking tool.
+zinit ice as"program" from"gh-r" sbin"**/hyperfine"
+zinit light sharkdp/hyperfine
+
 # BurntSushi/ripgrep, replacement for grep.
-zinit ice as"program" from"gh-r" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
+zinit ice as"program" from"gh-r" sbin"**/rg"
 zinit light BurntSushi/ripgrep
 
 # dandavison/delta, a viewer for git and diff output.
-zinit ice as"program" from"gh-r" mv"delta* -> delta" pick"delta/delta" atload"alias diff=delta"
+zinit ice as"program" from"gh-r" sbin"**/delta" atload"alias diff=delta"
 zinit light dandavison/delta
 
 # ogham/exa, replacement for ls.
-zinit ice as"program" from"gh-r" mv"exa* -> exa" pick"bin/exa" atload"alias ls=exa"
+zinit ice as"program" from"gh-r" sbin"**/exa" atload"alias ls=exa"
 zinit light ogham/exa
 
 # ogham/dog, cli DNS client.
-zinit ice as"program" from"gh-r" mv"dog* -> dog" pick"bin/dog" atload"alias dig=dog"
+zinit ice as"program" from"gh-r" sbin"**/dog" atload"alias dig=dog"
 zinit light ogham/dog
 
 # ClementTsang/bottom, cross-platform graphical process/system monitor.
-zinit ice as"program" from"gh-r" mv"bottom* -> bottom" pick"bottom/btm" atload"alias top=btm"
+zinit ice as"program" from"gh-r" sbin"**/btm" atload"alias top=btm"
 zinit light ClementTsang/bottom
 
 # ducaale/xh, friendly and fast tool for sending HTTP requests. (httpie)
-zinit ice as"program" from"gh-r" mv"xh* -> xh" pick"xh/xh"
+zinit ice as"program" from"gh-r" sbin"**/xh"
 zinit light ducaale/xh
 
 # muesli/duf, a better 'df' alternative.
-zinit ice as"program" from"gh-r" mv"duf* -> duf" pick"duf/duf"
+zinit ice as"program" from"gh-r" sbin"**/duf"
 zinit light muesli/duf
 
 # bootandy/dust, a more intuitive version of du in rust.
-zinit ice as"program" from"gh-r" mv"dust* -> dust" pick"dust/dust" atload"alias du=dust"
+zinit ice as"program" from"gh-r" sbin"**/dust" atload"alias du=dust"
 zinit light bootandy/dust
 
 # dalance/procs, a modern replacement for ps written in Rust.
@@ -93,14 +101,6 @@ zinit light dalance/procs
 zinit ice as"program" from"gh-r" sbin"**/gping" atload"alias ping=gping"
 zinit light orf/gping
 
-# sharkdp/hyperfine, A command-line benchmarking tool.
-zinit ice as"program" from"gh-r" sbin"**/hyperfine"
-zinit light sharkdp/hyperfine
-
-# chmln/sd, Intuitive find & replace CLI (sed alternative).
-zinit ice as"program" from"gh-r" mv"sd* -> sd" sbin"**/sd"
-zinit light chmln/sd
-
 # stedolan/jq, Command-line JSON processor.
 zinit ice as"program" from"gh-r" mv"jq* -> jq" sbin"**/jq"
 zinit light stedolan/jq
@@ -108,7 +108,7 @@ zinit light stedolan/jq
 # dev unix cli
 
 # jesseduffield/lazygit, simple terminal UI for git commands.
-zinit ice as"program" from"gh-r" mv"lazygit* -> lazygit" pick"lazygit/lazygit" atload"alias tig=lazygit"
+zinit ice as"program" from"gh-r" sbin"**/lazygit" atload"alias lg=lazygit"
 zinit light jesseduffield/lazygit
 
 setopt promptsubst
