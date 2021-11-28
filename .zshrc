@@ -40,12 +40,12 @@ zinit wait lucid light-mode for \
     zsh-users/zsh-history-substring-search \
   atload"_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions \
-  blockf atpull'zinit creinstall -q .' \
+  blockf atpull"zinit creinstall -q ." \
     zsh-users/zsh-completions
 
 # modern unix cli (https://github.com/ibraheemdev/modern-unix)
 
-# chmln/sd, Intuitive find & replace CLI (sed alternative).
+# chmln/sd, intuitive find & replace CLI (sed alternative).
 zinit ice as"program" from"gh-r" mv"sd* -> sd" sbin"**/sd"
 zinit light chmln/sd
 
@@ -57,7 +57,7 @@ zinit light sharkdp/fd
 zinit ice as"program" from"gh-r" sbin"**/bat" atload"alias cat=bat; alias less=bat"
 zinit light sharkdp/bat
 
-# sharkdp/hyperfine, A command-line benchmarking tool.
+# sharkdp/hyperfine, a command-line benchmarking tool.
 zinit ice as"program" from"gh-r" sbin"**/hyperfine"
 zinit light sharkdp/hyperfine
 
@@ -97,19 +97,31 @@ zinit light bootandy/dust
 zinit ice as"program" from"gh-r" sbin"**/procs" atload"alias ps=procs"
 zinit light dalance/procs
 
-# orf/gping, Ping, but with a graph.
+# orf/gping, ping, but with a graph.
 zinit ice as"program" from"gh-r" sbin"**/gping" atload"alias ping=gping"
 zinit light orf/gping
 
-# stedolan/jq, Command-line JSON processor.
+# stedolan/jq, command-line JSON processor.
 zinit ice as"program" from"gh-r" mv"jq* -> jq" sbin"**/jq"
 zinit light stedolan/jq
+
+# ajeetdsouza/zoxide, a smarter cd command.
+zinit ice as"program" from"gh-r" sbin"**/zoxide" \
+  atclone"./zoxide init zsh > init.zsh" \
+  atpull"%atclone" src"init.zsh" nocompile"!"
+zinit light ajeetdsouza/zoxide
 
 # dev unix cli
 
 # jesseduffield/lazygit, simple terminal UI for git commands.
 zinit ice as"program" from"gh-r" sbin"**/lazygit" atload"alias lg=lazygit"
 zinit light jesseduffield/lazygit
+
+# direnv/direnv, unclutter your .profile
+zinit ice as"program" from"gh-r" mv"direnv* -> direnv" sbin"**/direnv" \
+  atclone"./direnv hook zsh > zhook.zsh" \
+  atpull"%atclone" src="zhook.zsh"
+zinit light direnv/direnv
 
 setopt promptsubst
 
@@ -134,21 +146,15 @@ fi
 # ls_colors (https://github.com/zdharma-continuum/zinit-packages/tree/main/ls_colors)
 zinit pack for ls_colors
 
-# direnv
-zinit from"gh-r" as"program" mv"direnv* -> direnv" \
-  atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
-  pick"direnv" src="zhook.zsh" for \
-    direnv/direnv
-
 # fzf (https://github.com/zdharma-continuum/zinit-packages/tree/main/fzf)
 zinit pack"bgn-binary+keys" for fzf
 zinit light Aloxaf/fzf-tab
 
-zstyle ':completion:complete:*:options' sort false
+zstyle ":completion:complete:*:options" sort false
 zstyle ":completion:*:git-checkout:*" sort false
-zstyle ':completion:*:descriptions' format '[%d]'
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+zstyle ":completion:*:descriptions" format "[%d]"
+zstyle ":completion:*" list-colors ${(s.:.)LS_COLORS}
+zstyle ":fzf-tab:complete:cd:*" fzf-preview "exa -1 --color=always $realpath"
 
 # romkatv/powerlevel10k theme
 zinit ice depth=1; zinit light romkatv/powerlevel10k
@@ -157,7 +163,7 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx'
+typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND="kubectl|helm|kubens|kubectx"
 
 # misc
 HISTSIZE=99999
