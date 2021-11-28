@@ -1,0 +1,6 @@
+
+# default prompt
+format="$all$username$character"
+
+# right prompt
+right_format="$cmd_duration$jobs$battery"
