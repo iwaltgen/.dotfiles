@@ -3,7 +3,6 @@
 ln -sf ~/.dotfiles/.zshrc ~
 ln -sf ~/.dotfiles/.vimrc ~
 ln -sf ~/.dotfiles/.ideavimrc ~
-ln -sf ~/.dotfiles/.p10k.zsh ~
 ln -sf ~/.dotfiles/.alacritty.yml ~
 ln -sf ~/.dotfiles/.starship.toml ~
 
