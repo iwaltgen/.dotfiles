@@ -11,6 +11,7 @@ case "$OSTYPE" in
   linux*)   ln -sf ~/.dotfiles/.zshrc.linux ~/.zshrc.os ;;
   *)        echo "unknown ostype: $OSTYPE" ;;
 esac
+touch ~/.zshrc.local
 
 ln -sf ~/.dotfiles/.tmux.conf ~
 ln -sf ~/.dotfiles/.tmux.theme.conf ~
