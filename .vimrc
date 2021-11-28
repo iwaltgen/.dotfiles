@@ -8,7 +8,7 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
 Plug 'tpope/vim-fugitive'
 
-Plug 'junegunn/vim-easy-align'
+Plug 'ryanoasis/vim-devicons'
 
 Plug 'kaicataldo/material.vim'
 
@@ -30,7 +30,6 @@ colorscheme material
 set background=dark
 
 language en_US.UTF-8
-"set guifont=Droid\ Sans\ Mono\ for\ Powerline:h15
 set guifont=Hack\ Nerd\ Font\ Mono
 let g:Powerline_symbols = 'fancy'
 set t_Co=256
@@ -97,9 +96,11 @@ set hidden
 
 " 다음 버퍼로 이동
 nmap <leader>l :bnext<CR>
+nmap <leader>k :bnext<CR>
 
 " 이전 버퍼로 이동
 nmap <leader>h :bprevious<CR>
+nmap <leader>j :bprevious<CR>
 
 " 현재 버퍼를 닫고 이전 버퍼로 이동
 " 탭 닫기 단축키를 대체한다.
@@ -119,46 +120,19 @@ vnoremap <leader>gb :Gblame<CR>
 nnoremap <leader>gb :Gblame<CR>
 
 " ==================== CtrlP ====================
-" 기본 무시 설정
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
-  \ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
-\}
-
-" 가장 가까운 .git 디렉토리를 cwd(현재 작업 디렉토리)로 사용
-" .svn, .hg, .bzr도 지원한다.
-let g:ctrlp_working_path_mode = 'ra'
-
-let g:ctrlp_user_command = 'pt %s -l --nocolor --hidden -g ""'
-let g:ctrlp_mruf_max=356
-let g:ctrlp_max_files=0
-let g:ctrlp_use_caching = 1
-let g:ctrlp_clear_cache_on_exit = 0
-let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
-let g:ctrlp_match_window = 'bottom,order:btt,min:3,max:18'
-
-" ==================== NerdTree ====================
-noremap <Leader>t :TagbarToggle<cr>
+" let g:ctrlp_cmd = 'CtrlPMRU'
+let g:ctrlp_user_command='fd --type file --color never "" %s'
 
 " ==================== NerdTree ====================
 noremap <Leader>n :NERDTreeToggle<cr>
 
 let NERDTreeShowHidden=1
 
-" ==================== vim-color-solarized ====================
-"let g:Powerline_symbols = 'fancy'
-"let g:solarized_termtrans=1
-"let g:solarized_termcolors=256
-
 " ==================== vim-material ====================
-let g:material_terminal_italics = 1
-let g:material_theme_style = 'darker'
-
-" ==================== EasyAlign ====================
-xmap ga <Plug>(EasyAlign)
-nmap ga <Plug>(EasyAlign)
+let g:material_terminal_italics=1
+let g:material_theme_style='darker'
 
 " ==================== airline =======================
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled=1
+let g:airline_powerline_fonts=1
 
