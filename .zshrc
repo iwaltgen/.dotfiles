@@ -187,7 +187,7 @@ if ! command -v deno &> /dev/null
 then
   curl -fsSL https://deno.land/x/install/install.sh | sh
 
-  echo '#!/bin/sh' >> $HOME/.deno/env
+  echo '#!/bin/zsh' >> $HOME/.deno/env
   echo '' >> $HOME/.deno/env
   echo '# affix colons on either side of $PATH to simplify matching' >>  $HOME/.deno/env
   echo 'case ":${PATH}:" in' >> $HOME/.deno/env

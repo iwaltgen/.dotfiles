@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 ln -sf ~/.dotfiles/.zshrc ~
 ln -sf ~/.dotfiles/.vimrc ~

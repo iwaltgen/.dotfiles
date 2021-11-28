@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 # public key export
 keybase pgp export | gpg --import
