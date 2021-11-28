@@ -35,7 +35,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 ## Setup
 
 ```sh
-# fonts
+# fonts (https://www.nerdfonts.com/)
 #
 # macOS
 # brew tap homebrew/cask-fonts

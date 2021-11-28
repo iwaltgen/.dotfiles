@@ -30,7 +30,8 @@ colorscheme material
 set background=dark
 
 language en_US.UTF-8
-set guifont=Droid\ Sans\ Mono\ for\ Powerline:h15
+"set guifont=Droid\ Sans\ Mono\ for\ Powerline:h15
+set guifont=Hack\ Nerd\ Font\ Mono
 let g:Powerline_symbols = 'fancy'
 set t_Co=256
 set term=xterm-256color
