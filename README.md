@@ -25,4 +25,5 @@ source .zshrc
 zinit self-update
 zinit update
 
+# zinit delete --clean
 ```

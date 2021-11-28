@@ -44,6 +44,7 @@ zinit wait lucid light-mode for \
     zsh-users/zsh-completions
 
 # modern unix cli (https://github.com/ibraheemdev/modern-unix)
+
 # sharkdp/fd, fast and user-friendly alternative to 'find'.
 zinit ice as"program" from"gh-r" mv"fd* -> fd" pick"fd/fd"
 zinit light sharkdp/fd
@@ -65,7 +66,7 @@ zinit ice as"program" from"gh-r" mv"exa* -> exa" pick"bin/exa" atload"alias ls=e
 zinit light ogham/exa
 
 # ogham/dog, cli DNS client.
-zinit ice as"program" from"gh-r" mv"dog* -> dog" pick"bin/dog" atload"alias dif=dog"
+zinit ice as"program" from"gh-r" mv"dog* -> dog" pick"bin/dog" atload"alias dig=dog"
 zinit light ogham/dog
 
 # ClementTsang/bottom, cross-platform graphical process/system monitor.
