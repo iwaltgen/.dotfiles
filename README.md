@@ -35,6 +35,32 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 ## Setup
 
 ```sh
+# fonts
+#
+# macOS
+# brew tap homebrew/cask-fonts
+# brew install --cask font-hack-nerd-font
+#
+# linux
+# mkdir -p ~/.local/share/fonts
+# cd ~/.local/share/fonts
+# curl -fsSLo "Hack Regular Nerd Font Complete.ttf" \
+#   https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf
+# curl -fsSLo "Hack Regular Nerd Font Complete Mono.ttf" \
+#   https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete%20Mono.ttf
+# curl -fsSLo "Hack Italic Nerd Font Complete.ttf" \
+#   https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Italic/complete/Hack%20Italic%20Nerd%20Font%20Complete.ttf
+# curl -fsSLo "Hack Italic Nerd Font Complete Mono.ttf" \
+#   https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Italic/complete/Hack%20Italic%20Nerd%20Font%20Complete%20Mono.ttf
+# curl -fsSLo "Hack Bold Nerd Font Complete.ttf" \
+#   https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Bold/complete/Hack%20Bold%20Nerd%20Font%20Complete.ttf
+# curl -fsSLo "Hack Bold Nerd Font Complete Mono.ttf" \
+#   https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Bold/complete/Hack%20Bold%20Nerd%20Font%20Complete%20Mono.ttf
+# curl -fsSLo "Hack Bold Italic Nerd Font Complete.ttf" \
+#   https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/BoldItalic/complete/Hack%20Bold%20Italic%20Nerd%20Font%20Complete.ttf
+# curl -fsSLo "Hack Bold Italic Nerd Font Complete Mono.ttf" \
+#   https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/BoldItalic/complete/Hack%20Bold%20Italic%20Nerd%20Font%20Complete%20Mono.ttf
+
 # brew
 pushd brew
 brew bundle
