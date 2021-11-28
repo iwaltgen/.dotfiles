@@ -33,7 +33,7 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-# zinit essential
+# zinit essential (https://zdharma-continuum.github.io/zinit/wiki/Example-Minimal-Setup/)
 zinit wait lucid light-mode for \
   atinit"zicompinit; zicdreplay" \
     zdharma-continuum/fast-syntax-highlighting \
@@ -82,8 +82,22 @@ zinit ice as"program" from"gh-r" mv"duf* -> duf" pick"duf/duf"
 zinit light muesli/duf
 
 # bootandy/dust, a more intuitive version of du in rust.
-zinit ice as"program" from"gh-r" mv"dust* -> dust" pick"dust/dust"
+zinit ice as"program" from"gh-r" mv"dust* -> dust" pick"dust/dust" atload"alias du=dust"
 zinit light bootandy/dust
+
+# dalance/procs, a modern replacement for ps written in Rust.
+zinit ice as"program" from"gh-r" sbin"**/procs" atload"alias ps=procs"
+zinit light dalance/procs
+
+# orf/gping, Ping, but with a graph.
+zinit ice as"program" from"gh-r" sbin"**/gping" atload"alias ping=gping"
+zinit light orf/gping
+
+# dev unix cli
+
+# jesseduffield/lazygit, simple terminal UI for git commands.
+zinit ice as"program" from"gh-r" mv"lazygit* -> lazygit" pick"lazygit/lazygit" atload"alias tig=lazygit"
+zinit light jesseduffield/lazygit
 
 setopt promptsubst
 
@@ -105,7 +119,7 @@ elif [[ $OSTYPE == linux* ]]; then
   fi
 fi
 
-# ls_colors
+# ls_colors (https://github.com/zdharma-continuum/zinit-packages/tree/main/ls_colors)
 zinit pack for ls_colors
 
 # direnv
@@ -114,8 +128,7 @@ zinit from"gh-r" as"program" mv"direnv* -> direnv" \
   pick"direnv" src="zhook.zsh" for \
     direnv/direnv
 
-# fzf
-# zplugin pack"default+keys" for fzf
+# fzf (https://github.com/zdharma-continuum/zinit-packages/tree/main/fzf)
 zinit pack"bgn-binary+keys" for fzf
 zinit light Aloxaf/fzf-tab
 
