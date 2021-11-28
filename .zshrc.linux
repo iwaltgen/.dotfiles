@@ -1,0 +1,6 @@
+
+unalias la
+unalias ll
+
+alias la="ls --all --long --git --group --group-directories-first --time-style=long-iso"
+alias ll="ls --long --git --group --group-directories-first --time-style=long-iso"
