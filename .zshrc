@@ -93,6 +93,18 @@ zinit light dalance/procs
 zinit ice as"program" from"gh-r" sbin"**/gping" atload"alias ping=gping"
 zinit light orf/gping
 
+# sharkdp/hyperfine, A command-line benchmarking tool.
+zinit ice as"program" from"gh-r" sbin"**/hyperfine"
+zinit light sharkdp/hyperfine
+
+# chmln/sd, Intuitive find & replace CLI (sed alternative).
+zinit ice as"program" from"gh-r" mv"sd* -> sd" sbin"**/sd"
+zinit light chmln/sd
+
+# stedolan/jq, Command-line JSON processor.
+zinit ice as"program" from"gh-r" mv"jq* -> jq" sbin"**/jq"
+zinit light stedolan/jq
+
 # dev unix cli
 
 # jesseduffield/lazygit, simple terminal UI for git commands.
