@@ -86,10 +86,6 @@ zinit light muesli/duf
 zinit ice as"program" from"gh-r" sbin"**/dust" atload"alias du=dust"
 zinit light bootandy/dust
 
-# dalance/procs, a modern replacement for ps written in Rust.
-zinit ice as"program" from"gh-r" sbin"**/procs" atload"alias ps=procs"
-zinit light dalance/procs
-
 # orf/gping, ping, but with a graph.
 zinit ice as"program" from"gh-r" sbin"**/gping" atload"alias ping=gping"
 zinit light orf/gping
@@ -143,16 +139,25 @@ zinit pack for ls_colors
 zinit pack"bgn-binary+keys" for fzf
 zinit light Aloxaf/fzf-tab
 
-zstyle ":completion:complete:*:options" sort false
+zstyle ':completion:*' completer _expand _complete _ignored _approximate
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+zstyle ':completion:*:descriptions' format '-- %d --'
 zstyle ":completion:*:git-checkout:*" sort false
-zstyle ":completion:*:descriptions" format "[%d]"
-zstyle ":completion:*" list-colors ${(s.:.)LS_COLORS}
-zstyle ":fzf-tab:complete:(cd|z):*" fzf-preview "exa -1 --color=always $realpath"
-zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
-zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
-  '[[ $group == "[process ID]" ]] && ps --pid=$word -o cmd --no-headers -w -w'
-zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=down:3:wrap
+zstyle ':completion:complete:*:options' sort false
+zstyle ':completion:*:processes' command 'ps -au$USER'
+zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
+zstyle ':fzf-tab:complete:(cd|z|vi):*' fzf-preview \
+  'if [ -d $realpath ]; then
+    exa -1 --color=always $realpath
+  else
+    bat --color=always $realpath
+  fi'
+zstyle ':fzf-tab:*' switch-group ',' '.'
 
 zinit ice as"program" from"gh-r" sbin"**/starship" \
   atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
