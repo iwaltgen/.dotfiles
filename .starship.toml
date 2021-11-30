@@ -1,6 +1,6 @@
 
-# left prompt
-format="$all$username$character"
+# default prompt
+# format="$all"
 
 # right prompt
 right_format="$cmd_duration$jobs$battery"
