@@ -47,7 +47,9 @@ zinit ice as"program" from"gh-r" sbin"**/fd"
 zinit light sharkdp/fd
 
 # sharkdp/bat, a cat clone with wings.
-zinit ice as"program" from"gh-r" sbin"**/bat" atload"alias cat=bat; alias less=bat"
+zinit ice as"program" from"gh-r" sbin"**/bat" \
+  atload"alias cat=bat; alias less=bat" \
+  mv"**/bat.zsh -> _bat"
 zinit light sharkdp/bat
 
 # sharkdp/hyperfine, a command-line benchmarking tool.
@@ -63,11 +65,15 @@ zinit ice as"program" from"gh-r" sbin"**/delta" atload"alias diff=delta"
 zinit light dandavison/delta
 
 # ogham/exa, replacement for ls.
-zinit ice as"program" from"gh-r" sbin"**/exa" atload"alias ls=exa"
+zinit ice as"program" from"gh-r" sbin"**/exa" \
+  atload"alias ls=exa" \
+  mv"completions/exa.zsh -> completions/_exa"
 zinit light ogham/exa
 
 # ogham/dog, cli DNS client.
-zinit ice as"program" from"gh-r" sbin"**/dog" atload"alias dig=dog"
+zinit ice as"program" from"gh-r" sbin"**/dog" \
+  atload"alias dig=dog" \
+  mv"completions/dog.zsh -> completions/_dog"
 zinit light ogham/dog
 
 # ClementTsang/bottom, cross-platform graphical process/system monitor.
