@@ -85,7 +85,7 @@ zinit ice as"program" from"gh-r" sbin"**/xh"
 zinit light ducaale/xh
 
 # muesli/duf, a better 'df' alternative.
-zinit ice as"program" from"gh-r" sbin"**/duf"
+zinit ice as"program" from"gh-r" sbin"**/duf" bpick"*.tar.gz"
 zinit light muesli/duf
 
 # bootandy/dust, a more intuitive version of du in rust.
