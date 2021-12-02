@@ -1,4 +1,7 @@
 
+# Homebrew
+export PATH="/usr/local/sbin:$PATH"
+
 # Java
 export PATH="$HOME/.jenv/shims:/$HOME/.jenv/bin:$PATH"
 eval "$(jenv init -)"
