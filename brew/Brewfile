@@ -33,7 +33,7 @@ brew "goaccess"
 brew "goreleaser"
 brew "gradle"
 brew "graphviz"
-brew "grpcurl"
+brew "grpcurl", link: false
 brew "helm"
 brew "hey"
 brew "htop"
