@@ -172,11 +172,12 @@ zinit light starship/starship
 
 export STARSHIP_CONFIG=~/.starship.toml
 
-# misc
-HISTSIZE=99999
-SAVEHIST=99999
+# history
 HISTFILE=~/.zsh_history
+HISTSIZE=99999999
+SAVEHIST=99999999
 
+# misc
 ulimit -n 16384
 
 alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
