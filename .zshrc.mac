@@ -3,10 +3,9 @@
 export PATH="/usr/local/sbin:$PATH"
 
 # Java
-export PATH="$HOME/.jenv/shims:/$HOME/.jenv/bin:$PATH"
+export PATH="$HOME/.jenv/bin:$PATH"
 eval "$(jenv init -)"
-
-export JAVA_HOME=`/usr/libexec/java_home`
+# jenv enable-plugin export
 
 # Flutter
 export PATH=$PATH:$HOME/flutter/bin
