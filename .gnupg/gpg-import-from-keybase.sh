@@ -14,3 +14,6 @@ gpg --edit-key BD43BAEEFF6F625A
 # Your decision? 5
 # Do you really want to set this key to ultimate trust? (y/N) y
 # gpg> save
+
+# test
+# echo test | gpg -e -r iwaltgen@gmail.com | gpg -d
