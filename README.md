@@ -14,7 +14,7 @@ chsh -s $(which zsh)
 [Homebrew](https://brew.sh/)
 
 ```sh
-sh -c "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
 [Zinit](https://github.com/zdharma-continuum/zinit)
