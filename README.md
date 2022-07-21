@@ -8,6 +8,8 @@
 sudo apt-get install zsh
 # brew install zsh
 
+git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
+
 chsh -s $(which zsh)
 ```
 
@@ -15,6 +17,8 @@ chsh -s $(which zsh)
 
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" >> ~/.zprofile
 ```
 
 [Zinit](https://github.com/zdharma-continuum/zinit)
