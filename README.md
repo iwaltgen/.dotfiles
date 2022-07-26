@@ -5,7 +5,7 @@
 [Zsh](https://zsh.sourceforge.io/)
 
 ```sh
-sudo apt-get install zsh
+sudo apt-get install zsh unzip
 # brew install zsh
 
 git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
@@ -18,7 +18,7 @@ chsh -s $(which zsh)
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" >> ~/.zprofile
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zprofile
 ```
 
 [Zinit](https://github.com/zdharma-continuum/zinit)
