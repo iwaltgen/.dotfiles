@@ -1,0 +1,6 @@
+require('plugins.bufferline')
+require('plugins.github-theme')
+require('plugins.lualine')
+require('plugins.nvim-tree')
+require('plugins.nvim-treesitter')
+require('plugins.telescope')

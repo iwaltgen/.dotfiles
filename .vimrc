@@ -6,8 +6,6 @@ Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
-Plug 'tpope/vim-fugitive'
-
 Plug 'ryanoasis/vim-devicons'
 
 Plug 'kaicataldo/material.vim'
@@ -15,8 +13,6 @@ Plug 'kaicataldo/material.vim'
 Plug 'vim-airline/vim-airline'
 
 Plug 'vim-airline/vim-airline-themes'
-
-Plug 'junegunn/goyo.vim'
 
 call plug#end()
 
@@ -135,6 +131,8 @@ let g:material_terminal_italics=1
 let g:material_theme_style='darker'
 
 " ==================== airline =======================
-let g:airline#extensions#tabline#enabled=1
 let g:airline_powerline_fonts=1
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#show_tabs=1
+let g:airline#extensions#tabline#formatter='unique_tail'
 
