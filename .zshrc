@@ -177,12 +177,16 @@ HISTFILE=~/.zsh_history
 HISTSIZE=99999999
 SAVEHIST=99999999
 
-# misc
 ulimit -n 16384
 
+# exa
 alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
 alias ll="ls --long --git --group-directories-first --time-style=long-iso"
 alias l=la
+
+# neovim
+alias vi="nvim"
+alias vim="nvim"
 
 # Go
 export PATH=$PATH:$(go env GOPATH)/bin
