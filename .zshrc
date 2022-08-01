@@ -186,7 +186,6 @@ alias l=la
 
 # neovim
 alias vi="nvim"
-alias vim="nvim"
 
 # Go
 export PATH=$PATH:$(go env GOPATH)/bin
