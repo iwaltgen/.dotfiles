@@ -4,11 +4,11 @@ env:
 # Font configuration (changes require restart)
 font:
   normal:
-    family: Hack Nerd Font Mono
+    family: Hack Nerd Font
   bold:
-    family: Hack Nerd Font Mono
+    family: Hack Nerd Font
   italic:
-    family: Hack Nerd Font Mono
+    family: Hack Nerd Font
   size: 14.0
   offset:
     x: 0
