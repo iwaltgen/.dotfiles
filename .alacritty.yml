@@ -1,7 +1,6 @@
 env:
   TERM: xterm-256color
 
-# Font configuration (changes require restart)
 font:
   normal:
     family: Hack Nerd Font Mono
@@ -16,9 +15,6 @@ font:
   glyph_offset:
     x: 0
     y: 0
-  # Thin stroke font rendering (macOS only)
-  use_thin_strokes: true
-
 
 selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
