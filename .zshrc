@@ -142,7 +142,7 @@ fi
 zinit pack for ls_colors
 
 # fzf (https://github.com/zdharma-continuum/zinit-packages/tree/main/fzf)
-zinit pack"bgn-binary+keys" for fzf
+zinit pack"bgn+keys" for fzf
 zinit light Aloxaf/fzf-tab
 
 zstyle ':completion:*' completer _expand _complete _ignored _approximate
