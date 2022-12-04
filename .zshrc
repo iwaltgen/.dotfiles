@@ -172,20 +172,28 @@ zinit light starship/starship
 
 export STARSHIP_CONFIG=~/.starship.toml
 
-# history
+# Process
+ulimit -n 16384
+
+# History
 HISTFILE=~/.zsh_history
 HISTSIZE=99999999
 SAVEHIST=99999999
 
-ulimit -n 16384
-
-# exa
+# Exa
 alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
 alias ll="ls --long --git --group-directories-first --time-style=long-iso"
 alias l=la
 
-# neovim
+# Neovim
 alias vi="nvim"
+
+# Python
+alias python=python3
+alias pip=pip3
+
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
 # Go
 export PATH=$PATH:$(go env GOPATH)/bin
