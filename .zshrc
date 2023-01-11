@@ -192,9 +192,6 @@ alias vi="nvim"
 alias python=python3
 alias pip=pip3
 
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-
 # Go
 export PATH=$PATH:$(go env GOPATH)/bin
 
