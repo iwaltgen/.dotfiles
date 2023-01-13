@@ -12,3 +12,8 @@ export PATH=$PATH:$HOME/flutter/bin
 
 # Tailscale
 alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+
+# Nix
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
