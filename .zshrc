@@ -188,10 +188,6 @@ alias l=la
 # Neovim
 alias vi="nvim"
 
-# Python
-alias python=python3
-alias pip=pip3
-
 # Go
 export PATH=$PATH:$(go env GOPATH)/bin
 
@@ -222,6 +218,10 @@ then
   echo 'esac' >> $HOME/.deno/env
   source "$HOME/.deno/env"
 fi
+
+# Python
+alias python=python3
+alias pip=pip3
 
 # customizations, e.g. theme, plugins, aliases, etc.
 [ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os
