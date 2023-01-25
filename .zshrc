@@ -223,6 +223,10 @@ fi
 alias python=python3
 alias pip=pip3
 
+# asdf-vm
+. "$(brew --prefix asdf)/libexec/asdf.sh"
+source "$HOME/.config/asdf-direnv/zshrc"
+
 # customizations, e.g. theme, plugins, aliases, etc.
 [ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os
 [ -f $HOME/.zshrc.local ] && source $HOME/.zshrc.local
