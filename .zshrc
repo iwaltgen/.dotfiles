@@ -225,6 +225,7 @@ alias pip=pip3
 
 # asdf-vm
 . "$(brew --prefix asdf)/libexec/asdf.sh"
+. $HOME/.asdf/plugins/java/set-java-home.zsh
 source "$HOME/.config/asdf-direnv/zshrc"
 
 # customizations, e.g. theme, plugins, aliases, etc.

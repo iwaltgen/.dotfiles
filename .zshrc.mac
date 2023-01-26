@@ -1,12 +1,4 @@
 
-# Homebrew
-export PATH="/usr/local/sbin:$PATH"
-
-# Java
-export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
-# jenv enable-plugin export
-
 # Flutter
 export PATH=$PATH:$HOME/flutter/bin
 

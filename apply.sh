@@ -6,6 +6,7 @@ ln -sf ~/.dotfiles/.ideavimrc ~
 ln -sf ~/.dotfiles/nvim ~/.config/nvim
 ln -sf ~/.dotfiles/.alacritty.yml ~
 ln -sf ~/.dotfiles/.starship.toml ~
+ln -sf ~/.dotfiles/.asdfrc ~
 
 touch ~/.zshrc.local
 if [[ $OSTYPE == darwin* ]]; then
