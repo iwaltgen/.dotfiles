@@ -17,3 +17,4 @@ gpg --edit-key BD43BAEEFF6F625A
 
 # test
 # echo test | gpg -e -r iwaltgen@gmail.com | gpg -d
+# echo test | gpg -e -r BD43BAEEFF6F625A | gpg -d --use-agent

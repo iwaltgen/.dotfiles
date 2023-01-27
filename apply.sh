@@ -24,6 +24,7 @@ ln -sf ~/.dotfiles/.gitconfig ~
 
 # gpg
 mkdir -p ~/.gnupg
+chmod 700 ~/.gnupg
 cp ~/.dotfiles/.gnupg/*.conf ~/.gnupg/
 
 # ntfs

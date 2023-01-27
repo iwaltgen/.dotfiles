@@ -1,3 +1,9 @@
+# gpg-agent (https://gnupg.org/documentation/manuals/gnupg-2.0/Invoking-GPG_002dAGENT.html)
+# gpgconf --kill gpg-agent
+# gpg-connect-agent updatestartuptty /bye
+gpg-agent --daemon --enable-ssh-support > /dev/null 2>&1
+export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent:0:1
+export GPG_TTY=$(tty)
 
 # Flutter
 export PATH=$PATH:$HOME/flutter/bin
