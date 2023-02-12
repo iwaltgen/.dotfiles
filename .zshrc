@@ -219,10 +219,6 @@ then
   source "$HOME/.deno/env"
 fi
 
-# Python
-alias python=python3
-alias pip=pip3
-
 # asdf-vm
 . "$(brew --prefix asdf)/libexec/asdf.sh"
 . $HOME/.asdf/plugins/java/set-java-home.zsh
