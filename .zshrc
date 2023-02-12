@@ -188,9 +188,6 @@ alias l=la
 # Neovim
 alias vi="nvim"
 
-# Go
-export PATH=$PATH:$(go env GOPATH)/bin
-
 # Rust
 source "$HOME/.cargo/env"
 if ! command -v rustup &> /dev/null
