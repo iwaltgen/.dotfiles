@@ -190,16 +190,14 @@ alias vi="nvim"
 
 # Rust
 source "$HOME/.cargo/env"
-if ! command -v rustup &> /dev/null
-then
+if ! command -v rustup &> /dev/null; then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
   source "$HOME/.cargo/env"
 fi
 
 # Deno
 source "$HOME/.deno/env"
-if ! command -v deno &> /dev/null
-then
+if ! command -v deno &> /dev/null; then
   curl -fsSL https://deno.land/x/install/install.sh | sh
 
   echo '#!/bin/zsh' >> $HOME/.deno/env
