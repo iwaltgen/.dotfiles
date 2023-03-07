@@ -12,3 +12,6 @@ alias tailscale=/Applications/Tailscale.app/Contents/MacOS/Tailscale
 if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
   source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 fi
+
+# psql
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
