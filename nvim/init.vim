@@ -20,7 +20,7 @@ endif
 " Plugins are installed at ~/.local/share/nvim/plugged
 call plug#begin()
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'terryma/vim-multiple-cursors'
 Plug 'kyazdani42/nvim-web-devicons' " optional, for file icons
