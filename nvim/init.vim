@@ -28,7 +28,7 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'projekt0n/github-nvim-theme'
+Plug 'projekt0n/github-nvim-theme', { 'tag': 'v0.0.7' }
 Plug 'gpanders/editorconfig.nvim'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
