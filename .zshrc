@@ -150,7 +150,7 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
 zstyle ':completion:*:descriptions' format '-- %d --'
-zstyle ":completion:*:git-checkout:*" sort false
+zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:complete:*:options' sort false
 zstyle ':completion:*:processes' command 'ps -au$USER'
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
@@ -165,6 +165,10 @@ zstyle ':fzf-tab:complete:(cd|z|vi):*' fzf-preview \
   fi'
 zstyle ':fzf-tab:*' switch-group ',' '.'
 
+# atuin
+zinit load ellie/atuin
+
+# starship
 zinit ice as"program" from"gh-r" sbin"**/starship" bpick"*.tar.gz" \
   atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
   atpull"%atclone" src"init.zsh"
