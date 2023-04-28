@@ -15,3 +15,6 @@ fi
 
 # psql
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+# atuin
+eval "$(atuin init zsh --disable-up-arrow)"

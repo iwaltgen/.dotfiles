@@ -165,9 +165,6 @@ zstyle ':fzf-tab:complete:(cd|z|vi):*' fzf-preview \
   fi'
 zstyle ':fzf-tab:*' switch-group ',' '.'
 
-# atuin
-zinit load ellie/atuin
-
 # starship
 zinit ice as"program" from"gh-r" sbin"**/starship" bpick"*.tar.gz" \
   atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
