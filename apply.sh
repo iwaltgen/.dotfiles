@@ -5,6 +5,7 @@ ln -sf ~/.dotfiles/.vimrc ~
 ln -sf ~/.dotfiles/.ideavimrc ~
 ln -sf ~/.dotfiles/nvim ~/.config/nvim
 ln -sf ~/.dotfiles/atuin/config.toml ~/.config/atuin/config.toml
+ln -sf ~/.dotfiles/gh-dash/config.yml ~/.config/gh-dash/config.yml
 ln -sf ~/.dotfiles/.alacritty.yml ~
 ln -sf ~/.dotfiles/.starship.toml ~
 ln -sf ~/.dotfiles/.asdfrc ~
