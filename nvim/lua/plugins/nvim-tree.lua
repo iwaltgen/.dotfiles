@@ -12,11 +12,12 @@ require('nvim-tree').setup {
   },
 }
 
+local api = require("nvim-tree.api")
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
 -- Custom key-binding
-map('n', '<C-n>', function() require('nvim-tree').toggle() end, opts)
+map('n', '<C-n>', function() api.tree.toggle() end, opts)
 
 -- Builtin key-binding
-map('n', '<leader>n', function() return require('nvim-tree').toggle() end, opts)
+map('n', '<leader>n', function() return api.tree.toggle() end, opts)
