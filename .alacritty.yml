@@ -1,8 +1,9 @@
-env:
-  TERM: xterm-256color
+# https://github.com/alacritty/alacritty/blob/master/alacritty.yml
+import:
+ - ~/.config/alacritty/themes/themes/github_dimmed.yaml
 
 window:
-  decorations: None
+  decorations: buttonless
 
 font:
   normal:

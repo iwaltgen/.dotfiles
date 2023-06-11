@@ -31,3 +31,7 @@ cp ~/.dotfiles/.gnupg/*.conf ~/.gnupg/
 
 # ntfs
 mkdir ~/.ntfs
+
+# alacritty theme
+mkdir -p ~/.config/alacritty/themes
+git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
