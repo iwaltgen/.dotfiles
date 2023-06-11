@@ -1,8 +1,6 @@
 tap "homebrew/bundle"
-tap "homebrew/cask"
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
-tap "homebrew/core"
 tap "homebrew/services"
 tap "minio/stable"
 tap "noahgorstein/tap"
@@ -47,6 +45,7 @@ brew "libev"
 brew "libpcap"
 brew "libpq"
 brew "m-cli"
+brew "mas"
 brew "maven"
 brew "mercurial"
 brew "mingw-w64"
@@ -88,3 +87,16 @@ cask "visualvm"
 cask "wireshark"
 cask "wombat"
 cask "xquartz"
+mas "Hidden Bar", id: 1452453066
+mas "Keynote", id: 409183694
+mas "LINE", id: 539883307
+mas "Microsoft Excel", id: 462058435
+mas "Microsoft PowerPoint", id: 462062816
+mas "Microsoft Word", id: 462054704
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Slack", id: 803453959
+mas "Tailscale", id: 1475387142
+mas "The Unarchiver", id: 425424353
+mas "Xcode", id: 497799835
+mas "카카오톡", id: 869223134
