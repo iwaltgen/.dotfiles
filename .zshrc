@@ -31,6 +31,7 @@ zinit wait lucid light-mode for \
   atinit"zicompinit; zicdreplay" \
     zdharma-continuum/fast-syntax-highlighting \
     zsh-users/zsh-history-substring-search \
+    OMZP::colored-man-pages \
   atload"_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions \
   blockf atpull"zinit creinstall -q ." \
@@ -117,6 +118,7 @@ zinit wait lucid for \
   atload"unalias grv" \
     OMZP::git \
   OMZP::docker-compose \
+  OMZP::fd/_fd \
   as"completion" \
     OMZP::docker/_docker
 
