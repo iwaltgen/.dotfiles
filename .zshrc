@@ -76,14 +76,6 @@ zinit ice as"program" from"gh-r" sbin"**/dog" \
   mv"completions/dog.zsh -> completions/_dog"
 zinit light ogham/dog
 
-# ClementTsang/bottom, cross-platform graphical process/system monitor.
-zinit ice as"program" from"gh-r" sbin"**/btm" atload"alias top=btm"
-zinit light ClementTsang/bottom
-
-# ducaale/xh, friendly and fast tool for sending HTTP requests. (httpie)
-zinit ice as"program" from"gh-r" sbin"**/xh"
-zinit light ducaale/xh
-
 # muesli/duf, a better 'df' alternative.
 zinit ice as"program" from"gh-r" sbin"**/duf" bpick"*.tar.gz"
 zinit light muesli/duf
@@ -96,9 +88,9 @@ zinit light bootandy/dust
 zinit ice as"program" from"gh-r" sbin"**/gping" atload"alias ping=gping"
 zinit light orf/gping
 
-# stedolan/jq, command-line JSON processor.
+# jqlang/jq, command-line JSON processor.
 zinit ice as"program" from"gh-r" mv"jq* -> jq" sbin"**/jq"
-zinit light stedolan/jq
+zinit light jqlang/jq
 
 # ajeetdsouza/zoxide, a smarter cd command.
 zinit ice as"program" from"gh-r" sbin"**/zoxide" \
@@ -121,8 +113,9 @@ zinit light direnv/direnv
 setopt promptsubst
 
 zinit wait lucid for \
-  OMZP::git \
-  OMZP::sudo \
+  OMZL::git.zsh \
+  atload"unalias grv" \
+    OMZP::git \
   OMZP::docker-compose \
   as"completion" \
     OMZP::docker/_docker
