@@ -118,9 +118,7 @@ zinit wait lucid for \
   atload"unalias grv" \
     OMZP::git \
   OMZP::docker-compose \
-  OMZP::fd/_fd \
-  as"completion" \
-    OMZP::docker/_docker
+  OMZP::fd/_fd
 
 # OS bundles
 if [[ $OSTYPE == darwin* ]]; then
