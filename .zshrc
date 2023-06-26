@@ -31,7 +31,6 @@ zinit wait lucid light-mode for \
   atinit"zicompinit; zicdreplay" \
     zdharma-continuum/fast-syntax-highlighting \
     zsh-users/zsh-history-substring-search \
-    OMZP::colored-man-pages \
   atload"_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions \
   blockf atpull"zinit creinstall -q ." \
@@ -116,9 +115,7 @@ setopt promptsubst
 zinit wait lucid for \
   OMZL::git.zsh \
   atload"unalias grv" \
-    OMZP::git \
-  OMZP::docker-compose \
-  OMZP::fd/_fd
+    OMZP::git
 
 # OS bundles
 if [[ $OSTYPE == darwin* ]]; then
