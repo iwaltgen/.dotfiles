@@ -20,15 +20,15 @@ endif
 " Plugins are installed at ~/.local/share/nvim/plugged
 call plug#begin()
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.*' }
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'terryma/vim-multiple-cursors'
 Plug 'nvim-tree/nvim-tree.lua'
 Plug 'nvim-tree/nvim-web-devicons' " optional, for file icons
-Plug 'akinsho/bufferline.nvim', { 'tag': 'v2.*' }
+Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'projekt0n/github-nvim-theme', { 'tag': 'v0.0.7' }
+Plug 'projekt0n/github-nvim-theme'
 Plug 'gpanders/editorconfig.nvim'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()

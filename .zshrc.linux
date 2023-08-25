@@ -10,3 +10,11 @@ alias ll="ls --long --git --group --group-directories-first --time-style=long-is
 
 bindkey "^[[1~" beginning-of-line
 bindkey "^[[4~" end-of-line
+
+# asdf-vm
+. "$HOME/.asdf/asdf.sh"
+. $HOME/.asdf/plugins/java/set-java-home.zsh
+source "$HOME/.config/asdf-direnv/zshrc"
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"

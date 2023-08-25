@@ -98,6 +98,10 @@ zinit ice as"program" from"gh-r" sbin"**/zoxide" \
   atpull"%atclone" src"init.zsh" nocompile"!"
 zinit light ajeetdsouza/zoxide
 
+# bcicen/ctop, Top-like interface for container metrics.
+zinit ice as"program" from"gh-r" mv"ctop* -> ctop" sbin"**/ctop"
+zinit light bcicen/ctop
+
 # dev unix cli
 
 # jesseduffield/lazygit, simple terminal UI for git commands.
@@ -204,11 +208,6 @@ if ! command -v deno &> /dev/null; then
   echo 'esac' >> $HOME/.deno/env
   source "$HOME/.deno/env"
 fi
-
-# asdf-vm
-. "$(brew --prefix asdf)/libexec/asdf.sh"
-. $HOME/.asdf/plugins/java/set-java-home.zsh
-source "$HOME/.config/asdf-direnv/zshrc"
 
 # customizations, e.g. theme, plugins, aliases, etc.
 [ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os

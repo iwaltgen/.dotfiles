@@ -18,3 +18,8 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # atuin
 eval "$(atuin init zsh --disable-up-arrow)"
+
+# asdf-vm
+. "$(brew --prefix asdf)/libexec/asdf.sh"
+. $HOME/.asdf/plugins/java/set-java-home.zsh
+source "$HOME/.config/asdf-direnv/zshrc"
