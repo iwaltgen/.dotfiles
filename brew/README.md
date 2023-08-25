@@ -10,4 +10,5 @@ rm -f Brewfile && brew bundle dump
 
 ```sh
 brew bundle
+# brew bundle --file Brewfile.linux
 ```
