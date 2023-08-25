@@ -10,7 +10,6 @@ mkdir -p $HOME/.config/atuin
 mkdir -p $HOME/.config/gh-dash
 
 ln -sf $HOME/.dotfiles/.zshrc $HOME
-ln -sf $HOME/.dotfiles/.vimrc $HOME
 ln -sf $HOME/.dotfiles/.ideavimrc $HOME
 ln -sf $HOME/.dotfiles/nvim $HOME/.config/nvim
 ln -sf $HOME/.dotfiles/atuin/config.toml $HOME/.config/atuin/config.toml
