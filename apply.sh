@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+mkdir -p ~/.config/atuin
+mkdir -p ~/.config/gh-dash
+
 ln -sf ~/.dotfiles/.zshrc ~
 ln -sf ~/.dotfiles/.vimrc ~
 ln -sf ~/.dotfiles/.ideavimrc ~
