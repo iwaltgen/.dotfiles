@@ -1,5 +1,6 @@
 #!/bin/zsh
 
+# zsh
 sudo apt-get install \
 	zsh ca-certificates lsb-release gnupg \
 	tree ncdu curl wget unzip htop git \
@@ -44,6 +45,9 @@ curl -sS https://webi.sh/gh | sh
 curl -fLo $HOME/.local/bin/mc --create-dirs \
 	https://dl.min.io/client/mc/release/linux-amd64/mc
 chmod +x $HOME/.local/bin/mc
+
+# asdf
+git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.12.0
 
 # atuin
 bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)

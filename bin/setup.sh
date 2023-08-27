@@ -6,14 +6,30 @@ elif [[ $OSTYPE == linux* ]]; then
   ./prelude.linux.sh
 fi
 
-mkdir -p $HOME/.config/atuin
-mkdir -p $HOME/.config/gh-dash
+# asdf plugins
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
+asdf plugin-add java https://github.com/halcyon/asdf-java.git
+asdf plugin-add direnv
+asdf direnv setup --shell zsh --version system
+
+asdf install nodejs latest
+asdf install golang latest
+asdf install java latest:temurin-17
+
+asdf global nodejs latest
+asdf global golang latest
+asdf global java latest:temurin-17
+
+# dotfiles
+mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
+mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash
 
 ln -sf $HOME/.dotfiles/.zshrc $HOME
 ln -sf $HOME/.dotfiles/.ideavimrc $HOME
-ln -sf $HOME/.dotfiles/nvim $HOME/.config/nvim
-ln -sf $HOME/.dotfiles/atuin/config.toml $HOME/.config/atuin/config.toml
-ln -sf $HOME/.dotfiles/gh-dash/config.yml $HOME/.config/gh-dash/config.yml
+ln -sf $HOME/.dotfiles/nvim ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
+ln -sf $HOME/.dotfiles/atuin/config.toml ${XDG_CONFIG_HOME:-$HOME/.config}/atuin/config.toml
+ln -sf $HOME/.dotfiles/gh-dash/config.yml ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config.yml
 ln -sf $HOME/.dotfiles/.alacritty.yml $HOME
 ln -sf $HOME/.dotfiles/.starship.toml $HOME
 ln -sf $HOME/.dotfiles/.asdfrc $HOME
@@ -40,7 +56,7 @@ cp $HOME/.dotfiles/.gnupg/*.conf $HOME/.gnupg/
 mkdir $HOME/.ntfs
 
 # alacritty theme
-mkdir -p $HOME/.config/alacritty/themes
-git clone https://github.com/alacritty/alacritty-theme $HOME/.config/alacritty/themes
+mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/themes
+git clone https://github.com/alacritty/alacritty-theme ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/themes
 
 source $HOME/.zshrc
