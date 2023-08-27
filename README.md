@@ -14,3 +14,11 @@
 ```sh
 bin/setup.sh
 ```
+
+### GPG
+
+support for GPG keys stored on Keybase
+
+```sh
+.gnupg/gpg-import-from-keybase.sh
+```
