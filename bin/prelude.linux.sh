@@ -13,10 +13,21 @@ chsh -s $(which zsh)
 # zinit
 sh -c "$(curl -fsSL https://git.io/zinit-install)"
 
+# AppImage
+sudo add-apt-repository universe
+sudo apt install libfuse2
+
 # neovim
-sudo add-apt-repository ppa:neovim-ppa/stable
-sudo add-apt-repository ppa:neovim-ppa/unstable
-sudo apt install neovim
+mkdir -p $HOME/Downloads
+mkdir -p $HOME/.local/bin
+mkdir -p $HOME/.local/app
+
+pushd $HOME/Downloads
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+chmod u+x nvim.appimage
+mv ./nvim.appimage $HOME/.local/app/
+ln -s $HOME/.local/app/nvim.appimage $HOME/.local/bin/nvim
+popd
 
 # neovim plug
 curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
@@ -24,6 +35,7 @@ curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --c
 
 # fonts hack
 mkdir -p $HOME/.local/share/fonts
+
 pushd $HOME/.local/share/fonts
 curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/Regular/HackNerdFont-Regular.ttf
 curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/Regular/HackNerdFontMono-Regular.ttf
