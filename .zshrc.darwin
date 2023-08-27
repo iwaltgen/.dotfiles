@@ -16,12 +16,12 @@ fi
 # psql
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
-# atuin
-eval "$(atuin init zsh --disable-up-arrow)"
-
 # asdf-vm
 . "$(brew --prefix asdf)/libexec/asdf.sh"
 
 # asdf-plugins
 . $HOME/.asdf/plugins/java/set-java-home.zsh
 source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+
+# atuin
+eval "$(atuin init zsh --disable-up-arrow)"
