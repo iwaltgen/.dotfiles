@@ -42,3 +42,5 @@ mkdir $HOME/.ntfs
 # alacritty theme
 mkdir -p $HOME/.config/alacritty/themes
 git clone https://github.com/alacritty/alacritty-theme $HOME/.config/alacritty/themes
+
+source $HOME/.zshrc
