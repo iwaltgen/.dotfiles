@@ -7,7 +7,6 @@ elif [[ $OSTYPE == linux* ]]; then
 fi
 
 # tmux plugin manager
-mkdir ~/.tmux/plugins
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # asdf plugins
