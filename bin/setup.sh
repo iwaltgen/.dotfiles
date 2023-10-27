@@ -6,6 +6,10 @@ elif [[ $OSTYPE == linux* ]]; then
   ./prelude.linux.sh
 fi
 
+# tmux plugin manager
+mkdir ~/.tmux/plugins
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 # asdf plugins
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
