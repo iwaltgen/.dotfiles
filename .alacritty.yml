@@ -1,4 +1,4 @@
-# https://github.com/alacritty/alacritty/blob/master/alacritty.yml
+# https://github.com/alacritty/alacritty/blob/master/alacritty.yml DEPRECATED
 import:
   - ~/.config/alacritty/themes/themes/github_dark.yaml
   - ~/.config/alacritty/window.yaml

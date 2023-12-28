@@ -34,6 +34,7 @@ ln -sf $HOME/.dotfiles/nvim ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
 ln -sf $HOME/.dotfiles/atuin/config.toml ${XDG_CONFIG_HOME:-$HOME/.config}/atuin/config.toml
 ln -sf $HOME/.dotfiles/gh-dash/config.yml ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config.yml
 ln -sf $HOME/.dotfiles/.alacritty.yml $HOME
+ln -sf $HOME/.dotfiles/.alacritty.toml $HOME
 ln -sf $HOME/.dotfiles/.starship.toml $HOME
 ln -sf $HOME/.dotfiles/.asdfrc $HOME
 
