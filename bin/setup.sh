@@ -27,6 +27,7 @@ asdf global java latest:temurin-17
 # dotfiles
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash
+mkdir -p $HOME/.local/bin
 
 ln -sf $HOME/.dotfiles/.zshrc $HOME
 ln -sf $HOME/.dotfiles/.ideavimrc $HOME
@@ -40,6 +41,7 @@ ln -sf $HOME/.dotfiles/.asdfrc $HOME
 
 if [[ $OSTYPE == darwin* ]]; then
   ln -sf $HOME/.dotfiles/.zshrc.darwin $HOME/.zshrc.os
+  ln -sf $HOME/.dotfiles/bin/idea.darwin.sh $HOME/.local/bin/idea
 elif [[ $OSTYPE == linux* ]]; then
   ln -sf $HOME/.dotfiles/.zshrc.linux $HOME/.zshrc.os
 fi

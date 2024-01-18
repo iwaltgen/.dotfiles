@@ -209,6 +209,9 @@ if ! command -v deno &> /dev/null; then
   source "$HOME/.deno/env"
 fi
 
+# local
+export PATH="$PATH:$HOME/.local/bin"
+
 # customizations, e.g. theme, plugins, aliases, etc.
 [ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os
 [ -f $HOME/.zshrc.local ] && source $HOME/.zshrc.local
