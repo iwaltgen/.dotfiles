@@ -1,9 +1,9 @@
 #!/bin/zsh
 
 if [[ $OSTYPE == darwin* ]]; then
-  ./prelude.darwin.sh
+  /.dotfiles/bin/prelude.darwin.sh
 elif [[ $OSTYPE == linux* ]]; then
-  ./prelude.linux.sh
+  /.dotfiles/bin/prelude.linux.sh
 fi
 
 # tmux plugin manager
