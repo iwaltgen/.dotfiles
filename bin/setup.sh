@@ -6,8 +6,11 @@ elif [[ $OSTYPE == linux* ]]; then
   /.dotfiles/bin/prelude.linux.sh
 fi
 
+# AstroNvim
+git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
+
 # tmux plugin manager
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # asdf plugins
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
@@ -31,7 +34,7 @@ mkdir -p $HOME/.local/bin
 
 ln -sf $HOME/.dotfiles/.zshrc $HOME
 ln -sf $HOME/.dotfiles/.ideavimrc $HOME
-ln -sf $HOME/.dotfiles/nvim ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
+ln -sf $HOME/.dotfiles/nvim/lua/user ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/lua/user
 ln -sf $HOME/.dotfiles/atuin/config.toml ${XDG_CONFIG_HOME:-$HOME/.config}/atuin/config.toml
 ln -sf $HOME/.dotfiles/gh-dash/config.yml ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config.yml
 ln -sf $HOME/.dotfiles/.alacritty.yml $HOME
