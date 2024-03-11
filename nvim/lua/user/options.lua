@@ -1,8 +1,8 @@
 return {
   opt = {
     relativenumber = true, -- sets vim.opt.relativenumber
-  },
-  g = {
-    mapleader = " ", -- sets vim.g.mapleader
+    number = true, -- sets vim.opt.number
+    spell = true, -- sets vim.opt.spell
+    wrap = false, -- sets vim.opt.wrap
   },
 }
