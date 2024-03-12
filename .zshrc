@@ -49,7 +49,7 @@ zinit light sharkdp/fd
 # sharkdp/bat, a cat clone with wings.
 zinit ice as"program" from"gh-r" sbin"**/bat" \
   atload"alias cat=bat; alias less=bat" \
-  mv"**/bat.zsh -> _bat"
+  mv"**/bat.zsh -> completions/_bat"
 zinit light sharkdp/bat
 
 # sharkdp/hyperfine, a command-line benchmarking tool.
@@ -67,13 +67,13 @@ zinit light dandavison/delta
 # ogham/exa, replacement for ls.
 zinit ice as"program" from"gh-r" sbin"**/exa" \
   atload"alias ls=exa" \
-  mv"completions/exa.zsh -> completions/_exa"
+  mv"**/exa.zsh -> completions/_exa"
 zinit light ogham/exa
 
 # ogham/dog, cli DNS client.
 zinit ice as"program" from"gh-r" sbin"**/dog" \
   atload"alias dig=dog" \
-  mv"completions/dog.zsh -> completions/_dog"
+  mv"**/dog.zsh -> completions/_dog"
 zinit light ogham/dog
 
 # dundee/gdu, Fast disk usage analyzer with console interface written in Go.
@@ -105,6 +105,11 @@ zinit light ajeetdsouza/zoxide
 # bcicen/ctop, Top-like interface for container metrics.
 zinit ice as"program" from"gh-r" mv"ctop* -> ctop" sbin"**/ctop"
 zinit light bcicen/ctop
+
+# ClementTsang/bottom, Yet another cross-platform graphical process/system monitor.
+zinit ice as"program" from"gh-r" sbin"**/btm" \
+  mv"**/_btm -> completions/_btm"
+zinit light ClementTsang/bottom
 
 # dev unix cli
 

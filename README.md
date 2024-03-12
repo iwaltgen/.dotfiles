@@ -21,6 +21,14 @@ support for GPG keys stored on Keybase
 .gnupg/gpg-import-from-keybase.sh
 ```
 
+### Zinit
+
+reintall zinit plugins
+
+```sh
+zinit delete --all --yes && exec zsh
+```
+
 ## References
 
 - [Zinit](https://github.com/zdharma-continuum/zinit): 🌻 Flexible and fast ZSH plugin manager
