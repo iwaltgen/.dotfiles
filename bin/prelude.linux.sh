@@ -1,9 +1,11 @@
 #!/bin/zsh
 
-# zsh
+# zsh git
+sudo add-apt-repository ppa:git-core/ppa
+sudo apt update
 sudo apt-get install \
 	zsh ca-certificates lsb-release gnupg \
-	tree ncdu curl wget unzip htop git \
+	tree curl wget unzip htop git \
 	build-essential make
 
 git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh

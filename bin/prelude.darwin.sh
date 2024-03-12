@@ -3,7 +3,7 @@
 # homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-brew install zsh wget git tree ncdu htop neovim cmake
+brew install zsh wget git tree htop neovim cmake
 
 # zsh
 git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh
