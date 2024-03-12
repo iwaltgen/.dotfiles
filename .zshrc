@@ -76,6 +76,10 @@ zinit ice as"program" from"gh-r" sbin"**/dog" \
   mv"completions/dog.zsh -> completions/_dog"
 zinit light ogham/dog
 
+# dundee/gdu, Fast disk usage analyzer with console interface written in Go.
+zinit ice as"program" from"gh-r" mv"gdu* -> gdu" sbin"**/gdu"
+zinit light dundee/gdu
+
 # muesli/duf, a better 'df' alternative.
 zinit ice as"program" from"gh-r" sbin"**/duf" bpick"*.tar.gz"
 zinit light muesli/duf
