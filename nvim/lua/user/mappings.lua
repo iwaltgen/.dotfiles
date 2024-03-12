@@ -13,5 +13,13 @@ return {
     ["<S-Down>"] = { function() require("smart-splits").resize_down() end },
     ["<S-Left>"] = { function() require("smart-splits").resize_left() end },
     ["<S-Right>"] = { function() require("smart-splits").resize_right() end },
+
+    ["<leader>tu"] = {
+      function()
+        local utils = require "astronvim.utils"
+        utils.toggle_term_cmd("gdu")
+      end,
+      desc = "ToggleTerm gdu"
+    }
   },
 }
