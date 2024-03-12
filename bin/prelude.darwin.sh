@@ -13,10 +13,6 @@ chsh -s $(which zsh)
 # zinit
 sh -c "$(curl -fsSL https://git.io/zinit-install)"
 
-# neovim plug
-curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
 # homebrew bundle
 pushd $HOME/.dotfiles/brew
 brew bundle

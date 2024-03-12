@@ -29,10 +29,6 @@ mv ./nvim.appimage $HOME/.local/app/
 ln -s $HOME/.local/app/nvim.appimage $HOME/.local/bin/nvim
 popd
 
-# neovim plug
-curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
 # fonts hack
 mkdir -p $HOME/.local/share/fonts
 
