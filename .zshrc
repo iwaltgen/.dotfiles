@@ -20,6 +20,7 @@ autoload -Uz _zinit
 # (this is currently required for annexes)
 zinit light-mode for \
   zdharma-continuum/zinit-annex-as-monitor \
+  zdharma-continuum/zinit-annex-readurl \
   zdharma-continuum/zinit-annex-bin-gem-node \
   zdharma-continuum/zinit-annex-patch-dl \
   zdharma-continuum/zinit-annex-rust
@@ -97,13 +98,13 @@ zinit ice as"program" from"gh-r" mv"jq* -> jq" sbin"**/jq"
 zinit light jqlang/jq
 
 # @antonmedv/fx, Terminal JSON viewer & processor
-zi for from'gh-r' \
-    sbin'**/fx* -> fx' \
+zi for from"gh-r" \
+    sbin"**/fx* -> fx" \
   @antonmedv/fx
 
 # @github/git-sizer, Compute various size metrics for a Git repository, flagging those that might cause problems.
-zi for from'gh-r' \
-    sbin'git-sizer' \
+zi for from"gh-r" \
+    sbin"git-sizer" \
   @github/git-sizer
 
 # ajeetdsouza/zoxide, a smarter cd command.
@@ -122,8 +123,8 @@ zinit ice as"program" from"gh-r" sbin"**/btm" \
 zinit light ClementTsang/bottom
 
 # jesseduffield/lazygit, simple terminal UI for git commands.
-zi for from'gh-r' \
-    sbin'**/lazygit' \
+zi for from"gh-r" \
+    sbin"**/lazygit" \
     atload"alias lg=lazygit" \
   jesseduffield/lazygit
 
@@ -134,13 +135,13 @@ zinit ice as"program" from"gh-r" mv"direnv* -> direnv" sbin"**/direnv" \
 zinit light direnv/direnv
 
 # cli/cli, GitHub’s official command line tool.
-zi for from'gh-r' \
-    sbin'**/gh' \
+zi for from"gh-r" \
+    sbin"**/gh" \
   cli/cli
 
 # neovim/neovim, Vim-fork focused on extensibility and usability.
-zi for from'gh-r' \
-    sbin'**/nvim -> nvim' \
+zi for from"gh-r" \
+    sbin"**/nvim -> nvim" \
   neovim/neovim
 
 setopt promptsubst
@@ -161,11 +162,10 @@ elif [[ $OSTYPE == linux* ]]; then
   fi
 fi
 
-# ls_colors (https://github.com/zdharma-continuum/zinit-packages/tree/main/ls_colors)
-zinit pack for ls_colors
-
 # fzf (https://github.com/zdharma-continuum/zinit-packages/tree/main/fzf)
-zinit pack"bgn+keys" for fzf
+# https://github.com/zdharma-continuum/zinit/wiki/Recipes-for-popular-programs#fzf
+zi for from"gh-r" sbin"fzf" junegunn/fzf
+zi for https://github.com/junegunn/fzf/raw/master/shell/{'completion','key-bindings'}.zsh
 zinit light Aloxaf/fzf-tab
 
 zstyle ':completion:*' completer _expand _complete _ignored _approximate
@@ -177,7 +177,6 @@ zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:complete:*:options' sort false
 zstyle ':completion:*:processes' command 'ps -au$USER'
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
 zstyle ':fzf-tab:complete:(cd|z|vi):*' fzf-preview \

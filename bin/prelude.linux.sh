@@ -13,7 +13,7 @@ git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh
 chsh -s $(which zsh)
 
 # zinit
-sh -c "$(curl -fsSL https://git.io/zinit-install)"
+zsh -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
 
 # fonts hack
 mkdir -p $HOME/.local/share/fonts
