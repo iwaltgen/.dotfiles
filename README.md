@@ -32,6 +32,6 @@ zinit delete --all --yes && exec zsh
 ## References
 
 - [Zinit](https://github.com/zdharma-continuum/zinit): 🌻 Flexible and fast ZSH plugin manager
-- [Neovim](https://neovim.io/): hyperextensible Vim-based text editor
+- [Neovim](https://neovim.io/): hyper extensible Vim-based text editor
 - [AstroNvim](https://github.com/AstroNvim/AstroNvim): An aesthetic and feature-rich neovim config that is extensible and easy to use with a great set of plugins
 - [vim-plug](https://github.com/junegunn/vim-plug): 🌺 Minimalist Vim Plugin Manager

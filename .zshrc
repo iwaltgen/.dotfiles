@@ -96,6 +96,16 @@ zinit light orf/gping
 zinit ice as"program" from"gh-r" mv"jq* -> jq" sbin"**/jq"
 zinit light jqlang/jq
 
+# @antonmedv/fx, Terminal JSON viewer & processor
+zi for from'gh-r' \
+    sbin'**/fx* -> fx' \
+  @antonmedv/fx
+
+# @github/git-sizer, Compute various size metrics for a Git repository, flagging those that might cause problems.
+zi for from'gh-r' \
+    sbin'git-sizer' \
+  @github/git-sizer
+
 # ajeetdsouza/zoxide, a smarter cd command.
 zinit ice as"program" from"gh-r" sbin"**/zoxide" \
   atclone"./zoxide init zsh > init.zsh" \
@@ -111,8 +121,6 @@ zinit ice as"program" from"gh-r" sbin"**/btm" \
   mv"**/_btm -> completions/_btm"
 zinit light ClementTsang/bottom
 
-# dev unix cli
-
 # jesseduffield/lazygit, simple terminal UI for git commands.
 zinit ice as"program" from"gh-r" sbin"**/lazygit" atload"alias lg=lazygit"
 zinit light jesseduffield/lazygit
@@ -122,6 +130,16 @@ zinit ice as"program" from"gh-r" mv"direnv* -> direnv" sbin"**/direnv" \
   atclone"./direnv hook zsh > zhook.zsh" \
   atpull"%atclone" src="zhook.zsh"
 zinit light direnv/direnv
+
+# cli/cli, GitHub’s official command line tool.
+zi for from'gh-r' \
+    sbin'**/gh' \
+  cli/cli
+
+# neovim/neovim, Vim-fork focused on extensibility and usability.
+zi for from'gh-r' \
+    sbin'**/nvim -> nvim' \
+  neovim/neovim
 
 setopt promptsubst
 

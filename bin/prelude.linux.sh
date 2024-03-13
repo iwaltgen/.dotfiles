@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# zsh git
+# essential cli tools
 sudo add-apt-repository ppa:git-core/ppa
 sudo apt update
 sudo apt-get install \
@@ -19,18 +19,6 @@ sh -c "$(curl -fsSL https://git.io/zinit-install)"
 sudo add-apt-repository universe
 sudo apt install libfuse2
 
-# neovim
-mkdir -p $HOME/Downloads
-mkdir -p $HOME/.local/bin
-mkdir -p $HOME/.local/app
-
-pushd $HOME/Downloads
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-chmod u+x nvim.appimage
-mv ./nvim.appimage $HOME/.local/app/
-ln -s $HOME/.local/app/nvim.appimage $HOME/.local/bin/nvim
-popd
-
 # fonts hack
 mkdir -p $HOME/.local/share/fonts
 
@@ -48,16 +36,14 @@ popd
 # curlie
 curl -sS https://webi.sh/curlie | sh
 
-# gh
-curl -sS https://webi.sh/gh | sh
-
 # minio client
+mkdir -p $HOME/.local/bin
 curl -fLo $HOME/.local/bin/mc --create-dirs \
 	https://dl.min.io/client/mc/release/linux-amd64/mc
 chmod +x $HOME/.local/bin/mc
 
 # asdf
-git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.12.0
+git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.14.0
 
 # atuin
 bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
