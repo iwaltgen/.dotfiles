@@ -3,20 +3,20 @@ import = ["~/.config/alacritty/themes/themes/github_dark.toml", "~/.config/alacr
 [font]
 size = 14.0
 
-[font.bold]
+[font.normal]
 family = "Hack Nerd Font Mono"
 
-[font.glyph_offset]
-x = 0
-y = 0
+[font.bold]
+family = "Hack Nerd Font Mono"
 
 [font.italic]
 family = "Hack Nerd Font Mono"
 
-[font.normal]
-family = "Hack Nerd Font Mono"
-
 [font.offset]
+x = 0
+y = 0
+
+[font.glyph_offset]
 x = 0
 y = 0
 
