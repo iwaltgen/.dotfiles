@@ -12,6 +12,10 @@ git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 # tmux plugin manager
 git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
+# asdf
+git clone --depth 1 https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.14.0
+. "$HOME/.asdf/asdf.sh"
+
 # asdf plugins
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
@@ -21,11 +25,14 @@ asdf direnv setup --shell zsh --version system
 
 asdf install nodejs latest
 asdf install golang latest
-asdf install java latest:temurin-17
+asdf install java latest:temurin-21
 
 asdf global nodejs latest
 asdf global golang latest
-asdf global java latest:temurin-17
+asdf global java latest:temurin-21
+
+# atuin
+bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
 
 # dotfiles
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin

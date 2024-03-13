@@ -122,8 +122,10 @@ zinit ice as"program" from"gh-r" sbin"**/btm" \
 zinit light ClementTsang/bottom
 
 # jesseduffield/lazygit, simple terminal UI for git commands.
-zinit ice as"program" from"gh-r" sbin"**/lazygit" atload"alias lg=lazygit"
-zinit light jesseduffield/lazygit
+zi for from'gh-r' \
+    sbin'**/lazygit' \
+    atload"alias lg=lazygit" \
+  jesseduffield/lazygit
 
 # direnv/direnv, unclutter your .profile
 zinit ice as"program" from"gh-r" mv"direnv* -> direnv" sbin"**/direnv" \
@@ -206,6 +208,18 @@ SAVEHIST=99999999
 alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
 alias ll="ls --long --git --group-directories-first --time-style=long-iso"
 alias l=la
+
+# asdf-vm
+. "$HOME/.asdf/asdf.sh"
+fpath=($HOME/.asdf/completions $fpath)
+autoload -Uz compinit && compinit
+
+# asdf-plugins
+. $HOME/.asdf/plugins/java/set-java-home.zsh
+source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+
+# atuin
+eval "$(atuin init zsh --disable-up-arrow)"
 
 # Neovim
 alias vi="nvim"

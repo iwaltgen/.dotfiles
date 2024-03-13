@@ -15,10 +15,6 @@ chsh -s $(which zsh)
 # zinit
 sh -c "$(curl -fsSL https://git.io/zinit-install)"
 
-# AppImage
-sudo add-apt-repository universe
-sudo apt install libfuse2
-
 # fonts hack
 mkdir -p $HOME/.local/share/fonts
 
@@ -33,6 +29,10 @@ curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/
 curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/BoldItalic/HackNerdFontMono-BoldItalic.ttf
 popd
 
+# AppImage
+sudo add-apt-repository universe
+sudo apt install libfuse2
+
 # curlie
 curl -sS https://webi.sh/curlie | sh
 
@@ -41,9 +41,3 @@ mkdir -p $HOME/.local/bin
 curl -fLo $HOME/.local/bin/mc --create-dirs \
 	https://dl.min.io/client/mc/release/linux-amd64/mc
 chmod +x $HOME/.local/bin/mc
-
-# asdf
-git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.14.0
-
-# atuin
-bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
