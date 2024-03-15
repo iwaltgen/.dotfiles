@@ -1,11 +1,11 @@
 #!/bin/zsh
 
 # essential cli tools
-sudo add-apt-repository ppa:git-core/ppa
+sudo add-apt-repository --yes ppa:git-core/ppa
 sudo apt update
-sudo apt-get install \
+sudo apt-get install --yes \
 	zsh ca-certificates lsb-release gnupg \
-	tree curl wget unzip htop git \
+	fontconfig tree curl wget unzip htop git \
 	build-essential make
 
 git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh
@@ -17,16 +17,13 @@ zsh -c "$(curl --fail --show-error --silent --location https://raw.githubusercon
 
 # fonts hack
 mkdir -p $HOME/.local/share/fonts
-
 pushd $HOME/.local/share/fonts
-curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/Regular/HackNerdFont-Regular.ttf
-curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/Regular/HackNerdFontMono-Regular.ttf
-curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/Italic/HackNerdFont-Italic.ttf
-curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/Italic/HackNerdFontMono-Italic.ttf
-curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/Bold/HackNerdFont-Bold.ttf
-curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/Bold/HackNerdFontMono-Bold.ttf
-curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/BoldItalic/HackNerdFont-BoldItalic.ttf
-curl -fsSLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Hack/BoldItalic/HackNerdFontMono-BoldItalic.ttf
+
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Hack.zip
+unzip Hack.zip -d .
+rm Hack.zip
+fc-cache -fv
+
 popd
 
 # AppImage
