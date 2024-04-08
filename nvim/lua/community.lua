@@ -1,9 +1,12 @@
+---@type LazySpec
 return {
   "AstroNvim/astrocommunity",
-  -- example of importing a plugin, comment out to use it or add your own
-  -- available plugins can be found at https://github.com/AstroNvim/astrocommunity
 
-  -- { import = "astrocommunity.bars-and-lines.dropbar-nvim" },
+  { import = "astrocommunity.recipes.heirline-nvchad-statusline" },
+  { import = "astrocommunity.recipes.telescope-nvchad-theme" },
+  { import = "astrocommunity.recipes.vscode" },
+  { import = "astrocommunity.recipes.vscode-icons" },
+
   { import = "astrocommunity.bars-and-lines.smartcolumn-nvim" },
   {
     "m4xshen/smartcolumn.nvim",
@@ -12,8 +15,6 @@ return {
       disabled_filetypes = { "help" },
     },
   },
-
-  { import = "astrocommunity.colorscheme.github-nvim-theme" },
 
   { import = "astrocommunity.completion.copilot-lua-cmp" },
 
