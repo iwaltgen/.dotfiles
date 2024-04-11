@@ -38,16 +38,16 @@ return {
         ["<S-l>"] = { "<C-w>l" },
 
         -- resize
-        ["<S-Up>"] = {
-          function() require("smart-splits").resize_up() end,
-        },
-        ["<S-Down>"] = {
-          function() require("smart-splits").resize_down() end,
-        },
-        ["<S-Left>"] = {
+        ["<S-A-h>"] = {
           function() require("smart-splits").resize_left() end,
         },
-        ["<S-Right>"] = {
+        ["<S-A-j>"] = {
+          function() require("smart-splits").resize_down() end,
+        },
+        ["<S-A-k>"] = {
+          function() require("smart-splits").resize_up() end,
+        },
+        ["<S-A-l>"] = {
           function() require("smart-splits").resize_right() end,
         },
 
