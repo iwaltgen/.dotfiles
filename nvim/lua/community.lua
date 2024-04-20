@@ -27,6 +27,7 @@ return {
   { import = "astrocommunity.pack.lua" },
   { import = "astrocommunity.pack.typescript-all-in-one" },
   { import = "astrocommunity.pack.go" },
+  { import = "astrocommunity.pack.elixir-phoenix" },
   { import = "astrocommunity.pack.proto" },
   { import = "astrocommunity.pack.html-css" },
 }
