@@ -28,6 +28,8 @@ return {
   { import = "astrocommunity.pack.typescript-all-in-one" },
   { import = "astrocommunity.pack.go" },
   { import = "astrocommunity.pack.elixir-phoenix" },
+  { import = "astrocommunity.pack.python" },
+  { import = "astrocommunity.pack.sql" },
   { import = "astrocommunity.pack.proto" },
   { import = "astrocommunity.pack.html-css" },
 }
