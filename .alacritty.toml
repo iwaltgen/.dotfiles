@@ -1,8 +1,3 @@
-import = [
-  "~/.config/alacritty/themes/themes/github_dark.toml",
-  "~/.config/alacritty/window.toml",
-]
-
 [font]
 size = 14.0
 
@@ -60,3 +55,9 @@ semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
 [window]
 decorations = "buttonless"
 option_as_alt = "Both"
+
+[general]
+import = [
+  "~/.config/alacritty/themes/themes/github_dark.toml",
+  "~/.config/alacritty/window.toml",
+]
