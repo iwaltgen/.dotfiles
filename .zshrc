@@ -134,6 +134,12 @@ zinit ice as"program" from"gh-r" mv"direnv* -> direnv" sbin"**/direnv" \
   atpull"%atclone" src="zhook.zsh"
 zinit light direnv/direnv
 
+# atuinsh/atuin, Making your shell magical
+zinit ice as"command" from"gh-r" bpick"atuin-*.tar.gz" mv"atuin*/atuin -> atuin" \
+    atclone"./atuin init zsh --disable-up-arrow > init.zsh; ./atuin gen-completions --shell zsh > _atuin" \
+    atpull"%atclone" src"init.zsh"
+zinit light atuinsh/atuin
+
 # cli/cli, GitHub’s official command line tool.
 zi for from"gh-r" \
     sbin"**/gh" \
@@ -220,9 +226,6 @@ autoload -Uz compinit && compinit
 # asdf-plugins
 . $HOME/.asdf/plugins/java/set-java-home.zsh
 source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
-
-# atuin
-eval "$(atuin init zsh --disable-up-arrow)"
 
 # Neovim
 alias vi="nvim"

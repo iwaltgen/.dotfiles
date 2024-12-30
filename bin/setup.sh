@@ -28,9 +28,6 @@ asdf global nodejs latest
 asdf global golang latest
 asdf global java latest:temurin-21
 
-# atuin
-bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
-
 # dotfiles
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash
