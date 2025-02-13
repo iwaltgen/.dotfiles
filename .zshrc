@@ -146,13 +146,11 @@ zi for from"gh-r" \
   cli/cli
 
 # derailed/k9s, Kubernetes CLI To Manage Your Clusters In Style!
-zi for from"gh-r" \
-    sbin"**/k9s" \
+zi for from"gh-r" sbin"**/k9s" \
   derailed/k9s
 
 # neovim/neovim, Vim-fork focused on extensibility and usability.
-zi for from"gh-r" \
-    sbin"**/nvim -> nvim" \
+zi for from"gh-r" bpick"nvim-*.tar.gz" sbin"**/nvim -> nvim" \
   neovim/neovim
 
 setopt promptsubst
