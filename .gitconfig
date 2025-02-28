@@ -7,6 +7,15 @@
 	excludesfile = /Users/iwaltgen/.gitignore_global
 	pager = delta
 
+[column]
+	ui = auto
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = version:refname
+
 [diff]
 	algorithm = histogram
 
@@ -23,9 +32,19 @@
 	# https://github.com/github/renaming/
 	defaultBranch = main
 
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+
 [pull]
 	ff = only
 	rebase = false
+
+[push]
+	default = simple
+	autoSetupRemote = true
+	followTags = true
 
 [filter "lfs"]
 	required = true
