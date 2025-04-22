@@ -5,12 +5,12 @@ return {
   opts = {
     -- vim options can be configured here
     options = {
-      opt = {                  -- vim.opt.<key>
+      opt = { -- vim.opt.<key>
         relativenumber = true, -- sets vim.opt.relativenumber
-        number = true,         -- sets vim.opt.number
-        spell = true,          -- sets vim.opt.spell
-        signcolumn = "auto",   -- sets vim.opt.signcolumn to auto
-        wrap = false,          -- sets vim.opt.wrap
+        number = true, -- sets vim.opt.number
+        spell = true, -- sets vim.opt.spell
+        signcolumn = "auto", -- sets vim.opt.signcolumn to auto
+        wrap = false, -- sets vim.opt.wrap
       },
     },
     -- Mappings can be configured through AstroCore as well.
@@ -22,13 +22,17 @@ return {
 
         -- find
         ["<C-p>"] = {
-          function() require("telescope.builtin").find_files() end,
+          function()
+            require("snacks").picker.files {
+              hidden = vim.tbl_get((vim.uv or vim.loop).fs_stat ".git" or {}, "type") == "directory",
+            }
+          end,
         },
         ["<C-S-p>"] = {
-          function() require("telescope.builtin").commands() end,
+          function() require("snacks").picker.commands() end,
         },
         ["<C-S-f>"] = {
-          function() require("telescope.builtin").live_grep() end,
+          function() require("snacks").picker.grep() end,
         },
 
         -- move
