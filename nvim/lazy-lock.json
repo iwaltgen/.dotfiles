@@ -12,6 +12,7 @@
   "better-escape.nvim": { "branch": "master", "commit": "199dcc2643dec5d8dbdab4ec672cf405224dcb3b" },
   "blink.cmp": { "branch": "main", "commit": "022521a8910a5543b0251b21c9e1a1e989745796" },
   "blink.compat": { "branch": "main", "commit": "2ed6d9a28b07fa6f3bface818470605f8896408c" },
+  "claudecode.nvim": { "branch": "main", "commit": "c1cdcd5a61d5a18f262d5c8c53929e3a27cb7821" },
   "cmp-dap": { "branch": "master", "commit": "ea92773e84c0ad3288c3bc5e452ac91559669087" },
   "copilot.lua": { "branch": "master", "commit": "5f726c8e6bbcd7461ee0b870d4e6c8a973b55b64" },
   "deno-nvim": { "branch": "master", "commit": "5a2f9205df5539c4a0696e73893bf8d1b0cae406" },
