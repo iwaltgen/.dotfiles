@@ -17,16 +17,14 @@ git clone --depth 1 https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
 asdf plugin-add java https://github.com/halcyon/asdf-java.git
-asdf plugin-add direnv
-asdf direnv setup --shell zsh --version system
 
 asdf install nodejs latest
 asdf install golang latest
 asdf install java latest:temurin-21
 
-asdf global nodejs latest
-asdf global golang latest
-asdf global java latest:temurin-21
+asdf set -u nodejs latest
+asdf set -u golang latest
+asdf set -u java latest:temurin-21
 
 # dotfiles
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin

@@ -222,8 +222,10 @@ alias ll="ls --long --git --group-directories-first --time-style=long-iso"
 alias l=la
 
 # asdf-vm
-. "$HOME/.asdf/asdf.sh"
-fpath=($HOME/.asdf/completions $fpath)
+export ASDF_DATA_DIR="$HOME/.asdf"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
 autoload -Uz compinit && compinit
 
 # asdf-plugins
