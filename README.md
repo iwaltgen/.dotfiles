@@ -29,6 +29,17 @@ reintall zinit plugins
 zinit delete --all --yes && exec zsh
 ```
 
+### Atuin
+
+login and sync
+
+```sh
+# atuin register -u iwaltgen -e iwaltgen@gmail.com
+
+atuin login -u iwaltgen
+atuin sync
+```
+
 ## References
 
 - [Zinit](https://github.com/zdharma-continuum/zinit): 🌻 Flexible and fast ZSH plugin manager
