@@ -230,7 +230,6 @@ autoload -Uz compinit && compinit
 
 # asdf-plugins
 . $HOME/.asdf/plugins/java/set-java-home.zsh
-source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
 
 # Neovim
 alias vi="nvim"
