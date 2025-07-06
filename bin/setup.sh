@@ -59,7 +59,8 @@ ln -sf $HOME/.dotfiles/.gitconfig $HOME
 # gpg
 mkdir -p $HOME/.gnupg
 chmod 700 $HOME/.gnupg
-cp $HOME/.dotfiles/.gnupg/*.conf $HOME/.gnupg/
+ln -sf $HOME/.dotfiles/.gnupg/gpg.conf $HOME/.gnupg/gpg.conf
+ln -sf $HOME/.dotfiles/.gnupg/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
 
 # ntfs
 mkdir $HOME/.ntfs
