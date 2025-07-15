@@ -29,3 +29,12 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+### dotenv ###
+.env
+
+### continue dev ###
+.continue/.migrations
+.continue/dev_data
+.continue/index
+.continue/logs
+.continue/sessions

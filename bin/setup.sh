@@ -39,6 +39,7 @@ ln -sf $HOME/.dotfiles/gh-dash/config.yml ${XDG_CONFIG_HOME:-$HOME/.config}/gh-d
 ln -sf $HOME/.dotfiles/.alacritty.toml $HOME
 ln -sf $HOME/.dotfiles/.starship.toml $HOME
 ln -sf $HOME/.dotfiles/.asdfrc $HOME
+ln -sf $HOME/.dotfiles/.continue $HOME
 
 if [[ $OSTYPE == darwin* ]]; then
   ln -sf $HOME/.dotfiles/.zshrc.darwin $HOME/.zshrc.os

@@ -1,0 +1,40 @@
+name: iwaltgen-default
+version: 1.0.0
+schema: v1
+models:
+# --- https://docs.continue.dev/customize/model-providers/top-level/anthropic
+# --- https://docs.anthropic.com/ko/docs/about-claude/pricing
+  - name: Claude Sonnet 4
+    provider: anthropic
+    apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
+    model: claude-sonnet-4-20250514
+    roles:
+      - chat
+      - edit
+      - apply
+    defaultCompletionOptions:
+      promptCaching: true
+      contextLength: 204800
+      maxTokens: 64000
+  - name: Claude Haiku 3.5
+    provider: anthropic
+    apiKey: ${{ secrets.ANTHROPIC_API_KEY }}
+    model: claude-3-5-haiku-20241022
+    roles:
+      - autocomplete
+    defaultCompletionOptions:
+      promptCaching: true
+      contextLength: 204800
+      maxTokens: 8192
+# --- https://docs.continue.dev/customize/model-providers/top-level/ollama
+  - name: qwen2.5-coder 1.5b
+    provider: ollama
+    model: qwen2.5-coder:1.5b
+    roles:
+      - chat
+      - edit
+      - apply
+      - autocomplete
+    defaultCompletionOptions:
+      contextLength: 32768
+      maxTokens: 8192
