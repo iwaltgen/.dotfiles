@@ -13,11 +13,11 @@ git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 curl https://mise.run | sh
 
 mise use --global node@22
-mise use --global python@3.11.8
-mise use --global java@temurin-21.0.3+9.0.LTS
-mise use --global go@1.24.4
-# mise use --global erlang@26.2.4
-# mise use --global elixir@1.16.2-otp-26
+mise use --global python@3.11
+mise use --global java@temurin-21
+mise use --global go
+# mise use --global erlang@26
+# mise use --global elixir@1.16
 
 # dotfiles
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
