@@ -221,15 +221,8 @@ alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
 alias ll="ls --long --git --group-directories-first --time-style=long-iso"
 alias l=la
 
-# asdf-vm
-export ASDF_DATA_DIR="$HOME/.asdf"
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-
-fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
-autoload -Uz compinit && compinit
-
-# asdf-plugins
-. $HOME/.asdf/plugins/java/set-java-home.zsh
+# mise
+eval "$(/Users/iwaltgen/.local/bin/mise activate zsh)"
 
 # Neovim
 alias vi="nvim"

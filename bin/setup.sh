@@ -9,22 +9,15 @@ fi
 # tmux plugin manager
 git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
-# asdf
-git clone --depth 1 https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.14.0
-. "$HOME/.asdf/asdf.sh"
+# mise
+curl https://mise.run | sh
 
-# asdf plugins
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-asdf plugin add golang https://github.com/asdf-community/asdf-golang.git
-asdf plugin-add java https://github.com/halcyon/asdf-java.git
-
-asdf install nodejs latest
-asdf install golang latest
-asdf install java latest:temurin-21
-
-asdf set -u nodejs latest
-asdf set -u golang latest
-asdf set -u java latest:temurin-21
+mise use --global node@22
+mise use --global python@3.11.8
+mise use --global java@temurin-21.0.3+9.0.LTS
+mise use --global go@1.24.4
+# mise use --global erlang@26.2.4
+# mise use --global elixir@1.16.2-otp-26
 
 # dotfiles
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
@@ -38,7 +31,6 @@ ln -sf $HOME/.dotfiles/atuin/config.toml ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
 ln -sf $HOME/.dotfiles/gh-dash/config.yml ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config.yml
 ln -sf $HOME/.dotfiles/.alacritty.toml $HOME
 ln -sf $HOME/.dotfiles/.starship.toml $HOME
-ln -sf $HOME/.dotfiles/.asdfrc $HOME
 ln -sf $HOME/.dotfiles/.continue $HOME
 
 if [[ $OSTYPE == darwin* ]]; then
