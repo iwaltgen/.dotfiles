@@ -92,7 +92,6 @@ cask "raycast"
 cask "rectangle"
 cask "visualvm"
 cask "wireshark-app"
-cask "wombat"
 cask "xquartz"
 mas "Hidden Bar", id: 1452453066
 mas "LINE", id: 539883307
