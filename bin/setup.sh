@@ -21,6 +21,7 @@ mise use --global go
 
 # dotfiles
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
+mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/ghostty
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash
 mkdir -p $HOME/.local/bin
 
@@ -28,6 +29,7 @@ ln -sf $HOME/.dotfiles/.zshrc $HOME
 ln -sf $HOME/.dotfiles/.ideavimrc $HOME
 ln -sf $HOME/.dotfiles/nvim ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
 ln -sf $HOME/.dotfiles/atuin/config.toml ${XDG_CONFIG_HOME:-$HOME/.config}/atuin/config.toml
+ln -sf $HOME/.dotfiles/ghostty.conf ${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/config
 ln -sf $HOME/.dotfiles/gh-dash/config.yml ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config.yml
 ln -sf $HOME/.dotfiles/.alacritty.toml $HOME
 ln -sf $HOME/.dotfiles/.starship.toml $HOME

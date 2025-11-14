@@ -253,6 +253,11 @@ if ! command -v deno &> /dev/null; then
   source "$HOME/.deno/env"
 fi
 
+# fastfetch
+if [[ -o interactive ]]; then
+    fastfetch
+fi
+
 # local
 export PATH="$PATH:$HOME/.local/bin"
 
