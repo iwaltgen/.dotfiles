@@ -217,9 +217,20 @@ HISTSIZE=99999999
 SAVEHIST=99999999
 
 # Exa
-alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
-alias ll="ls --long --git --group-directories-first --time-style=long-iso"
-alias l=la
+# alias la="ls --all --long --git --group-directories-first --time-style=long-iso"
+# alias ll="ls --long --git --group-directories-first --time-style=long-iso"
+# alias l=la
+
+# eza
+eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group' '--color-scale')
+
+alias ls='eza ${eza_params}'
+alias ll='eza --header --long ${eza_params}'
+alias l='eza --all --header --long ${eza_params}'
+alias lm='eza --all --header --long --sort=modified ${eza_params}'
+alias la='eza -lbhHigUmuSa'
+alias lt='eza --tree'
+alias tree='eza --tree'
 
 # mise
 eval "$(/Users/iwaltgen/.local/bin/mise activate zsh)"
