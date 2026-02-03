@@ -128,6 +128,12 @@ zi for from"gh-r" \
     atload"alias lg=lazygit" \
   jesseduffield/lazygit
 
+# jesseduffield/lazydocker, The lazier way to manage everything docker.
+zi for from"gh-r" \
+    sbin"**/lazydocker" \
+    atload"alias ld=lazydocker" \
+  jesseduffield/lazydocker
+
 # direnv/direnv, unclutter your .profile
 zinit ice as"program" from"gh-r" mv"direnv* -> direnv" sbin"**/direnv" \
   atclone"./direnv hook zsh > zhook.zsh" \
