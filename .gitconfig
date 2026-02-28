@@ -4,7 +4,7 @@
 	signingkey = BD43BAEEFF6F625A
 
 [core]
-	excludesfile = /Users/iwaltgen/.gitignore_global
+	excludesfile = ~/.gitignore_global
 	pager = delta
 
 [column]

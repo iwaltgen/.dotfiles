@@ -239,7 +239,7 @@ alias lt='eza --tree'
 alias tree='eza --tree'
 
 # mise
-eval "$(/Users/iwaltgen/.local/bin/mise activate zsh)"
+eval "$(~/.local/bin/mise activate zsh)"
 
 # Neovim
 alias vi="nvim"
