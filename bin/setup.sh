@@ -31,9 +31,7 @@ ln -sf $HOME/.dotfiles/nvim ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
 ln -sf $HOME/.dotfiles/atuin/config.toml ${XDG_CONFIG_HOME:-$HOME/.config}/atuin/config.toml
 ln -sf $HOME/.dotfiles/ghostty.conf ${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/config
 ln -sf $HOME/.dotfiles/gh-dash/config.yml ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config.yml
-ln -sf $HOME/.dotfiles/.alacritty.toml $HOME
 ln -sf $HOME/.dotfiles/.starship.toml $HOME
-ln -sf $HOME/.dotfiles/.continue $HOME
 
 if [[ $OSTYPE == darwin* ]]; then
   ln -sf $HOME/.dotfiles/.zshrc.darwin $HOME/.zshrc.os
@@ -57,9 +55,5 @@ ln -sf $HOME/.dotfiles/.gnupg/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
 
 # ntfs
 mkdir $HOME/.ntfs
-
-# alacritty theme
-mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/themes
-git clone https://github.com/alacritty/alacritty-theme ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/themes
 
 source $HOME/.zshrc

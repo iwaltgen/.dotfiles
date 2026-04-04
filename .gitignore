@@ -31,10 +31,3 @@ Temporary Items
 
 ### dotenv ###
 .env
-
-### continue dev ###
-.continue/.migrations
-.continue/dev_data
-.continue/index
-.continue/logs
-.continue/sessions
