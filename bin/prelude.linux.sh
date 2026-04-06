@@ -15,13 +15,18 @@ chsh -s $(which zsh)
 # zinit
 zsh -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
 
-# fonts hack
+# fonts
 mkdir -p $HOME/.local/share/fonts
 pushd $HOME/.local/share/fonts
 
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Hack.zip
 unzip Hack.zip -d .
 rm Hack.zip
+
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/D2Coding.zip
+unzip D2Coding.zip -d .
+rm D2Coding.zip
+
 fc-cache -fv
 
 popd

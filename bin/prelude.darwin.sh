@@ -18,6 +18,10 @@ pushd $HOME/.dotfiles/brew
 brew bundle
 popd
 
+# fonts
+brew install --cask font-hack-nerd-font
+brew install --cask font-d2coding-nerd-font
+
 # key repeat
 defaults write -g ApplePressAndHoldEnabled -bool false
 defaults write -g InitialKeyRepeat -int 10 # normal minimum is 15 (225 ms)
