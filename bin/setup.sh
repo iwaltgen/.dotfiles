@@ -23,7 +23,10 @@ mise use --global go
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/ghostty
 mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash
+mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/agents
 mkdir -p $HOME/.local/bin
+mkdir -p $HOME/.claude
+mkdir -p $HOME/.codex
 
 ln -sf $HOME/.dotfiles/.zshrc $HOME
 ln -sf $HOME/.dotfiles/.ideavimrc $HOME
@@ -32,6 +35,10 @@ ln -sf $HOME/.dotfiles/atuin/config.toml ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
 ln -sf $HOME/.dotfiles/ghostty.conf ${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/config
 ln -sf $HOME/.dotfiles/gh-dash/config.yml ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config.yml
 ln -sf $HOME/.dotfiles/.starship.toml $HOME
+
+ln -sf $HOME/.dotfiles/AGENTS.md ${XDG_CONFIG_HOME:-$HOME/.config}/agents/
+ln -sf $HOME/.dotfiles/AGENTS.md $HOME/.claude/CLAUDE.md
+ln -sf $HOME/.dotfiles/AGENTS.md $HOME/.codex/
 
 if [[ $OSTYPE == darwin* ]]; then
   ln -sf $HOME/.dotfiles/.zshrc.darwin $HOME/.zshrc.os
