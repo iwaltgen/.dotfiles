@@ -228,7 +228,7 @@ SAVEHIST=99999999
 # alias l=la
 
 # eza
-eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group' '--color-scale')
+eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group' '--color-scale=all')
 
 alias ls='eza ${eza_params}'
 alias ll='eza --header --long ${eza_params}'
