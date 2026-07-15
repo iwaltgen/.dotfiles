@@ -12,6 +12,7 @@ git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # mise
 curl https://mise.run | sh
 
+mise use --global bun
 mise use --global node@lts
 mise use --global python@3.13
 mise use --global java@temurin-25
