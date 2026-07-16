@@ -61,6 +61,7 @@ fi
   fastfetch \
   curlie \
   mc \
+  herdr \
   tmux || exit 1
 
 # The asdf eza plugin can reference missing cargo-quickinstall assets on macOS.
