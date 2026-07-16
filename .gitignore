@@ -1,6 +1,9 @@
 # Homebrew
 *.lock.json
 
+# Local agent documents
+docs/
+
 ### MacOS ###
 # General
 .DS_Store
