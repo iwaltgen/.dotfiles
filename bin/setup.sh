@@ -134,9 +134,9 @@ link_dotfile "$HOME/.dotfiles/gh-dash/config.yml" "$config_home/gh-dash/config.y
 link_dotfile "$HOME/.dotfiles/herdr/config.toml" "$config_home/herdr/config.toml" || exit 1
 link_dotfile "$HOME/.dotfiles/.starship.toml" "$HOME/.starship.toml" || exit 1
 
-link_dotfile "$HOME/.dotfiles/AGENTS.md" "$config_home/agents/AGENTS.md" || exit 1
-link_dotfile "$HOME/.dotfiles/AGENTS.md" "$HOME/.claude/CLAUDE.md" || exit 1
-link_dotfile "$HOME/.dotfiles/AGENTS.md" "$HOME/.codex/AGENTS.md" || exit 1
+link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$config_home/agents/AGENTS.md" || exit 1
+link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$HOME/.claude/CLAUDE.md" || exit 1
+link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$HOME/.codex/AGENTS.md" || exit 1
 
 if [[ $OSTYPE == darwin* ]]; then
   link_dotfile "$HOME/.dotfiles/.zshrc.darwin" "$HOME/.zshrc.os" || exit 1

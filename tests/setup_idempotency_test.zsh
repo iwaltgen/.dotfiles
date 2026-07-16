@@ -72,7 +72,7 @@ prepare_setup_sandbox() {
     "$dotfiles/.tmux.theme.conf" \
     "$dotfiles/.tmux.user.conf" \
     "$dotfiles/.gitconfig" \
-    "$dotfiles/AGENTS.md" \
+    "$dotfiles/GLOBAL_AGENTS.md" \
     "$dotfiles/ghostty.conf" \
     "$dotfiles/atuin/config.toml" \
     "$dotfiles/gh-dash/config.yml" \
@@ -125,6 +125,9 @@ test_setup_runs_twice() {
   [[ -d "$home/.ntfs" ]] || fail "$home/.ntfs was not created"
   assert_symlink "$home/.config/nvim" "$home/.dotfiles/nvim"
   assert_symlink "$home/.config/herdr/config.toml" "$home/.dotfiles/herdr/config.toml"
+  assert_symlink "$home/.config/agents/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
+  assert_symlink "$home/.claude/CLAUDE.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
+  assert_symlink "$home/.codex/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   [[ ! -e "$home/.dotfiles/nvim/nvim" ]] || fail "nested nvim link was created"
 }
 
