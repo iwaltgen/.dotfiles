@@ -55,6 +55,7 @@ prepare_setup_sandbox() {
     "$dotfiles/nvim" \
     "$dotfiles/atuin" \
     "$dotfiles/gh-dash" \
+    "$dotfiles/herdr" \
     "$dotfiles/.gnupg" \
     "$home/.local/bin" \
     "$fake_bin"
@@ -75,6 +76,7 @@ prepare_setup_sandbox() {
     "$dotfiles/ghostty.conf" \
     "$dotfiles/atuin/config.toml" \
     "$dotfiles/gh-dash/config.yml" \
+    "$dotfiles/herdr/config.toml" \
     "$dotfiles/.gnupg/gpg.conf" \
     "$dotfiles/.gnupg/gpg-agent.conf" \
     "$dotfiles/bin/idea.darwin.sh"
@@ -119,6 +121,7 @@ test_setup_runs_twice() {
   [[ "$clone_count" == 1 ]] || fail "TPM clone ran $clone_count times"
   [[ -d "$home/.ntfs" ]] || fail "$home/.ntfs was not created"
   assert_symlink "$home/.config/nvim" "$home/.dotfiles/nvim"
+  assert_symlink "$home/.config/herdr/config.toml" "$home/.dotfiles/herdr/config.toml"
   [[ ! -e "$home/.dotfiles/nvim/nvim" ]] || fail "nested nvim link was created"
 }
 
@@ -265,6 +268,26 @@ test_linux_prelude_runs_twice() {
   assert_call_count '^sudo add-apt-repository --yes ppa:git-core/ppa$' 2
 }
 
+test_herdr_config_supports_cjk_prefix() {
+  local config="$repo_root/herdr/config.toml"
+
+  [[ -f "$config" ]] || fail 'Herdr config does not exist'
+  grep -Fxq 'prefix = "ctrl+b"' "$config" || fail 'Herdr prefix is not ctrl+b'
+  grep -Fxq 'switch_ascii_input_source_in_prefix = true' "$config" || \
+    fail 'Herdr does not switch to an ASCII input source in prefix mode'
+}
+
+test_ghostty_maps_physical_prefix_key() {
+  local config="$repo_root/ghostty.conf"
+  local ghostty_bin=/Applications/Ghostty.app/Contents/MacOS/ghostty
+
+  grep -Fxq 'keybind = ctrl+KeyB=text:\x02' "$config" || \
+    fail 'Ghostty does not map the physical B key to Ctrl-B'
+  if [[ -x "$ghostty_bin" ]]; then
+    "$ghostty_bin" +validate-config --config-file="$config"
+  fi
+}
+
 run_test() {
   local name="$1"
 
@@ -281,6 +304,12 @@ run_test() {
     linux)
       test_linux_prelude_runs_twice
       ;;
+    herdr)
+      test_herdr_config_supports_cjk_prefix
+      ;;
+    ghostty)
+      test_ghostty_maps_physical_prefix_key
+      ;;
     *)
       fail "unknown test: $name"
       ;;
@@ -290,13 +319,13 @@ run_test() {
 
 case "${1:-all}" in
   all)
-    for test_name in setup darwin linux; do
+    for test_name in setup darwin linux herdr ghostty; do
       run_test "$test_name"
       cleanup
       test_sandbox=""
     done
     ;;
-  setup | darwin | linux)
+  setup | darwin | linux | herdr | ghostty)
     run_test "$1"
     ;;
   *)

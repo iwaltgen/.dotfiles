@@ -88,6 +88,7 @@ mkdir -p \
   "$config_home/atuin" \
   "$config_home/ghostty" \
   "$config_home/gh-dash" \
+  "$config_home/herdr" \
   "$config_home/agents" \
   "$HOME/.local/bin" \
   "$HOME/.claude" \
@@ -110,6 +111,7 @@ link_dotfile "$HOME/.dotfiles/nvim" "$config_home/nvim" || exit 1
 link_dotfile "$HOME/.dotfiles/atuin/config.toml" "$config_home/atuin/config.toml" || exit 1
 link_dotfile "$HOME/.dotfiles/ghostty.conf" "$config_home/ghostty/config" || exit 1
 link_dotfile "$HOME/.dotfiles/gh-dash/config.yml" "$config_home/gh-dash/config.yml" || exit 1
+link_dotfile "$HOME/.dotfiles/herdr/config.toml" "$config_home/herdr/config.toml" || exit 1
 link_dotfile "$HOME/.dotfiles/.starship.toml" "$HOME/.starship.toml" || exit 1
 
 link_dotfile "$HOME/.dotfiles/AGENTS.md" "$config_home/agents/AGENTS.md" || exit 1

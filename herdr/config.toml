@@ -1,0 +1,7 @@
+onboarding = false
+
+[keys]
+prefix = "ctrl+b"
+
+[experimental]
+switch_ascii_input_source_in_prefix = true
