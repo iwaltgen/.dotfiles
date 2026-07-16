@@ -89,6 +89,9 @@ exit 0'
   write_executable "$home/.local/bin/mise" '#!/bin/zsh
 print -r -- "mise $*" >> "$CALLS_LOG"'
 
+  write_executable "$fake_bin/date" '#!/bin/zsh
+print 20260716'
+
   write_executable "$fake_bin/git" '#!/bin/zsh
 print -r -- "git $*" >> "$CALLS_LOG"
 if [[ "$1" == clone ]]; then
@@ -125,18 +128,59 @@ test_setup_runs_twice() {
   [[ ! -e "$home/.dotfiles/nvim/nvim" ]] || fail "nested nvim link was created"
 }
 
-test_setup_preserves_existing_file() {
+test_setup_backs_up_existing_file() {
   prepare_setup_sandbox
 
-  print 'personal config' > "$test_sandbox/home/.gitconfig"
+  local home="$test_sandbox/home"
+  print 'personal config' > "$home/.gitconfig"
 
-  if run_setup > "$test_sandbox/conflict.log" 2>&1; then
-    fail 'setup replaced an existing regular file'
+  run_setup
+  run_setup
+
+  [[ "$(< "$home/.gitconfig.bak-20260716")" == 'personal config' ]] || \
+    fail 'existing file content was not backed up'
+  assert_symlink "$home/.gitconfig" "$home/.dotfiles/.gitconfig"
+  [[ ! -e "$home/.gitconfig.bak-20260716-1" ]] || \
+    fail 're-running setup created an extra backup'
+}
+
+test_setup_numbers_conflicting_backup() {
+  prepare_setup_sandbox
+
+  local home="$test_sandbox/home"
+  print 'personal config' > "$home/.gitconfig"
+  print 'older backup' > "$home/.gitconfig.bak-20260716"
+
+  run_setup
+
+  [[ "$(< "$home/.gitconfig.bak-20260716")" == 'older backup' ]] || \
+    fail 'existing backup content changed'
+  [[ "$(< "$home/.gitconfig.bak-20260716-1")" == 'personal config' ]] || \
+    fail 'numbered backup did not preserve existing content'
+  assert_symlink "$home/.gitconfig" "$home/.dotfiles/.gitconfig"
+}
+
+test_setup_restores_existing_file_when_link_fails() {
+  prepare_setup_sandbox
+
+  local home="$test_sandbox/home"
+  print 'personal config' > "$home/.gitconfig"
+  write_executable "$test_sandbox/bin/ln" '#!/bin/zsh
+if [[ "${argv[-1]}" == "$HOME/.gitconfig" ]]; then
+  exit 19
+fi
+/bin/ln "$@"'
+
+  if run_setup; then
+    fail 'setup succeeded after link creation failed'
   fi
-  grep -Fq 'Refusing to replace existing path:' "$test_sandbox/conflict.log" || \
-    fail 'setup did not report the conflicting path'
-  [[ "$(< "$test_sandbox/home/.gitconfig")" == 'personal config' ]] || \
-    fail 'existing regular file content changed'
+
+  [[ -f "$home/.gitconfig" && ! -L "$home/.gitconfig" ]] || \
+    fail 'existing file was not restored'
+  [[ "$(< "$home/.gitconfig")" == 'personal config' ]] || \
+    fail 'restored file content changed'
+  [[ ! -e "$home/.gitconfig.bak-20260716" ]] || \
+    fail 'backup remained after successful restore'
 }
 
 prepare_prelude_sandbox() {
@@ -296,7 +340,13 @@ run_test() {
       test_setup_runs_twice
       cleanup
       test_sandbox=""
-      test_setup_preserves_existing_file
+      test_setup_backs_up_existing_file
+      cleanup
+      test_sandbox=""
+      test_setup_numbers_conflicting_backup
+      cleanup
+      test_sandbox=""
+      test_setup_restores_existing_file_when_link_fails
       ;;
     darwin)
       test_darwin_prelude_runs_twice

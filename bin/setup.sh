@@ -99,9 +99,28 @@ link_dotfile() {
   local target_path="$2"
 
   if [[ -e "$target_path" && ! -L "$target_path" ]]; then
-    print -u2 "Refusing to replace existing path: $target_path"
-    return 1
+    local backup_date
+    local backup_path
+    local backup_number=0
+
+    backup_date="$(date +%Y%m%d)" || return 1
+    backup_path="${target_path}.bak-${backup_date}"
+    while [[ -e "$backup_path" || -L "$backup_path" ]]; do
+      (( backup_number += 1 ))
+      backup_path="${target_path}.bak-${backup_date}-${backup_number}"
+    done
+
+    mv "$target_path" "$backup_path" || return 1
+    if ! ln -sfn "$source_path" "$target_path"; then
+      if ! mv "$backup_path" "$target_path"; then
+        print -u2 "Failed to restore existing path: $target_path"
+      fi
+      return 1
+    fi
+    print "Backed up existing path: $target_path -> $backup_path"
+    return 0
   fi
+
   ln -sfn "$source_path" "$target_path"
 }
 
