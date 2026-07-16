@@ -7,7 +7,15 @@ elif [[ $OSTYPE == linux* ]]; then
 fi
 
 # tmux plugin manager
-git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+tpm_dir="$HOME/.tmux/plugins/tpm"
+if [[ ! -d "$tpm_dir/.git" ]]; then
+  if [[ -e "$tpm_dir" || -L "$tpm_dir" ]]; then
+    print -u2 "TPM path exists but is not a Git repository: $tpm_dir"
+    exit 1
+  fi
+  mkdir -p "${tpm_dir:h}" || exit 1
+  git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir" || exit 1
+fi
 
 # mise
 if [[ ! -x "$HOME/.local/bin/mise" ]]; then
@@ -75,47 +83,60 @@ fi
 # mise use --global elixir@1.16
 
 # dotfiles
-mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/atuin
-mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/ghostty
-mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash
-mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/agents
-mkdir -p $HOME/.local/bin
-mkdir -p $HOME/.claude
-mkdir -p $HOME/.codex
+config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+mkdir -p \
+  "$config_home/atuin" \
+  "$config_home/ghostty" \
+  "$config_home/gh-dash" \
+  "$config_home/agents" \
+  "$HOME/.local/bin" \
+  "$HOME/.claude" \
+  "$HOME/.codex" || exit 1
 
-ln -sf $HOME/.dotfiles/.zshrc $HOME
-ln -sf $HOME/.dotfiles/.ideavimrc $HOME
-ln -sf $HOME/.dotfiles/nvim ${XDG_CONFIG_HOME:-$HOME/.config}/nvim
-ln -sf $HOME/.dotfiles/atuin/config.toml ${XDG_CONFIG_HOME:-$HOME/.config}/atuin/config.toml
-ln -sf $HOME/.dotfiles/ghostty.conf ${XDG_CONFIG_HOME:-$HOME/.config}/ghostty/config
-ln -sf $HOME/.dotfiles/gh-dash/config.yml ${XDG_CONFIG_HOME:-$HOME/.config}/gh-dash/config.yml
-ln -sf $HOME/.dotfiles/.starship.toml $HOME
+link_dotfile() {
+  local source_path="$1"
+  local target_path="$2"
 
-ln -sf $HOME/.dotfiles/AGENTS.md ${XDG_CONFIG_HOME:-$HOME/.config}/agents/
-ln -sf $HOME/.dotfiles/AGENTS.md $HOME/.claude/CLAUDE.md
-ln -sf $HOME/.dotfiles/AGENTS.md $HOME/.codex/
+  if [[ -e "$target_path" && ! -L "$target_path" ]]; then
+    print -u2 "Refusing to replace existing path: $target_path"
+    return 1
+  fi
+  ln -sfn "$source_path" "$target_path"
+}
+
+link_dotfile "$HOME/.dotfiles/.zshrc" "$HOME/.zshrc" || exit 1
+link_dotfile "$HOME/.dotfiles/.ideavimrc" "$HOME/.ideavimrc" || exit 1
+link_dotfile "$HOME/.dotfiles/nvim" "$config_home/nvim" || exit 1
+link_dotfile "$HOME/.dotfiles/atuin/config.toml" "$config_home/atuin/config.toml" || exit 1
+link_dotfile "$HOME/.dotfiles/ghostty.conf" "$config_home/ghostty/config" || exit 1
+link_dotfile "$HOME/.dotfiles/gh-dash/config.yml" "$config_home/gh-dash/config.yml" || exit 1
+link_dotfile "$HOME/.dotfiles/.starship.toml" "$HOME/.starship.toml" || exit 1
+
+link_dotfile "$HOME/.dotfiles/AGENTS.md" "$config_home/agents/AGENTS.md" || exit 1
+link_dotfile "$HOME/.dotfiles/AGENTS.md" "$HOME/.claude/CLAUDE.md" || exit 1
+link_dotfile "$HOME/.dotfiles/AGENTS.md" "$HOME/.codex/AGENTS.md" || exit 1
 
 if [[ $OSTYPE == darwin* ]]; then
-  ln -sf $HOME/.dotfiles/.zshrc.darwin $HOME/.zshrc.os
-  ln -sf $HOME/.dotfiles/bin/idea.darwin.sh $HOME/.local/bin/idea
+  link_dotfile "$HOME/.dotfiles/.zshrc.darwin" "$HOME/.zshrc.os" || exit 1
+  link_dotfile "$HOME/.dotfiles/bin/idea.darwin.sh" "$HOME/.local/bin/idea" || exit 1
 elif [[ $OSTYPE == linux* ]]; then
-  ln -sf $HOME/.dotfiles/.zshrc.linux $HOME/.zshrc.os
+  link_dotfile "$HOME/.dotfiles/.zshrc.linux" "$HOME/.zshrc.os" || exit 1
 fi
 
-ln -sf $HOME/.dotfiles/.tmux.conf $HOME
-ln -sf $HOME/.dotfiles/.tmux.theme.conf $HOME
-ln -sf $HOME/.dotfiles/.tmux.user.conf $HOME
+link_dotfile "$HOME/.dotfiles/.tmux.conf" "$HOME/.tmux.conf" || exit 1
+link_dotfile "$HOME/.dotfiles/.tmux.theme.conf" "$HOME/.tmux.theme.conf" || exit 1
+link_dotfile "$HOME/.dotfiles/.tmux.user.conf" "$HOME/.tmux.user.conf" || exit 1
 
 # git
-ln -sf $HOME/.dotfiles/.gitconfig $HOME
+link_dotfile "$HOME/.dotfiles/.gitconfig" "$HOME/.gitconfig" || exit 1
 
 # gpg
-mkdir -p $HOME/.gnupg
-chmod 700 $HOME/.gnupg
-ln -sf $HOME/.dotfiles/.gnupg/gpg.conf $HOME/.gnupg/gpg.conf
-ln -sf $HOME/.dotfiles/.gnupg/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
+mkdir -p "$HOME/.gnupg" || exit 1
+chmod 700 "$HOME/.gnupg" || exit 1
+link_dotfile "$HOME/.dotfiles/.gnupg/gpg.conf" "$HOME/.gnupg/gpg.conf" || exit 1
+link_dotfile "$HOME/.dotfiles/.gnupg/gpg-agent.conf" "$HOME/.gnupg/gpg-agent.conf" || exit 1
 
 # ntfs
-mkdir $HOME/.ntfs
+mkdir -p "$HOME/.ntfs" || exit 1
 
-source $HOME/.zshrc
+source "$HOME/.zshrc"
