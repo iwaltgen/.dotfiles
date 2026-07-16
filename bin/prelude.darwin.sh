@@ -2,8 +2,13 @@
 
 # homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+if [[ ! -x /opt/homebrew/bin/brew ]]; then
+  print -u2 "Homebrew installation failed"
+  exit 1
+fi
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
-brew install zsh wget git tree htop cmake
+brew install zsh wget git tree htop
 
 # zsh
 git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh

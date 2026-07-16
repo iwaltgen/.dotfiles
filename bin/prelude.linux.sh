@@ -34,12 +34,3 @@ popd
 # AppImage
 sudo add-apt-repository universe
 sudo apt install libfuse2
-
-# curlie
-curl -sS https://webi.sh/curlie | sh
-
-# minio client
-mkdir -p $HOME/.local/bin
-curl -fLo $HOME/.local/bin/mc --create-dirs \
-	https://dl.min.io/client/mc/release/linux-amd64/mc
-chmod +x $HOME/.local/bin/mc

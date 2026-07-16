@@ -1,22 +1,76 @@
 #!/bin/zsh
 
 if [[ $OSTYPE == darwin* ]]; then
-  /.dotfiles/bin/prelude.darwin.sh
+  "$HOME/.dotfiles/bin/prelude.darwin.sh" || exit 1
 elif [[ $OSTYPE == linux* ]]; then
-  /.dotfiles/bin/prelude.linux.sh
+  "$HOME/.dotfiles/bin/prelude.linux.sh" || exit 1
 fi
 
 # tmux plugin manager
 git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # mise
-curl https://mise.run | sh
+if [[ ! -x "$HOME/.local/bin/mise" ]]; then
+  curl --fail --show-error --silent --location https://mise.run | sh
+fi
+if [[ ! -x "$HOME/.local/bin/mise" ]]; then
+  print -u2 "mise installation failed"
+  exit 1
+fi
 
-mise use --global bun
-mise use --global node@lts
-mise use --global python@3.13
-mise use --global java@temurin-25
-mise use --global go
+# Eclipse Temurin 25 is the selected LTS release.
+"$HOME/.local/bin/mise" use --global \
+  bun \
+  node@lts \
+  python@3.13 \
+  java@temurin-25 \
+  go \
+  rust \
+  deno \
+  sd \
+  fd \
+  bat \
+  hyperfine \
+  ripgrep \
+  delta \
+  gdu \
+  duf \
+  dust \
+  gping \
+  jq \
+  fx \
+  zoxide \
+  ctop \
+  bottom \
+  lazygit \
+  lazydocker \
+  direnv \
+  atuin \
+  gh \
+  neovim \
+  fzf \
+  starship \
+  fastfetch \
+  curlie \
+  mc \
+  tmux || exit 1
+
+# The asdf eza plugin can reference missing cargo-quickinstall assets on macOS.
+"$HOME/.local/bin/mise" use --global cargo:eza || exit 1
+
+# macOS standalone CLI tools previously managed by Homebrew
+if [[ $OSTYPE == darwin* ]]; then
+  "$HOME/.local/bin/mise" use --global \
+    act \
+    cmake \
+    dive \
+    git-lfs \
+    goreleaser \
+    gradle \
+    helm \
+    maven \
+    terraform || exit 1
+fi
 # mise use --global erlang@26
 # mise use --global elixir@1.16
 
