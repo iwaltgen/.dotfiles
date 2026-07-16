@@ -51,12 +51,6 @@ zinit wait lucid light-mode for \
 (( $+commands[lazygit] )) && alias lg=lazygit
 (( $+commands[lazydocker] )) && alias ld=lazydocker
 
-# ogham/dog, cli DNS client.
-zinit ice as"program" from"gh-r" sbin"**/dog" \
-  atload"alias dig=dog" \
-  mv"**/dog.zsh -> completions/_dog"
-zinit light ogham/dog
-
 # @github/git-sizer, Compute various size metrics for a Git repository, flagging those that might cause problems.
 zi for from"gh-r" \
     sbin"git-sizer" \
