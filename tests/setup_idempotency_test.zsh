@@ -54,7 +54,6 @@ prepare_setup_sandbox() {
     "$dotfiles/bin" \
     "$dotfiles/nvim" \
     "$dotfiles/atuin" \
-    "$dotfiles/gh-dash" \
     "$dotfiles/herdr" \
     "$dotfiles/hunk" \
     "$dotfiles/.gnupg" \
@@ -76,7 +75,6 @@ prepare_setup_sandbox() {
     "$dotfiles/GLOBAL_AGENTS.md" \
     "$dotfiles/ghostty.conf" \
     "$dotfiles/atuin/config.toml" \
-    "$dotfiles/gh-dash/config.yml" \
     "$dotfiles/herdr/config.toml" \
     "$dotfiles/hunk/config.toml" \
     "$dotfiles/.gnupg/gpg.conf" \
@@ -89,7 +87,21 @@ exit 0'
 exit 0'
 
   write_executable "$home/.local/bin/mise" '#!/bin/zsh
-print -r -- "mise $*" >> "$CALLS_LOG"'
+print -r -- "mise $*" >> "$CALLS_LOG"
+
+if [[ "$1 $2 $3" == "use --global bun" && "${MISE_FAKE_FAIL_BUN:-0}" == 1 ]]; then
+  exit 21
+fi
+
+if [[ "$1 $2 $3" == "settings set npm.package_manager" ]]; then
+  [[ "${MISE_FAKE_FAIL_NPM_SETTING:-0}" != 1 ]]
+  exit
+fi
+
+if [[ "$1 $2" == "latest elixir@1.20" ]]; then
+  print -r -- "${MISE_FAKE_ELIXIR_LATEST:-1.20.2-otp-29}"
+  exit 0
+fi'
 
   write_executable "$fake_bin/date" '#!/bin/zsh
 print 20260716'
@@ -109,6 +121,9 @@ run_setup() {
   HOME="$home" \
     XDG_CONFIG_HOME="$home/.config" \
     CALLS_LOG="$test_sandbox/calls.log" \
+    MISE_FAKE_ELIXIR_LATEST="${MISE_FAKE_ELIXIR_LATEST:-1.20.2-otp-29}" \
+    MISE_FAKE_FAIL_BUN="${MISE_FAKE_FAIL_BUN:-0}" \
+    MISE_FAKE_FAIL_NPM_SETTING="${MISE_FAKE_FAIL_NPM_SETTING:-0}" \
     PATH="$test_sandbox/bin:/usr/bin:/bin" \
     /bin/zsh "$home/.dotfiles/bin/setup.sh"
 }
@@ -121,10 +136,18 @@ test_setup_runs_twice() {
 
   local home="$test_sandbox/home"
   local clone_count
+  local bun_line
+  local npm_setting_line
+  local elixir_check_line
+  local common_tools_line
   local common_tools_call
   local duplicate_tools
   clone_count="$(grep -c '^git clone .*tmux-plugins/tpm' "$test_sandbox/calls.log")"
-  common_tools_call="$(grep -m1 '^mise use --global bun ' "$test_sandbox/calls.log")"
+  bun_line="$(grep -n -m1 '^mise use --global bun$' "$test_sandbox/calls.log" | cut -d: -f1 || true)"
+  npm_setting_line="$(grep -n -m1 '^mise settings set npm.package_manager bun$' "$test_sandbox/calls.log" | cut -d: -f1 || true)"
+  elixir_check_line="$(grep -n -m1 '^mise latest elixir@1.20$' "$test_sandbox/calls.log" | cut -d: -f1 || true)"
+  common_tools_line="$(grep -n -m1 '^mise use --global node@lts ' "$test_sandbox/calls.log" | cut -d: -f1 || true)"
+  common_tools_call="$(grep -m1 '^mise use --global node@lts ' "$test_sandbox/calls.log" || true)"
   duplicate_tools="$(
     print -r -- "${common_tools_call#mise use --global }" |
       tr ' ' '\n' |
@@ -133,15 +156,111 @@ test_setup_runs_twice() {
   )"
 
   [[ "$clone_count" == 1 ]] || fail "TPM clone ran $clone_count times"
+  [[ -n "$bun_line" && -n "$npm_setting_line" && -n "$elixir_check_line" && -n "$common_tools_line" ]] || \
+    fail 'one or more required mise setup stages were not called'
+  (( bun_line < npm_setting_line && npm_setting_line < elixir_check_line && elixir_check_line < common_tools_line )) || \
+    fail 'mise setup order is not bun, npm setting, Elixir check, common tools'
+  assert_call_count '^mise use --global bun$' 2
+  assert_call_count '^mise settings set npm\.package_manager bun$' 2
+  assert_call_count '^mise latest elixir@1\.20$' 2
+  [[ " $common_tools_call " == *' erlang@29 elixir@1.20 '* ]] || \
+    fail 'mise tool list does not contain adjacent erlang@29 and elixir@1.20 selectors'
   [[ -z "$duplicate_tools" ]] || fail "mise tool list contains duplicates: $duplicate_tools"
   [[ -d "$home/.ntfs" ]] || fail "$home/.ntfs was not created"
   assert_symlink "$home/.config/nvim" "$home/.dotfiles/nvim"
   assert_symlink "$home/.config/herdr/config.toml" "$home/.dotfiles/herdr/config.toml"
   assert_symlink "$home/.config/hunk/config.toml" "$home/.dotfiles/hunk/config.toml"
+  [[ ! -e "$home/.config/gh-dash" ]] || fail 'setup recreated the removed gh-dash config directory'
   assert_symlink "$home/.config/agents/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.claude/CLAUDE.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.codex/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   [[ ! -e "$home/.dotfiles/nvim/nvim" ]] || fail "nested nvim link was created"
+}
+
+test_setup_stops_after_mise_prerequisite_failure() {
+  prepare_setup_sandbox
+
+  if MISE_FAKE_FAIL_BUN=1 run_setup; then
+    fail 'setup succeeded after Bun installation failed'
+  fi
+  assert_call_count '^mise use --global bun$' 1
+  assert_call_count '^mise settings set npm\.package_manager bun$' 0
+  assert_call_count '^mise latest elixir@1\.20$' 0
+  assert_call_count '^mise use --global node@lts ' 0
+
+  cleanup
+  test_sandbox=""
+  prepare_setup_sandbox
+
+  if MISE_FAKE_FAIL_NPM_SETTING=1 run_setup; then
+    fail 'setup succeeded after npm package manager setting failed'
+  fi
+  assert_call_count '^mise use --global bun$' 1
+  assert_call_count '^mise settings set npm\.package_manager bun$' 1
+  assert_call_count '^mise latest elixir@1\.20$' 0
+  assert_call_count '^mise use --global node@lts ' 0
+}
+
+test_setup_rejects_incompatible_elixir_build() {
+  prepare_setup_sandbox
+
+  if MISE_FAKE_ELIXIR_LATEST=1.20.2-otp-28 run_setup 2>/dev/null; then
+    fail 'setup accepted an Elixir build that was not compiled for OTP 29'
+  fi
+
+  assert_call_count '^mise use --global bun$' 1
+  assert_call_count '^mise settings set npm\.package_manager bun$' 1
+  assert_call_count '^mise latest elixir@1\.20$' 1
+  assert_call_count '^mise use --global node@lts ' 0
+}
+
+test_setup_removes_managed_gh_dash_link() {
+  prepare_setup_sandbox
+
+  local home="$test_sandbox/home"
+  mkdir -p "$home/.config/gh-dash"
+  ln -s "$home/.dotfiles/gh-dash/config.yml" "$home/.config/gh-dash/config.yml"
+
+  run_setup
+
+  [[ ! -e "$home/.config/gh-dash" ]] || fail 'managed gh-dash link or empty directory remains'
+}
+
+test_setup_preserves_unmanaged_gh_dash_paths() {
+  prepare_setup_sandbox
+
+  local home="$test_sandbox/home"
+  mkdir -p "$home/.config/gh-dash"
+  print 'personal config' > "$home/.config/gh-dash/config.yml"
+
+  run_setup
+
+  [[ "$(< "$home/.config/gh-dash/config.yml")" == 'personal config' ]] || \
+    fail 'personal gh-dash config was changed'
+
+  cleanup
+  test_sandbox=""
+  prepare_setup_sandbox
+  home="$test_sandbox/home"
+  mkdir -p "$home/.config/gh-dash"
+  ln -s "$home/elsewhere/config.yml" "$home/.config/gh-dash/config.yml"
+
+  run_setup
+
+  assert_symlink "$home/.config/gh-dash/config.yml" "$home/elsewhere/config.yml"
+
+  cleanup
+  test_sandbox=""
+  prepare_setup_sandbox
+  home="$test_sandbox/home"
+  mkdir -p "$home/.config/gh-dash"
+  ln -s "$home/.dotfiles/gh-dash/config.yml" "$home/.config/gh-dash/config.yml"
+  touch "$home/.config/gh-dash/preserved"
+
+  run_setup
+
+  [[ ! -e "$home/.config/gh-dash/config.yml" ]] || fail 'managed gh-dash link was not removed'
+  [[ -f "$home/.config/gh-dash/preserved" ]] || fail 'non-empty gh-dash directory content was removed'
 }
 
 test_setup_backs_up_existing_file() {
@@ -467,6 +586,15 @@ test_herdr_config_uses_hunk_default_save_shortcut() {
     fail 'Obsolete Herdr-Hunk note save helper still exists'
 }
 
+test_hunk_config_starts_with_hidden_menu_bar() {
+  local config="$repo_root/hunk/config.toml"
+
+  [[ -f "$config" ]] || fail 'Hunk config does not exist'
+  [[ "$(grep -Fxc 'menu_bar = false' "$config" || true)" == 1 ]] || \
+    fail 'Hunk menu bar is not disabled exactly once'
+  grep -Fxq 'mode = "auto"' "$config" || fail 'Hunk mode is not auto'
+}
+
 test_herdr_config_sends_hunk_review_prompt() {
   local config="$repo_root/herdr/config.toml"
 
@@ -602,6 +730,18 @@ run_test() {
       test_setup_runs_twice
       cleanup
       test_sandbox=""
+      test_setup_stops_after_mise_prerequisite_failure
+      cleanup
+      test_sandbox=""
+      test_setup_rejects_incompatible_elixir_build
+      cleanup
+      test_sandbox=""
+      test_setup_removes_managed_gh_dash_link
+      cleanup
+      test_sandbox=""
+      test_setup_preserves_unmanaged_gh_dash_paths
+      cleanup
+      test_sandbox=""
       test_setup_backs_up_existing_file
       cleanup
       test_sandbox=""
@@ -621,6 +761,7 @@ run_test() {
       test_herdr_config_opens_lazygit_popup
       test_herdr_config_toggles_hunk
       test_herdr_config_uses_hunk_default_save_shortcut
+      test_hunk_config_starts_with_hidden_menu_bar
       test_herdr_config_sends_hunk_review_prompt
       test_herdr_hunk_opens_right_split_without_focus
       cleanup

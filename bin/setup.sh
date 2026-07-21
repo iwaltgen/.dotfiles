@@ -26,10 +26,23 @@ if [[ ! -x "$HOME/.local/bin/mise" ]]; then
   exit 1
 fi
 
+"$HOME/.local/bin/mise" use --global bun || exit 1
+"$HOME/.local/bin/mise" settings set npm.package_manager bun || exit 1
+
+elixir_version="$("$HOME/.local/bin/mise" latest elixir@1.20)" || exit 1
+case "$elixir_version" in
+  1.20.<->-otp-29) ;;
+  *)
+    print -u2 "Expected Elixir 1.20.x built for OTP 29, got: $elixir_version"
+    exit 1
+    ;;
+esac
+
 # Eclipse Temurin 25 is the selected LTS release.
 "$HOME/.local/bin/mise" use --global \
-  bun \
   node@lts \
+  erlang@29 \
+  elixir@1.20 \
   python@3.13 \
   java@temurin-25 \
   go \
@@ -81,15 +94,20 @@ if [[ $OSTYPE == darwin* ]]; then
     maven \
     terraform || exit 1
 fi
-# mise use --global erlang@26
-# mise use --global elixir@1.16
 
 # dotfiles
 config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+legacy_gh_dash_link="$config_home/gh-dash/config.yml"
+legacy_gh_dash_source="$HOME/.dotfiles/gh-dash/config.yml"
+if [[ -L "$legacy_gh_dash_link" && "$(readlink "$legacy_gh_dash_link")" == "$legacy_gh_dash_source" ]]; then
+  unlink "$legacy_gh_dash_link" || exit 1
+  rmdir "${legacy_gh_dash_link:h}" 2>/dev/null || true
+fi
+
 mkdir -p \
   "$config_home/atuin" \
   "$config_home/ghostty" \
-  "$config_home/gh-dash" \
   "$config_home/herdr" \
   "$config_home/hunk" \
   "$config_home/agents" \
@@ -132,7 +150,6 @@ link_dotfile "$HOME/.dotfiles/.ideavimrc" "$HOME/.ideavimrc" || exit 1
 link_dotfile "$HOME/.dotfiles/nvim" "$config_home/nvim" || exit 1
 link_dotfile "$HOME/.dotfiles/atuin/config.toml" "$config_home/atuin/config.toml" || exit 1
 link_dotfile "$HOME/.dotfiles/ghostty.conf" "$config_home/ghostty/config" || exit 1
-link_dotfile "$HOME/.dotfiles/gh-dash/config.yml" "$config_home/gh-dash/config.yml" || exit 1
 link_dotfile "$HOME/.dotfiles/herdr/config.toml" "$config_home/herdr/config.toml" || exit 1
 link_dotfile "$HOME/.dotfiles/hunk/config.toml" "$config_home/hunk/config.toml" || exit 1
 link_dotfile "$HOME/.dotfiles/.starship.toml" "$HOME/.starship.toml" || exit 1
