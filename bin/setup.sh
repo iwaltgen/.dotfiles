@@ -61,6 +61,8 @@ fi
   fastfetch \
   curlie \
   mc \
+  hunk \
+  bottom \
   herdr \
   tmux || exit 1
 
