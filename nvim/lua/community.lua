@@ -3,13 +3,11 @@ return {
   "AstroNvim/astrocommunity",
 
   { import = "astrocommunity.recipes.heirline-nvchad-statusline" },
-  { import = "astrocommunity.recipes.telescope-nvchad-theme" },
+  { import = "astrocommunity.recipes.picker-nvchad-theme" },
   { import = "astrocommunity.recipes.vscode" },
   { import = "astrocommunity.recipes.vscode-icons" },
 
   { import = "astrocommunity.bars-and-lines.smartcolumn-nvim" },
-
-  { import = "astrocommunity.completion.copilot-lua-cmp" },
 
   { import = "astrocommunity.git.octo-nvim" },
 
