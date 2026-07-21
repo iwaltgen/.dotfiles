@@ -2,6 +2,34 @@ onboarding = false
 
 [keys]
 prefix = "ctrl+b"
+switch_tab = "cmd+ctrl+1..9"
+
+[[keys.command]]
+key = "cmd+ctrl+r"
+type = "shell"
+command = "$HOME/.dotfiles/bin/herdr-hunk-toggle.sh"
+
+[[keys.command]]
+key = "cmd+ctrl+a"
+type = "shell"
+command = "$HOME/.dotfiles/bin/herdr-hunk-prompt.sh"
+
+[[keys.command]]
+key = "cmd+ctrl+g"
+type = "popup"
+command = "lazygit"
+width = "80%"
+height = "80%"
 
 [experimental]
 switch_ascii_input_source_in_prefix = true
+
+[ui.toast]
+delivery = "system"
+
+[theme]
+name = "terminal"
+auto_switch = false
+
+[ui]
+show_agent_labels_on_pane_borders = false

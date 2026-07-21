@@ -1,0 +1,4 @@
+# Hunk keeps review-note shortcuts built in rather than configurable:
+# c creates a note, and { / } navigate to the previous / next note.
+# Ctrl-S saves a note.
+mode = "auto"
