@@ -1,3 +1,5 @@
+# Docs: https://zsh.sourceforge.io/Doc/Release/
+
 export LANG=en_US.UTF-8
 export TERM=xterm-256color
 export EDITOR=vim

@@ -1,3 +1,5 @@
+-- Docs: https://github.com/AstroNvim/astrocommunity
+
 ---@type LazySpec
 return {
   "AstroNvim/astrocommunity",

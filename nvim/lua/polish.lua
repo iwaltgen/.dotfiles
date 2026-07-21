@@ -1,2 +1,4 @@
+-- Docs: https://docs.astronvim.com/configuration/manage_user_config/
+
 -- AstroUI가 담당하지 않는 마지막 단계 설정을 위한 파일입니다.
 -- 현재 추가 설정 없음.

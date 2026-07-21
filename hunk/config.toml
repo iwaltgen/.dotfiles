@@ -1,2 +1,4 @@
+# Docs: https://github.com/modem-dev/hunk#config
+
 mode = "auto"
 menu_bar = false

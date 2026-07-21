@@ -1,3 +1,5 @@
+-- Docs: https://docs.astronvim.com/configuration/manage_user_config/
+
 require("lazy").setup({
   {
     "AstroNvim/AstroNvim",

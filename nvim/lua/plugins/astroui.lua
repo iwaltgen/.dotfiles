@@ -1,3 +1,5 @@
+-- Docs: https://docs.astronvim.com/configuration/core_plugins/
+
 return {
   "AstroNvim/astroui",
   ---@param opts AstroUIOpts

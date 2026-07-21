@@ -1,3 +1,5 @@
+# Docs: https://git-scm.com/docs/git-config
+
 [user]
 	name = iwaltgen
 	email = iwaltgen@gmail.com

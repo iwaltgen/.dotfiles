@@ -1,3 +1,5 @@
+# Docs: https://zsh.sourceforge.io/Doc/Release/
+
 # gpg-agent (https://gnupg.org/documentation/manuals/gnupg-2.0/Invoking-GPG_002dAGENT.html)
 # gpgconf --kill gpg-agent
 # gpg-connect-agent updatestartuptty /bye
