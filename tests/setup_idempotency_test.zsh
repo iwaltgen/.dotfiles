@@ -456,6 +456,15 @@ test_herdr_config_supports_cjk_prefix() {
     fail 'Herdr does not switch to an ASCII input source in prefix mode'
 }
 
+test_herdr_config_focuses_agents_by_number() {
+  local config="$repo_root/herdr/config.toml"
+
+  grep -Fxq 'focus_agent = "cmd+ctrl+1..9"' "$config" || \
+    fail 'Herdr does not bind Cmd-Ctrl-1..9 to agent focus'
+  ! grep -Fxq 'switch_tab = "cmd+ctrl+1..9"' "$config" || \
+    fail 'Herdr still binds Cmd-Ctrl-1..9 to tab switching'
+}
+
 test_herdr_config_opens_lazygit_popup() {
   local config="$repo_root/herdr/config.toml"
 
@@ -758,6 +767,7 @@ run_test() {
       ;;
     herdr)
       test_herdr_config_supports_cjk_prefix
+      test_herdr_config_focuses_agents_by_number
       test_herdr_config_opens_lazygit_popup
       test_herdr_config_toggles_hunk
       test_herdr_config_uses_hunk_default_save_shortcut

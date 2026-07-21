@@ -2,7 +2,7 @@ onboarding = false
 
 [keys]
 prefix = "ctrl+b"
-switch_tab = "cmd+ctrl+1..9"
+focus_agent = "cmd+ctrl+1..9"
 
 [[keys.command]]
 key = "cmd+ctrl+r"
