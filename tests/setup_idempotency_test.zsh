@@ -265,7 +265,7 @@ test_mise_config_declares_approved_tools() {
     fail 'HTTPie does not depend on uv'
   grep -Fxq '"pipx:mercurial" = { version = "latest", depends = ["uv"] }' "$config" || \
     fail 'Mercurial does not depend on uv'
-  grep -Fxq 'minimum_release_age = "4h"' "$config" || fail 'mise minimum release age is not 4h'
+  grep -Fxq 'minimum_release_age = "0s"' "$config" || fail 'mise minimum release age is not 0s'
   grep -Fxq 'package_manager = "bun"' "$config" || fail 'npm package manager is not Bun'
   ! grep -Eq '^"(aqua:caddyserver/caddy|conda:clang-format|aqua:FiloSottile/mkcert|aqua:bufbuild/buf)"[[:space:]]*=' \
     "$config" || fail 'mise config pins a backend already selected by the default registry'
@@ -898,6 +898,58 @@ test_ghostty_maps_physical_herdr_keys() {
   fi
 }
 
+prepare_zshrc_herdr_sandbox() {
+  test_sandbox="$(mktemp -d)"
+
+  local home="$test_sandbox/home"
+  local fake_bin="$test_sandbox/bin"
+
+  mkdir -p "$home/.local/share/zinit/zinit.git" "$fake_bin"
+
+  write_executable "$home/.local/share/zinit/zinit.git/zinit.zsh" '#!/bin/zsh
+zinit() { :; }
+zi() { :; }'
+
+  write_executable "$fake_bin/herdr" '#!/bin/zsh
+print -r -- "$*" >> "$CALLS_LOG"'
+}
+
+assert_zshrc_herdr_invocation() {
+  local expected="$1"
+  shift
+
+  prepare_zshrc_herdr_sandbox
+
+  HOME="$test_sandbox/home" \
+    CALLS_LOG="$test_sandbox/calls.log" \
+    PATH="$test_sandbox/bin:/usr/bin:/bin" \
+    ZSHRC_UNDER_TEST="$repo_root/.zshrc" \
+    /bin/zsh -c 'source "$ZSHRC_UNDER_TEST"; herdr "$@"' zsh "$@"
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  [[ "$actual" == "$expected" ]] || \
+    fail "Herdr invocation: expected '$expected', got '$actual'"
+
+  cleanup
+  test_sandbox=""
+}
+
+test_zshrc_defaults_remote_herdr_to_server_keybindings() {
+  assert_zshrc_herdr_invocation \
+    '--remote workbox --remote-keybindings server' \
+    --remote workbox
+}
+
+test_zshrc_preserves_explicit_remote_keybindings() {
+  assert_zshrc_herdr_invocation \
+    '--remote workbox --remote-keybindings local' \
+    --remote workbox --remote-keybindings local
+}
+
+test_zshrc_leaves_non_remote_herdr_commands_unchanged() {
+  assert_zshrc_herdr_invocation 'status client' status client
+}
+
 run_test() {
   local name="$1"
 
@@ -941,6 +993,9 @@ run_test() {
       test_brew_cleanup_removes_targets_and_only_their_orphaned_dependencies
       ;;
     herdr)
+      test_zshrc_defaults_remote_herdr_to_server_keybindings
+      test_zshrc_preserves_explicit_remote_keybindings
+      test_zshrc_leaves_non_remote_herdr_commands_unchanged
       test_herdr_config_supports_cjk_prefix
       test_herdr_config_focuses_agents_by_number
       test_herdr_config_opens_lazygit_popup

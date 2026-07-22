@@ -53,6 +53,18 @@ zinit wait lucid light-mode for \
 (( $+commands[lazygit] )) && alias lg=lazygit
 (( $+commands[lazydocker] )) && alias ld=lazydocker
 
+if (( $+commands[herdr] )); then
+  herdr() {
+    local -a args=("$@")
+
+    if (( ${args[(I)--remote]} && ! ${args[(I)--remote-keybindings]} )); then
+      args+=(--remote-keybindings server)
+    fi
+
+    command herdr "${args[@]}"
+  }
+fi
+
 # @github/git-sizer, Compute various size metrics for a Git repository, flagging those that might cause problems.
 zi for from"gh-r" \
     sbin"git-sizer" \
