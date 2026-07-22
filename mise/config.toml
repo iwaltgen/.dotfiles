@@ -18,7 +18,6 @@ fd = "latest"
 "conda:eza" = "latest"
 bat = "latest"
 hyperfine = "latest"
-"aqua:boyter/scc" = "latest"
 ripgrep = "latest"
 delta = "latest"
 gdu = "latest"
@@ -67,6 +66,9 @@ claude = "latest"
 codex = "latest"
 hunk = "latest"
 herdr = "latest"
+
+[settings]
+minimum_release_age = "4h"
 
 [settings.npm]
 package_manager = "bun"
