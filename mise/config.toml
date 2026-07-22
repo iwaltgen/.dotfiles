@@ -68,7 +68,7 @@ hunk = "latest"
 herdr = "latest"
 
 [settings]
-minimum_release_age = "3h"
+minimum_release_age = "0s"
 
 [settings.npm]
 package_manager = "bun"
