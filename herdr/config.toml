@@ -26,8 +26,9 @@ height = "80%"
 [experimental]
 switch_ascii_input_source_in_prefix = true
 
+pane_history = false
 [ui.toast]
-delivery = "system"
+delivery = "terminal"
 
 [theme]
 name = "terminal"
