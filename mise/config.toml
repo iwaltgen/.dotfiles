@@ -1,0 +1,72 @@
+[tools]
+# Runtimes and SDKs
+bun = "latest"
+node = "lts"
+pnpm = "latest"
+python = "latest"
+uv = "latest"
+deno = "latest"
+erlang = "29"
+elixir = { version = "1.20", depends = ["erlang"] }
+java = "temurin-25"
+go = "latest"
+rust = "latest"
+
+# General-purpose CLI tools
+sd = "latest"
+fd = "latest"
+"conda:eza" = "latest"
+bat = "latest"
+hyperfine = "latest"
+"aqua:boyter/scc" = "latest"
+ripgrep = "latest"
+delta = "latest"
+gdu = "latest"
+duf = "latest"
+dust = "latest"
+gping = "latest"
+jq = "latest"
+fx = "latest"
+zoxide = "latest"
+ctop = "latest"
+bottom = "latest"
+lazygit = "latest"
+lazydocker = "latest"
+direnv = "latest"
+atuin = "latest"
+gh = "latest"
+neovim = "latest"
+fzf = "latest"
+starship = "latest"
+fastfetch = "latest"
+curlie = "latest"
+"pipx:httpie" = { version = "latest", depends = ["uv"] }
+mc = "latest"
+tmux = "latest"
+
+# Development and deployment CLI tools
+act = "latest"
+buf = "latest"
+caddy = "latest"
+clang-format = "latest"
+cmake = "latest"
+dive = "latest"
+git-lfs = "latest"
+goreleaser = "latest"
+gradle = "latest"
+helm = "latest"
+maven = "latest"
+"pipx:mercurial" = { version = "latest", depends = ["uv"] }
+mkcert = "latest"
+terraform = "latest"
+wrangler = "latest"
+
+# Agent CLI tools
+"npm:agent-browser" = "latest"
+claude = "latest"
+codex = "latest"
+hunk = "latest"
+herdr = "latest"
+
+[settings.npm]
+package_manager = "bun"

@@ -56,11 +56,13 @@ prepare_setup_sandbox() {
     "$dotfiles/atuin" \
     "$dotfiles/herdr" \
     "$dotfiles/hunk" \
+    "$dotfiles/mise" \
     "$dotfiles/.gnupg" \
     "$home/.local/bin" \
     "$fake_bin"
 
   cp "$repo_root/bin/setup.sh" "$dotfiles/bin/setup.sh"
+  cp "$repo_root/mise/config.toml" "$dotfiles/mise/config.toml"
 
   touch \
     "$dotfiles/.zshrc" \
@@ -89,18 +91,19 @@ exit 0'
   write_executable "$home/.local/bin/mise" '#!/bin/zsh
 print -r -- "mise $*" >> "$CALLS_LOG"
 
-if [[ "$1 $2 $3" == "use --global bun" && "${MISE_FAKE_FAIL_BUN:-0}" == 1 ]]; then
-  exit 21
-fi
-
-if [[ "$1 $2 $3" == "settings set npm.package_manager" ]]; then
-  [[ "${MISE_FAKE_FAIL_NPM_SETTING:-0}" != 1 ]]
-  exit
+if [[ "$1" == "-C" ]]; then
+  print -r -- "mise install-context cd=$2 ceiling=${MISE_CEILING_PATHS:-}" >> "$CALLS_LOG"
+  shift 2
 fi
 
 if [[ "$1 $2" == "latest elixir@1.20" ]]; then
   print -r -- "${MISE_FAKE_ELIXIR_LATEST:-1.20.2-otp-29}"
   exit 0
+fi
+
+if [[ "$1 $2" == "install --yes" ]]; then
+  [[ "${MISE_FAKE_FAIL_INSTALL:-0}" != 1 ]]
+  exit
 fi'
 
   write_executable "$fake_bin/date" '#!/bin/zsh
@@ -122,8 +125,7 @@ run_setup() {
     XDG_CONFIG_HOME="$home/.config" \
     CALLS_LOG="$test_sandbox/calls.log" \
     MISE_FAKE_ELIXIR_LATEST="${MISE_FAKE_ELIXIR_LATEST:-1.20.2-otp-29}" \
-    MISE_FAKE_FAIL_BUN="${MISE_FAKE_FAIL_BUN:-0}" \
-    MISE_FAKE_FAIL_NPM_SETTING="${MISE_FAKE_FAIL_NPM_SETTING:-0}" \
+    MISE_FAKE_FAIL_INSTALL="${MISE_FAKE_FAIL_INSTALL:-0}" \
     PATH="$test_sandbox/bin:/usr/bin:/bin" \
     /bin/zsh "$home/.dotfiles/bin/setup.sh"
 }
@@ -131,74 +133,76 @@ run_setup() {
 test_setup_runs_twice() {
   prepare_setup_sandbox
 
-  run_setup
-  run_setup
-
   local home="$test_sandbox/home"
   local clone_count
-  local bun_line
-  local npm_setting_line
   local elixir_check_line
-  local common_tools_line
-  local common_tools_call
-  local duplicate_tools
+  local install_line
+
+  run_setup
+  run_setup
+
   clone_count="$(grep -c '^git clone .*tmux-plugins/tpm' "$test_sandbox/calls.log")"
-  bun_line="$(grep -n -m1 '^mise use --global bun$' "$test_sandbox/calls.log" | cut -d: -f1 || true)"
-  npm_setting_line="$(grep -n -m1 '^mise settings set npm.package_manager bun$' "$test_sandbox/calls.log" | cut -d: -f1 || true)"
   elixir_check_line="$(grep -n -m1 '^mise latest elixir@1.20$' "$test_sandbox/calls.log" | cut -d: -f1 || true)"
-  common_tools_line="$(grep -n -m1 '^mise use --global node@lts ' "$test_sandbox/calls.log" | cut -d: -f1 || true)"
-  common_tools_call="$(grep -m1 '^mise use --global node@lts ' "$test_sandbox/calls.log" || true)"
-  duplicate_tools="$(
-    print -r -- "${common_tools_call#mise use --global }" |
-      tr ' ' '\n' |
-      sort |
-      uniq -d
-  )"
+  install_line="$(grep -n -m1 '^mise -C .*/home install --yes$' "$test_sandbox/calls.log" | cut -d: -f1 || true)"
 
   [[ "$clone_count" == 1 ]] || fail "TPM clone ran $clone_count times"
-  [[ -n "$bun_line" && -n "$npm_setting_line" && -n "$elixir_check_line" && -n "$common_tools_line" ]] || \
+  [[ -n "$elixir_check_line" && -n "$install_line" ]] || \
     fail 'one or more required mise setup stages were not called'
-  (( bun_line < npm_setting_line && npm_setting_line < elixir_check_line && elixir_check_line < common_tools_line )) || \
-    fail 'mise setup order is not bun, npm setting, Elixir check, common tools'
-  assert_call_count '^mise use --global bun$' 2
-  assert_call_count '^mise settings set npm\.package_manager bun$' 2
+  (( elixir_check_line < install_line )) || fail 'mise install ran before the Elixir compatibility check'
   assert_call_count '^mise latest elixir@1\.20$' 2
-  [[ " $common_tools_call " == *' erlang@29 elixir@1.20 '* ]] || \
-    fail 'mise tool list does not contain adjacent erlang@29 and elixir@1.20 selectors'
-  [[ -z "$duplicate_tools" ]] || fail "mise tool list contains duplicates: $duplicate_tools"
+  assert_call_count '^mise -C .*/home install --yes$' 2
+  assert_call_count '^mise use ' 0
+  assert_call_count '^mise settings set ' 0
+  grep -Fxq "mise install-context cd=$home ceiling=$home" "$test_sandbox/calls.log" || \
+    fail 'mise install does not isolate global config discovery from the caller directory'
+  assert_symlink "$home/.config/mise/config.toml" "$home/.dotfiles/mise/config.toml"
   [[ -d "$home/.ntfs" ]] || fail "$home/.ntfs was not created"
   assert_symlink "$home/.config/nvim" "$home/.dotfiles/nvim"
   assert_symlink "$home/.config/herdr/config.toml" "$home/.dotfiles/herdr/config.toml"
   assert_symlink "$home/.config/hunk/config.toml" "$home/.dotfiles/hunk/config.toml"
-  [[ ! -e "$home/.config/gh-dash" ]] || fail 'setup recreated the removed gh-dash config directory'
   assert_symlink "$home/.config/agents/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.claude/CLAUDE.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.codex/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   [[ ! -e "$home/.dotfiles/nvim/nvim" ]] || fail "nested nvim link was created"
 }
 
-test_setup_stops_after_mise_prerequisite_failure() {
+test_setup_does_not_source_shell_config() {
   prepare_setup_sandbox
 
-  if MISE_FAKE_FAIL_BUN=1 run_setup; then
-    fail 'setup succeeded after Bun installation failed'
-  fi
-  assert_call_count '^mise use --global bun$' 1
-  assert_call_count '^mise settings set npm\.package_manager bun$' 0
-  assert_call_count '^mise latest elixir@1\.20$' 0
-  assert_call_count '^mise use --global node@lts ' 0
+  local home="$test_sandbox/home"
+  local output
+  print 'return 42' > "$home/.dotfiles/.zshrc"
 
-  cleanup
-  test_sandbox=""
+  if ! output="$(run_setup)"; then
+    fail 'setup sourced the interactive shell config'
+  fi
+  [[ "$output" == *'Setup complete. Open a new terminal to load the updated shell configuration.'* ]] || \
+    fail 'setup does not tell the user to open a new terminal'
+}
+
+test_setup_rejects_missing_link_source() {
   prepare_setup_sandbox
 
-  if MISE_FAKE_FAIL_NPM_SETTING=1 run_setup; then
-    fail 'setup succeeded after npm package manager setting failed'
+  local home="$test_sandbox/home"
+  rm "$home/.dotfiles/mise/config.toml"
+
+  if run_setup 2>/dev/null; then
+    fail 'setup succeeded with a missing mise config source'
   fi
-  assert_call_count '^mise use --global bun$' 1
-  assert_call_count '^mise settings set npm\.package_manager bun$' 1
+  [[ ! -L "$home/.config/mise/config.toml" ]] || \
+    fail 'setup created a dangling mise config link'
   assert_call_count '^mise latest elixir@1\.20$' 0
-  assert_call_count '^mise use --global node@lts ' 0
+  assert_call_count '^mise -C .*/home install --yes$' 0
+}
+
+test_setup_stops_after_mise_install_failure() {
+  prepare_setup_sandbox
+
+  if MISE_FAKE_FAIL_INSTALL=1 run_setup; then
+    fail 'setup succeeded after mise install failed'
+  fi
+  assert_call_count '^mise latest elixir@1\.20$' 1
+  assert_call_count '^mise -C .*/home install --yes$' 1
 }
 
 test_setup_rejects_incompatible_elixir_build() {
@@ -208,59 +212,81 @@ test_setup_rejects_incompatible_elixir_build() {
     fail 'setup accepted an Elixir build that was not compiled for OTP 29'
   fi
 
-  assert_call_count '^mise use --global bun$' 1
-  assert_call_count '^mise settings set npm\.package_manager bun$' 1
   assert_call_count '^mise latest elixir@1\.20$' 1
-  assert_call_count '^mise use --global node@lts ' 0
+  assert_call_count '^mise -C .*/home install --yes$' 0
 }
 
-test_setup_removes_managed_gh_dash_link() {
+test_setup_backs_up_existing_mise_config() {
   prepare_setup_sandbox
 
   local home="$test_sandbox/home"
-  mkdir -p "$home/.config/gh-dash"
-  ln -s "$home/.dotfiles/gh-dash/config.yml" "$home/.config/gh-dash/config.yml"
+  mkdir -p "$home/.config/mise"
+  print 'personal mise config' > "$home/.config/mise/config.toml"
 
   run_setup
+  run_setup
 
-  [[ ! -e "$home/.config/gh-dash" ]] || fail 'managed gh-dash link or empty directory remains'
+  [[ "$(< "$home/.config/mise/config.toml.bak-20260716")" == 'personal mise config' ]] || \
+    fail 'existing mise config content was not backed up'
+  assert_symlink "$home/.config/mise/config.toml" "$home/.dotfiles/mise/config.toml"
+  [[ ! -e "$home/.config/mise/config.toml.bak-20260716-1" ]] || \
+    fail 're-running setup created an extra mise config backup'
 }
 
-test_setup_preserves_unmanaged_gh_dash_paths() {
-  prepare_setup_sandbox
+test_mise_config_declares_approved_tools() {
+  local config="$repo_root/mise/config.toml"
+  [[ -f "$config" ]] || fail 'tracked mise config does not exist'
 
-  local home="$test_sandbox/home"
-  mkdir -p "$home/.config/gh-dash"
-  print 'personal config' > "$home/.config/gh-dash/config.yml"
+  local actual_tools
+  local expected_tools
+  actual_tools="$(awk '
+    /^\[tools\]$/ { in_tools = 1; next }
+    /^\[/ { in_tools = 0 }
+    in_tools && /^[A-Za-z0-9_".:@\/-]+[[:space:]]*=/ {
+      key = $0
+      sub(/[[:space:]]*=.*$/, "", key)
+      gsub(/^"|"$/, "", key)
+      print key
+    }
+  ' "$config" | LC_ALL=C sort)"
+  expected_tools="$(print -l \
+    act aqua:boyter/scc atuin bat bottom buf bun caddy claude clang-format cmake codex conda:eza ctop curlie \
+    delta deno direnv dive duf dust elixir erlang fastfetch fd fx fzf gdu gh git-lfs go goreleaser \
+    gping gradle helm herdr hunk hyperfine java jq lazydocker lazygit maven mc mkcert neovim node \
+    npm:agent-browser pipx:httpie pipx:mercurial pnpm python ripgrep rust sd starship terraform tmux \
+    uv wrangler zoxide | LC_ALL=C sort)"
 
-  run_setup
+  [[ "$actual_tools" == "$expected_tools" ]] || \
+    fail "mise tools differ from the approved set:\n$actual_tools"
+  grep -Fxq 'java = "temurin-25"' "$config" || fail 'mise config does not select Temurin 25'
+  grep -Fxq '"conda:eza" = "latest"' "$config" || fail 'mise config does not use conda eza'
+  grep -Fxq 'buf = "latest"' "$config" || fail 'mise config does not use the Buf shorthand'
+  grep -Fxq '"pipx:httpie" = { version = "latest", depends = ["uv"] }' "$config" || \
+    fail 'HTTPie does not depend on uv'
+  grep -Fxq '"pipx:mercurial" = { version = "latest", depends = ["uv"] }' "$config" || \
+    fail 'Mercurial does not depend on uv'
+  grep -Fxq 'package_manager = "bun"' "$config" || fail 'npm package manager is not Bun'
+  ! grep -Eq '^"(aqua:caddyserver/caddy|conda:clang-format|aqua:FiloSottile/mkcert|aqua:bufbuild/buf)"[[:space:]]*=' \
+    "$config" || fail 'mise config pins a backend already selected by the default registry'
+  ! grep -Fq '# CLI tools migrated from Homebrew or another mise backend' "$config" || \
+    fail 'mise config keeps a migration-only tool category'
+}
 
-  [[ "$(< "$home/.config/gh-dash/config.yml")" == 'personal config' ]] || \
-    fail 'personal gh-dash config was changed'
+test_brewfile_contains_only_approved_formulae() {
+  local brewfile="$repo_root/brew/Brewfile"
+  local actual_formulae
+  local expected_formulae
+  actual_formulae="$(sed -n 's/^brew "\([^"]*\)".*/\1/p' "$brewfile" | LC_ALL=C sort)"
+  expected_formulae="$(print -l \
+    cocoapods efl ffmpeg git gnupg htop ideviceinstaller ios-deploy mas mingw-w64 pinentry-mac \
+    sqlite ssh-copy-id syncthing telnet wget wxwidgets | LC_ALL=C sort)"
 
-  cleanup
-  test_sandbox=""
-  prepare_setup_sandbox
-  home="$test_sandbox/home"
-  mkdir -p "$home/.config/gh-dash"
-  ln -s "$home/elsewhere/config.yml" "$home/.config/gh-dash/config.yml"
-
-  run_setup
-
-  assert_symlink "$home/.config/gh-dash/config.yml" "$home/elsewhere/config.yml"
-
-  cleanup
-  test_sandbox=""
-  prepare_setup_sandbox
-  home="$test_sandbox/home"
-  mkdir -p "$home/.config/gh-dash"
-  ln -s "$home/.dotfiles/gh-dash/config.yml" "$home/.config/gh-dash/config.yml"
-  touch "$home/.config/gh-dash/preserved"
-
-  run_setup
-
-  [[ ! -e "$home/.config/gh-dash/config.yml" ]] || fail 'managed gh-dash link was not removed'
-  [[ -f "$home/.config/gh-dash/preserved" ]] || fail 'non-empty gh-dash directory content was removed'
+  [[ "$actual_formulae" == "$expected_formulae" ]] || \
+    fail "Brewfile formulae differ from the approved set:\n$actual_formulae"
+  [[ "$(grep -c '^cask ' "$brewfile")" == 17 ]] || fail 'Brewfile cask count changed'
+  [[ "$(grep -c '^mas ' "$brewfile")" == 3 ]] || fail 'Brewfile Mac App Store count changed'
+  grep -Fxq 'brew "syncthing", restart_service: :changed' "$brewfile" || \
+    fail 'Syncthing service restart policy changed'
 }
 
 test_setup_backs_up_existing_file() {
@@ -428,7 +454,8 @@ test_darwin_prelude_runs_twice() {
   assert_call_count '^git clone .*ohmyzsh' 1
   assert_call_count '^zinit install$' 1
   assert_call_count '^chsh ' 0
-  assert_call_count '^brew install wget git tree htop$' 2
+  assert_call_count '^brew install git$' 2
+  assert_call_count '^brew install --cask font-' 0
   assert_call_count '^brew install zsh ' 0
   assert_call_count '^defaults write ' 6
 }
@@ -445,6 +472,141 @@ test_linux_prelude_runs_twice() {
   assert_call_count '^wget .*Hack.zip' 1
   assert_call_count '^wget .*D2Coding.zip' 1
   assert_call_count '^sudo add-apt-repository --yes ppa:git-core/ppa$' 2
+  local apt_install_call
+  apt_install_call="$(grep -m1 '^sudo apt-get install --yes ' "$test_sandbox/calls.log" || true)"
+  [[ " $apt_install_call " == *' libnss3-tools '* ]] || fail 'Ubuntu does not install libnss3-tools'
+  [[ " $apt_install_call " != *' tree '* ]] || fail 'Ubuntu still installs tree'
+  assert_call_count '^sudo apt-get update$' 2
+  assert_call_count '^sudo apt-get install --yes libfuse2$' 2
+  assert_call_count '^sudo apt ' 0
+}
+
+prepare_brew_cleanup_sandbox() {
+  test_sandbox="$(mktemp -d)"
+
+  local home="$test_sandbox/home"
+  local dotfiles="$home/.dotfiles"
+  local fake_bin="$test_sandbox/bin"
+  local state="$test_sandbox/state"
+
+  [[ -x "$repo_root/bin/cleanup-homebrew.darwin.sh" ]] || \
+    fail 'Homebrew cleanup script does not exist or is not executable'
+
+  mkdir -p "$dotfiles/bin" "$dotfiles/brew" "$fake_bin" "$state"
+  cp "$repo_root/bin/cleanup-homebrew.darwin.sh" "$dotfiles/bin/cleanup-homebrew.darwin.sh"
+  print 'brew "sqlite"' > "$dotfiles/brew/Brewfile"
+  print -l opencode node ripgrep sqlite shared-lib personal-dep eza > "$state/formulae"
+  print -l codex claude-code claude-code@latest > "$state/casks"
+  print -l opencode eza sqlite personal-dep > "$state/leaves"
+  print -l cameroncooke/axe charmbracelet/tap rs/tap steipete/tap > "$state/taps"
+  touch "$test_sandbox/calls.log"
+
+  write_executable "$fake_bin/brew" '#!/bin/zsh
+print -r -- "brew $*" >> "$CALLS_LOG"
+
+state_file() {
+  print -r -- "$BREW_STATE_DIR/$1"
+}
+
+contains() {
+  grep -Fxq -- "$2" "$(state_file "$1")"
+}
+
+remove_item() {
+  local kind="$1"
+  local item="$2"
+  local file="$(state_file "$kind")"
+  grep -Fxv -- "$item" "$file" > "$file.next" || true
+  mv "$file.next" "$file"
+}
+
+case "$1" in
+  list)
+    if [[ "$2" == "--formula" && "$3" == "--versions" ]]; then
+      contains formulae "$4" && print -r -- "$4 1.0.0"
+    elif [[ "$2" == "--cask" && "$3" == "--versions" ]]; then
+      contains casks "$4" && print -r -- "$4 1.0.0"
+    elif [[ "$2" == "--formula" ]]; then
+      cat "$(state_file formulae)"
+    elif [[ "$2" == "--cask" ]]; then
+      cat "$(state_file casks)"
+    fi
+    ;;
+  leaves)
+    cat "$(state_file leaves)"
+    ;;
+  deps)
+    package="${argv[-1]}"
+    case "$package" in
+      codex) print -l ripgrep shared-lib ;;
+      claude-code | claude-code@latest) print shared-lib ;;
+      opencode) print -l node ripgrep sqlite personal-dep ;;
+    esac
+    ;;
+  uses)
+    package="${argv[-1]}"
+    case "$package" in
+      node)
+        contains formulae opencode && print opencode
+        ;;
+      ripgrep)
+        contains casks codex && print codex
+        contains formulae opencode && print opencode
+        ;;
+      shared-lib)
+        print retained-tool
+        ;;
+    esac
+    ;;
+  uninstall)
+    if [[ "$2" == "--formula" ]]; then
+      remove_item formulae "$3"
+    elif [[ "$2" == "--cask" ]]; then
+      remove_item casks "$3"
+    fi
+    ;;
+  tap)
+    cat "$(state_file taps)"
+    ;;
+  untap)
+    remove_item taps "$2"
+    ;;
+  autoremove)
+    [[ "$2" == "--dry-run" ]]
+    ;;
+  *)
+    exit 1
+    ;;
+esac'
+}
+
+run_brew_cleanup() {
+  HOME="$test_sandbox/home" \
+    CALLS_LOG="$test_sandbox/calls.log" \
+    BREW_STATE_DIR="$test_sandbox/state" \
+    PATH="$test_sandbox/bin:/usr/bin:/bin" \
+    /bin/zsh "$test_sandbox/home/.dotfiles/bin/cleanup-homebrew.darwin.sh"
+}
+
+test_brew_cleanup_removes_targets_and_only_their_orphaned_dependencies() {
+  prepare_brew_cleanup_sandbox
+
+  run_brew_cleanup
+  run_brew_cleanup
+
+  local state="$test_sandbox/state"
+  for package in opencode node ripgrep eza; do
+    ! grep -Fxq "$package" "$state/formulae" || fail "$package formula was not removed"
+  done
+  for package in codex claude-code claude-code@latest; do
+    ! grep -Fxq "$package" "$state/casks" || fail "$package cask was not removed"
+  done
+  for package in sqlite shared-lib personal-dep; do
+    grep -Fxq "$package" "$state/formulae" || fail "$package formula should have been preserved"
+  done
+  [[ ! -s "$state/taps" ]] || fail 'unused cleanup taps were not removed'
+  assert_call_count '^brew autoremove --dry-run$' 2
+  assert_call_count '^brew autoremove$' 0
 }
 
 test_herdr_config_supports_cjk_prefix() {
@@ -482,12 +644,16 @@ prepare_herdr_hunk_sandbox() {
   local fake_bin="$test_sandbox/bin"
   local repo="$test_sandbox/repo"
   local real_mise="${commands[mise]:-$HOME/.local/bin/mise}"
+  local jq_install_path
   local jq_bin
 
   mkdir -p "$home/.local/bin" "$fake_bin" "$repo"
   touch "$test_sandbox/calls.log" "$test_sandbox/hunk-review-skill.md"
 
-  jq_bin="$("$real_mise" which jq)" || fail 'jq is not available for Herdr-Hunk tests'
+  jq_install_path="$(MISE_NO_CONFIG=1 "$real_mise" ls --installed --json jq | \
+    sed -n 's/.*"install_path": "\([^"]*\)".*/\1/p' | head -n 1)"
+  jq_bin="$jq_install_path/jq"
+  [[ -x "$jq_bin" ]] || fail 'jq is not available for Herdr-Hunk tests'
   ln -s "$jq_bin" "$fake_bin/jq"
 
   write_executable "$home/.local/bin/mise" '#!/bin/zsh
@@ -739,16 +905,19 @@ run_test() {
       test_setup_runs_twice
       cleanup
       test_sandbox=""
-      test_setup_stops_after_mise_prerequisite_failure
+      test_setup_does_not_source_shell_config
+      cleanup
+      test_sandbox=""
+      test_setup_rejects_missing_link_source
+      cleanup
+      test_sandbox=""
+      test_setup_stops_after_mise_install_failure
       cleanup
       test_sandbox=""
       test_setup_rejects_incompatible_elixir_build
       cleanup
       test_sandbox=""
-      test_setup_removes_managed_gh_dash_link
-      cleanup
-      test_sandbox=""
-      test_setup_preserves_unmanaged_gh_dash_paths
+      test_setup_backs_up_existing_mise_config
       cleanup
       test_sandbox=""
       test_setup_backs_up_existing_file
@@ -758,12 +927,17 @@ run_test() {
       cleanup
       test_sandbox=""
       test_setup_restores_existing_file_when_link_fails
+      test_mise_config_declares_approved_tools
+      test_brewfile_contains_only_approved_formulae
       ;;
     darwin)
       test_darwin_prelude_runs_twice
       ;;
     linux)
       test_linux_prelude_runs_twice
+      ;;
+    brew-cleanup)
+      test_brew_cleanup_removes_targets_and_only_their_orphaned_dependencies
       ;;
     herdr)
       test_herdr_config_supports_cjk_prefix
@@ -805,13 +979,13 @@ run_test() {
 
 case "${1:-all}" in
   all)
-    for test_name in setup darwin linux herdr ghostty; do
+    for test_name in setup darwin linux brew-cleanup herdr ghostty; do
       run_test "$test_name"
       cleanup
       test_sandbox=""
     done
     ;;
-  setup | darwin | linux | herdr | ghostty)
+  setup | darwin | linux | brew-cleanup | herdr | ghostty)
     run_test "$1"
     ;;
   *)

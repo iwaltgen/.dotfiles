@@ -2,10 +2,10 @@
 
 # essential cli tools
 sudo add-apt-repository --yes ppa:git-core/ppa || exit 1
-sudo apt update || exit 1
+sudo apt-get update || exit 1
 sudo apt-get install --yes \
 	zsh ca-certificates lsb-release gnupg \
-	fontconfig tree curl wget unzip htop git \
+	fontconfig curl wget unzip htop git libnss3-tools \
 	build-essential make || exit 1
 
 oh_my_zsh_dir="$HOME/.oh-my-zsh"
@@ -65,4 +65,4 @@ popd || exit 1
 
 # AppImage
 sudo add-apt-repository --yes universe || exit 1
-sudo apt install --yes libfuse2 || exit 1
+sudo apt-get install --yes libfuse2 || exit 1

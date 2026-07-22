@@ -6,118 +6,16 @@ elif [[ $OSTYPE == linux* ]]; then
   "$HOME/.dotfiles/bin/prelude.linux.sh" || exit 1
 fi
 
-# tmux plugin manager
-tpm_dir="$HOME/.tmux/plugins/tpm"
-if [[ ! -d "$tpm_dir/.git" ]]; then
-  if [[ -e "$tpm_dir" || -L "$tpm_dir" ]]; then
-    print -u2 "TPM path exists but is not a Git repository: $tpm_dir"
-    exit 1
-  fi
-  mkdir -p "${tpm_dir:h}" || exit 1
-  git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir" || exit 1
-fi
-
-# mise
-if [[ ! -x "$HOME/.local/bin/mise" ]]; then
-  curl --fail --show-error --silent --location https://mise.run | sh
-fi
-if [[ ! -x "$HOME/.local/bin/mise" ]]; then
-  print -u2 "mise installation failed"
-  exit 1
-fi
-
-"$HOME/.local/bin/mise" use --global bun || exit 1
-"$HOME/.local/bin/mise" settings set npm.package_manager bun || exit 1
-
-elixir_version="$("$HOME/.local/bin/mise" latest elixir@1.20)" || exit 1
-case "$elixir_version" in
-  1.20.<->-otp-29) ;;
-  *)
-    print -u2 "Expected Elixir 1.20.x built for OTP 29, got: $elixir_version"
-    exit 1
-    ;;
-esac
-
-# Eclipse Temurin 25 is the selected LTS release.
-"$HOME/.local/bin/mise" use --global \
-  node@lts \
-  erlang@29 \
-  elixir@1.20 \
-  python@3.13 \
-  java@temurin-25 \
-  go \
-  rust \
-  deno \
-  sd \
-  fd \
-  bat \
-  hyperfine \
-  ripgrep \
-  delta \
-  gdu \
-  duf \
-  dust \
-  gping \
-  jq \
-  fx \
-  zoxide \
-  ctop \
-  bottom \
-  lazygit \
-  lazydocker \
-  direnv \
-  atuin \
-  gh \
-  neovim \
-  fzf \
-  starship \
-  fastfetch \
-  curlie \
-  mc \
-  hunk \
-  herdr \
-  tmux || exit 1
-
-# The asdf eza plugin can reference missing cargo-quickinstall assets on macOS.
-"$HOME/.local/bin/mise" use --global cargo:eza || exit 1
-
-# macOS standalone CLI tools previously managed by Homebrew
-if [[ $OSTYPE == darwin* ]]; then
-  "$HOME/.local/bin/mise" use --global \
-    act \
-    cmake \
-    dive \
-    git-lfs \
-    goreleaser \
-    gradle \
-    helm \
-    maven \
-    terraform || exit 1
-fi
-
-# dotfiles
 config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
-
-legacy_gh_dash_link="$config_home/gh-dash/config.yml"
-legacy_gh_dash_source="$HOME/.dotfiles/gh-dash/config.yml"
-if [[ -L "$legacy_gh_dash_link" && "$(readlink "$legacy_gh_dash_link")" == "$legacy_gh_dash_source" ]]; then
-  unlink "$legacy_gh_dash_link" || exit 1
-  rmdir "${legacy_gh_dash_link:h}" 2>/dev/null || true
-fi
-
-mkdir -p \
-  "$config_home/atuin" \
-  "$config_home/ghostty" \
-  "$config_home/herdr" \
-  "$config_home/hunk" \
-  "$config_home/agents" \
-  "$HOME/.local/bin" \
-  "$HOME/.claude" \
-  "$HOME/.codex" || exit 1
 
 link_dotfile() {
   local source_path="$1"
   local target_path="$2"
+
+  if [[ ! -e "$source_path" ]]; then
+    print -u2 "Link source does not exist: $source_path"
+    return 1
+  fi
 
   if [[ -e "$target_path" && ! -L "$target_path" ]]; then
     local backup_date
@@ -144,6 +42,52 @@ link_dotfile() {
 
   ln -sfn "$source_path" "$target_path"
 }
+
+# tmux plugin manager
+tpm_dir="$HOME/.tmux/plugins/tpm"
+if [[ ! -d "$tpm_dir/.git" ]]; then
+  if [[ -e "$tpm_dir" || -L "$tpm_dir" ]]; then
+    print -u2 "TPM path exists but is not a Git repository: $tpm_dir"
+    exit 1
+  fi
+  mkdir -p "${tpm_dir:h}" || exit 1
+  git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir" || exit 1
+fi
+
+# mise
+if [[ ! -x "$HOME/.local/bin/mise" ]]; then
+  curl --fail --show-error --silent --location https://mise.run | sh
+fi
+if [[ ! -x "$HOME/.local/bin/mise" ]]; then
+  print -u2 "mise installation failed"
+  exit 1
+fi
+
+mkdir -p "$config_home/mise" || exit 1
+link_dotfile "$HOME/.dotfiles/mise/config.toml" "$config_home/mise/config.toml" || exit 1
+
+elixir_version="$("$HOME/.local/bin/mise" latest elixir@1.20)" || exit 1
+case "$elixir_version" in
+  1.20.<->-otp-29) ;;
+  *)
+    print -u2 "Expected Elixir 1.20.x built for OTP 29, got: $elixir_version"
+    exit 1
+    ;;
+esac
+
+MISE_CEILING_PATHS="$HOME" \
+  "$HOME/.local/bin/mise" -C "$HOME" install --yes || exit 1
+
+# dotfiles
+mkdir -p \
+  "$config_home/atuin" \
+  "$config_home/ghostty" \
+  "$config_home/herdr" \
+  "$config_home/hunk" \
+  "$config_home/agents" \
+  "$HOME/.local/bin" \
+  "$HOME/.claude" \
+  "$HOME/.codex" || exit 1
 
 link_dotfile "$HOME/.dotfiles/.zshrc" "$HOME/.zshrc" || exit 1
 link_dotfile "$HOME/.dotfiles/.ideavimrc" "$HOME/.ideavimrc" || exit 1
@@ -181,4 +125,4 @@ link_dotfile "$HOME/.dotfiles/.gnupg/gpg-agent.conf" "$HOME/.gnupg/gpg-agent.con
 # ntfs
 mkdir -p "$HOME/.ntfs" || exit 1
 
-source "$HOME/.zshrc"
+print "Setup complete. Open a new terminal to load the updated shell configuration."

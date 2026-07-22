@@ -12,7 +12,7 @@ if [[ ! -x "$brew_bin" ]]; then
 fi
 eval "$("$brew_bin" shellenv)"
 
-brew install wget git tree htop || exit 1
+brew install git || exit 1
 
 # zsh
 oh_my_zsh_dir="$HOME/.oh-my-zsh"
@@ -48,10 +48,6 @@ fi
 pushd "$HOME/.dotfiles/brew" || exit 1
 brew bundle || exit 1
 popd || exit 1
-
-# fonts
-brew install --cask font-hack-nerd-font || exit 1
-brew install --cask font-d2coding-nerd-font || exit 1
 
 # key repeat
 defaults write -g ApplePressAndHoldEnabled -bool false || exit 1
