@@ -104,7 +104,7 @@ update-cli-tools() {
     return 127
   fi
 
-  command mise self-update || return
+  command mise self-update --yes || return
   command mise upgrade --interactive || return
 
   # Capture candidates before pruning because deleted versions cannot be queried afterwards.

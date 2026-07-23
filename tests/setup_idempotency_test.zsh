@@ -1134,7 +1134,7 @@ python 3.10.0' run_zshrc_cli 'update-cli-tools')"
   local actual="$(<"$test_sandbox/calls.log")"
   local expected='brew upgrade -y
 brew cleanup --prune=all
-mise self-update
+mise self-update --yes
 mise upgrade --interactive
 mise ls --prunable --no-header
 mise prune --yes'
@@ -1166,7 +1166,7 @@ test_zshrc_cli_update_supports_hosts_without_homebrew() {
   output="$(MISE_FAKE_PRUNABLE='node 20.0.0' run_zshrc_cli 'update-cli-tools')"
 
   local actual="$(<"$test_sandbox/calls.log")"
-  local expected='mise self-update
+  local expected='mise self-update --yes
 mise upgrade --interactive
 mise ls --prunable --no-header
 mise prune --yes'
