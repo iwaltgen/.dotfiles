@@ -46,7 +46,6 @@ tmux = "latest"
 # Development and deployment CLI tools
 act = "latest"
 buf = "latest"
-caddy = "latest"
 clang-format = "latest"
 cmake = "latest"
 dive = "latest"
