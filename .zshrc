@@ -44,27 +44,6 @@ zinit wait lucid light-mode for \
   blockf atpull"zinit creinstall -q ." \
     zsh-users/zsh-completions
 
-# standalone CLI tools are installed by mise
-(( $+commands[bat] )) && alias cat=bat
-(( $+commands[bat] )) && alias less=bat
-(( $+commands[delta] )) && alias diff=delta
-(( $+commands[dust] )) && alias du=dust
-(( $+commands[gping] )) && alias ping=gping
-(( $+commands[lazygit] )) && alias lg=lazygit
-(( $+commands[lazydocker] )) && alias ld=lazydocker
-
-if (( $+commands[herdr] )); then
-  herdr() {
-    local -a args=("$@")
-
-    if (( ${args[(I)--remote]} && ! ${args[(I)--remote-keybindings]} )); then
-      args+=(--remote-keybindings server)
-    fi
-
-    command herdr "${args[@]}"
-  }
-fi
-
 # @github/git-sizer, Compute various size metrics for a Git repository, flagging those that might cause problems.
 zi for from"gh-r" \
     sbin"git-sizer" \
@@ -125,27 +104,11 @@ HISTFILE=~/.zsh_history
 HISTSIZE=99999999
 SAVEHIST=99999999
 
-# eza
-if (( $+commands[eza] )); then
-  eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group' '--color-scale=all')
-
-  alias ls='eza ${eza_params}'
-  alias ll='eza --header --long ${eza_params}'
-  alias l='eza --all --header --long ${eza_params}'
-  alias lm='eza --all --header --long --sort=modified ${eza_params}'
-  alias la='eza -lbhHigUmuSa'
-  alias lt='eza --tree'
-  alias tree='eza --tree'
-fi
-
 # shell integrations for CLI tools installed by mise
 (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 (( $+commands[direnv] )) && eval "$(direnv hook zsh)"
 (( $+commands[atuin] )) && eval "$(atuin init zsh --disable-up-arrow)"
 (( $+commands[starship] )) && eval "$(starship init zsh)"
-
-# Neovim
-(( $+commands[nvim] )) && alias vi=nvim
 
 # fastfetch
 if [[ -o interactive ]] && (( $+commands[fastfetch] )); then
@@ -154,6 +117,9 @@ fi
 
 # local
 export PATH="$PATH:$HOME/.local/bin"
+
+# common command-line aliases and wrappers
+[ -f $HOME/.zshrc.cli ] && source $HOME/.zshrc.cli
 
 # customizations, e.g. theme, plugins, aliases, etc.
 [ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os

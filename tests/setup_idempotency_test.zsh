@@ -66,6 +66,7 @@ prepare_setup_sandbox() {
 
   touch \
     "$dotfiles/.zshrc" \
+    "$dotfiles/.zshrc.cli" \
     "$dotfiles/.zshrc.darwin" \
     "$dotfiles/.zshrc.linux" \
     "$dotfiles/.ideavimrc" \
@@ -156,6 +157,7 @@ test_setup_runs_twice() {
   grep -Fxq "mise install-context cd=$home ceiling=$home" "$test_sandbox/calls.log" || \
     fail 'mise install does not isolate global config discovery from the caller directory'
   assert_symlink "$home/.config/mise/config.toml" "$home/.dotfiles/mise/config.toml"
+  assert_symlink "$home/.zshrc.cli" "$home/.dotfiles/.zshrc.cli"
   [[ -d "$home/.ntfs" ]] || fail "$home/.ntfs was not created"
   assert_symlink "$home/.config/nvim" "$home/.dotfiles/nvim"
   assert_symlink "$home/.config/herdr/config.toml" "$home/.dotfiles/herdr/config.toml"
@@ -905,6 +907,7 @@ prepare_zshrc_herdr_sandbox() {
   local fake_bin="$test_sandbox/bin"
 
   mkdir -p "$home/.local/share/zinit/zinit.git" "$fake_bin"
+  ln -s "$repo_root/.zshrc.cli" "$home/.zshrc.cli"
 
   write_executable "$home/.local/share/zinit/zinit.git/zinit.zsh" '#!/bin/zsh
 zinit() { :; }
@@ -948,6 +951,170 @@ test_zshrc_preserves_explicit_remote_keybindings() {
 
 test_zshrc_leaves_non_remote_herdr_commands_unchanged() {
   assert_zshrc_herdr_invocation 'status client' status client
+}
+
+prepare_zshrc_cli_sandbox() {
+  test_sandbox="$(mktemp -d)"
+
+  local fake_bin="$test_sandbox/bin"
+  mkdir -p "$fake_bin"
+  touch "$test_sandbox/calls.log"
+
+  write_executable "$fake_bin/bat" '#!/bin/zsh
+print -r -- "bat" >> "$CALLS_LOG"
+for arg in "$@"; do
+  print -r -- "arg=$arg" >> "$CALLS_LOG"
+done'
+
+  write_executable "$fake_bin/eza" '#!/bin/zsh
+print -r -- "eza $*" >> "$CALLS_LOG"'
+
+  write_executable "$fake_bin/claude" '#!/bin/zsh
+print -r -- "claude env=${CLAUDE_CODE_NO_FLICKER:-}" >> "$CALLS_LOG"
+for arg in "$@"; do
+  print -r -- "arg=$arg" >> "$CALLS_LOG"
+done'
+
+  write_executable "$fake_bin/codex" '#!/bin/zsh
+print -r -- "codex" >> "$CALLS_LOG"
+for arg in "$@"; do
+  print -r -- "arg=$arg" >> "$CALLS_LOG"
+done'
+
+  write_executable "$fake_bin/brew" '#!/bin/zsh
+print -r -- "brew $*" >> "$CALLS_LOG"
+if [[ "$1 $2" == "upgrade -y" && "${BREW_FAKE_FAIL_UPGRADE:-0}" == 1 ]]; then
+  exit 1
+fi'
+
+  write_executable "$fake_bin/mise" '#!/bin/zsh
+print -r -- "mise $*" >> "$CALLS_LOG"
+if [[ "$1 $2 $3" == "ls --prunable --no-header" ]]; then
+  print -r -- "${MISE_FAKE_PRUNABLE:-}"
+fi'
+}
+
+run_zshrc_cli() {
+  local command_text="$1"
+
+  HOME="$test_sandbox/home" \
+    CALLS_LOG="$test_sandbox/calls.log" \
+    PATH="$test_sandbox/bin:/usr/bin:/bin" \
+    ZSHRC_CLI_UNDER_TEST="$repo_root/.zshrc.cli" \
+    ZSHRC_CLI_COMMAND="$command_text" \
+    MISE_FAKE_PRUNABLE="${MISE_FAKE_PRUNABLE:-}" \
+    BREW_FAKE_FAIL_UPGRADE="${BREW_FAKE_FAIL_UPGRADE:-0}" \
+    /bin/zsh -c 'source "$ZSHRC_CLI_UNDER_TEST"; eval "$ZSHRC_CLI_COMMAND"'
+}
+
+test_zshrc_cli_tree_aliases_default_to_depth_two() {
+  prepare_zshrc_cli_sandbox
+
+  run_zshrc_cli 'lt; tree --level=4 --icons=never'
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected='eza --tree --level=2
+eza --tree --level=2 --level=4 --icons=never'
+  [[ "$actual" == "$expected" ]] || \
+    fail "eza tree aliases: expected '$expected', got '$actual'"
+}
+
+test_zshrc_cli_less_uses_bat_pager_at_end_of_input() {
+  prepare_zshrc_cli_sandbox
+
+  run_zshrc_cli 'less notes.md'
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected='bat
+arg=--paging=always
+arg=--pager=less -R +G
+arg=notes.md'
+  [[ "$actual" == "$expected" ]] || \
+    fail "less wrapper: expected '$expected', got '$actual'"
+}
+
+test_zshrc_cli_agent_wrappers_default_to_full_access_and_support_safe_mode() {
+  prepare_zshrc_cli_sandbox
+
+  run_zshrc_cli 'claude "review this" --model opus; claude "review safely" --safe; codex "fix it"; codex "inspect" --safe'
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected='claude env=1
+arg=--dangerously-skip-permissions
+arg=review this
+arg=--model
+arg=opus
+claude env=1
+arg=review safely
+codex
+arg=--dangerously-bypass-approvals-and-sandbox
+arg=fix it
+codex
+arg=inspect'
+  [[ "$actual" == "$expected" ]] || \
+    fail "agent wrappers: expected '$expected', got '$actual'"
+}
+
+test_zshrc_cli_updates_tools_and_reports_pruned_versions() {
+  prepare_zshrc_cli_sandbox
+
+  local output
+  output="$(MISE_FAKE_PRUNABLE='node 20.0.0
+python 3.10.0' run_zshrc_cli 'update-cli-tools')"
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected='brew upgrade -y
+brew cleanup --prune=all
+mise self-update
+mise upgrade --interactive
+mise ls --prunable --no-header
+mise prune --yes'
+  [[ "$actual" == "$expected" ]] || \
+    fail "CLI update order: expected '$expected', got '$actual'"
+  [[ "$output" == *'Pruned mise versions:'* ]] || \
+    fail 'CLI update does not label the pruned mise versions'
+  [[ "$output" == *'node 20.0.0'* && "$output" == *'python 3.10.0'* ]] || \
+    fail "CLI update does not report the pruned mise versions: $output"
+}
+
+test_zshrc_cli_update_stops_after_brew_failure() {
+  prepare_zshrc_cli_sandbox
+
+  if BREW_FAKE_FAIL_UPGRADE=1 run_zshrc_cli 'update-cli-tools'; then
+    fail 'CLI update succeeded after brew upgrade failed'
+  fi
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  [[ "$actual" == 'brew upgrade -y' ]] || \
+    fail "CLI update continued after brew failure: $actual"
+}
+
+test_zshrc_cli_update_supports_hosts_without_homebrew() {
+  prepare_zshrc_cli_sandbox
+  rm "$test_sandbox/bin/brew"
+
+  local output
+  output="$(MISE_FAKE_PRUNABLE='node 20.0.0' run_zshrc_cli 'update-cli-tools')"
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected='mise self-update
+mise upgrade --interactive
+mise ls --prunable --no-header
+mise prune --yes'
+  [[ "$actual" == "$expected" ]] || \
+    fail "CLI update without Homebrew: expected '$expected', got '$actual'"
+  [[ "$output" == *'node 20.0.0'* ]] || \
+    fail "CLI update without Homebrew does not report the pruned version: $output"
+}
+
+test_zshrc_cli_update_reports_when_nothing_was_pruned() {
+  prepare_zshrc_cli_sandbox
+
+  local output
+  output="$(run_zshrc_cli 'update-cli-tools')"
+
+  [[ "$output" == *'No mise versions were pruned.'* ]] || \
+    fail "CLI update does not report an empty prune result: $output"
 }
 
 run_test() {
@@ -1023,6 +1190,27 @@ run_test() {
       test_sandbox=""
       test_herdr_hunk_prompt_refuses_working_agent
       ;;
+    cli)
+      test_zshrc_cli_tree_aliases_default_to_depth_two
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_less_uses_bat_pager_at_end_of_input
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_agent_wrappers_default_to_full_access_and_support_safe_mode
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_updates_tools_and_reports_pruned_versions
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_update_stops_after_brew_failure
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_update_supports_hosts_without_homebrew
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_update_reports_when_nothing_was_pruned
+      ;;
     ghostty)
       test_ghostty_maps_physical_herdr_keys
       ;;
@@ -1035,13 +1223,13 @@ run_test() {
 
 case "${1:-all}" in
   all)
-    for test_name in setup darwin linux brew-cleanup herdr ghostty; do
+    for test_name in setup darwin linux brew-cleanup herdr cli ghostty; do
       run_test "$test_name"
       cleanup
       test_sandbox=""
     done
     ;;
-  setup | darwin | linux | brew-cleanup | herdr | ghostty)
+  setup | darwin | linux | brew-cleanup | herdr | cli | ghostty)
     run_test "$1"
     ;;
   *)

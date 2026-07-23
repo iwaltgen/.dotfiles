@@ -90,6 +90,7 @@ mkdir -p \
   "$HOME/.codex" || exit 1
 
 link_dotfile "$HOME/.dotfiles/.zshrc" "$HOME/.zshrc" || exit 1
+link_dotfile "$HOME/.dotfiles/.zshrc.cli" "$HOME/.zshrc.cli" || exit 1
 link_dotfile "$HOME/.dotfiles/.ideavimrc" "$HOME/.ideavimrc" || exit 1
 link_dotfile "$HOME/.dotfiles/nvim" "$config_home/nvim" || exit 1
 link_dotfile "$HOME/.dotfiles/atuin/config.toml" "$config_home/atuin/config.toml" || exit 1
