@@ -1,0 +1,6 @@
+[hooks]
+enter = '''
+if [ "$(uname -s)" = "Darwin" ]; then
+  "$MISE_PROJECT_ROOT/bin/ensure-superpowers-docs-link.darwin.sh"
+fi
+'''

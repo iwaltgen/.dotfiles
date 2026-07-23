@@ -1117,6 +1117,100 @@ test_zshrc_cli_update_reports_when_nothing_was_pruned() {
     fail "CLI update does not report an empty prune result: $output"
 }
 
+prepare_superpowers_docs_link_sandbox() {
+  test_sandbox="$(mktemp -d)"
+
+  local home="$test_sandbox/home"
+  local dotfiles="$home/.dotfiles"
+  local fake_bin="$test_sandbox/bin"
+
+  mkdir -p "$dotfiles/bin" "$dotfiles/docs" "$fake_bin"
+  cp "$repo_root/bin/ensure-superpowers-docs-link.darwin.sh" \
+    "$dotfiles/bin/ensure-superpowers-docs-link.darwin.sh"
+
+  write_executable "$fake_bin/uname" '#!/bin/zsh
+print -r -- "${TEST_UNAME:-Darwin}"'
+}
+
+run_superpowers_docs_link() {
+  local home="$test_sandbox/home"
+
+  HOME="$home" \
+    TEST_UNAME="${TEST_UNAME:-Darwin}" \
+    PATH="$test_sandbox/bin:/usr/bin:/bin" \
+    /bin/zsh "$home/.dotfiles/bin/ensure-superpowers-docs-link.darwin.sh"
+}
+
+test_superpowers_docs_link_is_idempotent_on_macos() {
+  prepare_superpowers_docs_link_sandbox
+
+  local home="$test_sandbox/home"
+  local target="$home/syncthing/agents/superpowers/dotfiles"
+  local link_path="$home/.dotfiles/docs/superpowers"
+
+  mkdir -p "$target"
+
+  run_superpowers_docs_link
+  run_superpowers_docs_link
+
+  assert_symlink "$link_path" "$target"
+}
+
+test_superpowers_docs_link_is_noop_on_linux() {
+  prepare_superpowers_docs_link_sandbox
+
+  local home="$test_sandbox/home"
+  local target="$home/syncthing/agents/superpowers/dotfiles"
+  local link_path="$home/.dotfiles/docs/superpowers"
+
+  mkdir -p "$target"
+  TEST_UNAME=Linux run_superpowers_docs_link
+
+  [[ ! -e "$link_path" && ! -L "$link_path" ]] || \
+    fail 'Linux created the macOS-only superpowers docs link'
+}
+
+test_superpowers_docs_link_waits_for_syncthing_target() {
+  prepare_superpowers_docs_link_sandbox
+
+  local home="$test_sandbox/home"
+  local link_path="$home/.dotfiles/docs/superpowers"
+
+  run_superpowers_docs_link
+
+  [[ ! -e "$link_path" && ! -L "$link_path" ]] || \
+    fail 'link was created before the Syncthing target existed'
+}
+
+test_superpowers_docs_link_preserves_conflicting_path() {
+  prepare_superpowers_docs_link_sandbox
+
+  local home="$test_sandbox/home"
+  local target="$home/syncthing/agents/superpowers/dotfiles"
+  local link_path="$home/.dotfiles/docs/superpowers"
+
+  mkdir -p "$target" "$link_path"
+  print -r -- 'keep me' > "$link_path/existing.md"
+
+  if run_superpowers_docs_link 2>/dev/null; then
+    fail 'conflicting docs path did not fail'
+  fi
+
+  [[ -f "$link_path/existing.md" && ! -L "$link_path" ]] || \
+    fail 'conflicting docs path was modified'
+}
+
+test_mise_project_config_declares_macos_docs_link_hook() {
+  local config="$repo_root/mise.toml"
+
+  [[ -f "$config" ]] || fail 'project mise config does not exist'
+  grep -Fq '[hooks]' "$config" || fail 'project mise config does not declare hooks'
+  grep -Fq 'if [ "$(uname -s)" = "Darwin" ]; then' "$config" || \
+    fail 'mise enter hook is not restricted to macOS'
+  grep -Fq '"$MISE_PROJECT_ROOT/bin/ensure-superpowers-docs-link.darwin.sh"' "$config" || \
+    fail 'mise enter hook does not call the docs link script'
+}
+
 run_test() {
   local name="$1"
 
@@ -1214,6 +1308,19 @@ run_test() {
     ghostty)
       test_ghostty_maps_physical_herdr_keys
       ;;
+    docs-link)
+      test_superpowers_docs_link_is_idempotent_on_macos
+      cleanup
+      test_sandbox=""
+      test_superpowers_docs_link_is_noop_on_linux
+      cleanup
+      test_sandbox=""
+      test_superpowers_docs_link_waits_for_syncthing_target
+      cleanup
+      test_sandbox=""
+      test_superpowers_docs_link_preserves_conflicting_path
+      test_mise_project_config_declares_macos_docs_link_hook
+      ;;
     *)
       fail "unknown test: $name"
       ;;
@@ -1223,13 +1330,13 @@ run_test() {
 
 case "${1:-all}" in
   all)
-    for test_name in setup darwin linux brew-cleanup herdr cli ghostty; do
+    for test_name in setup darwin linux brew-cleanup herdr cli ghostty docs-link; do
       run_test "$test_name"
       cleanup
       test_sandbox=""
     done
     ;;
-  setup | darwin | linux | brew-cleanup | herdr | cli | ghostty)
+  setup | darwin | linux | brew-cleanup | herdr | cli | ghostty | docs-link)
     run_test "$1"
     ;;
   *)
