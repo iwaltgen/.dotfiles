@@ -43,6 +43,26 @@ link_dotfile() {
   ln -sfn "$source_path" "$target_path"
 }
 
+remove_managed_legacy_link() {
+  local target_path="$1"
+  shift
+
+  [[ -L "$target_path" ]] || return 0
+
+  local current_source
+  current_source="$(readlink "$target_path")" || return 1
+
+  local managed_source
+  for managed_source in "$@"; do
+    if [[ "$current_source" == "$managed_source" ]]; then
+      rm "$target_path"
+      return
+    fi
+  done
+
+  return 0
+}
+
 # tmux plugin manager
 tpm_dir="$HOME/.tmux/plugins/tpm"
 if [[ ! -d "$tpm_dir/.git" ]]; then
@@ -90,7 +110,13 @@ mkdir -p \
   "$HOME/.codex" || exit 1
 
 link_dotfile "$HOME/.dotfiles/.zshrc" "$HOME/.zshrc" || exit 1
-link_dotfile "$HOME/.dotfiles/.zshrc.cli" "$HOME/.zshrc.cli" || exit 1
+remove_managed_legacy_link \
+  "$HOME/.zshrc.cli" \
+  "$HOME/.dotfiles/.zshrc.cli" || exit 1
+remove_managed_legacy_link \
+  "$HOME/.zshrc.os" \
+  "$HOME/.dotfiles/.zshrc.darwin" \
+  "$HOME/.dotfiles/.zshrc.linux" || exit 1
 link_dotfile "$HOME/.dotfiles/.ideavimrc" "$HOME/.ideavimrc" || exit 1
 link_dotfile "$HOME/.dotfiles/nvim" "$config_home/nvim" || exit 1
 link_dotfile "$HOME/.dotfiles/atuin/config.toml" "$config_home/atuin/config.toml" || exit 1
@@ -104,10 +130,7 @@ link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$HOME/.claude/CLAUDE.md" || exi
 link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$HOME/.codex/AGENTS.md" || exit 1
 
 if [[ $OSTYPE == darwin* ]]; then
-  link_dotfile "$HOME/.dotfiles/.zshrc.darwin" "$HOME/.zshrc.os" || exit 1
   link_dotfile "$HOME/.dotfiles/bin/idea.darwin.sh" "$HOME/.local/bin/idea" || exit 1
-elif [[ $OSTYPE == linux* ]]; then
-  link_dotfile "$HOME/.dotfiles/.zshrc.linux" "$HOME/.zshrc.os" || exit 1
 fi
 
 link_dotfile "$HOME/.dotfiles/.tmux.conf" "$HOME/.tmux.conf" || exit 1

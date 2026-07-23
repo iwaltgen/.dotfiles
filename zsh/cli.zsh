@@ -1,9 +1,10 @@
 # Common command-line aliases and wrappers.
 
 # standalone CLI tools are installed by mise
+(( $+commands[bat] && $+aliases[less] )) && unalias less
+
 if (( $+commands[bat] )); then
   alias cat=bat
-  (( $+aliases[less] )) && unalias less
 
   less() {
     command bat --paging=always --pager='less -R +G' "$@"

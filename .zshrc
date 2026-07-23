@@ -119,8 +119,14 @@ fi
 export PATH="$PATH:$HOME/.local/bin"
 
 # common command-line aliases and wrappers
-[ -f $HOME/.zshrc.cli ] && source $HOME/.zshrc.cli
+[ -f "$HOME/.dotfiles/zsh/cli.zsh" ] && source "$HOME/.dotfiles/zsh/cli.zsh"
+
+# OS-specific configuration
+if [[ $OSTYPE == darwin* ]]; then
+  [ -f "$HOME/.dotfiles/zsh/darwin.zsh" ] && source "$HOME/.dotfiles/zsh/darwin.zsh"
+elif [[ $OSTYPE == linux* ]]; then
+  [ -f "$HOME/.dotfiles/zsh/linux.zsh" ] && source "$HOME/.dotfiles/zsh/linux.zsh"
+fi
 
 # customizations, e.g. theme, plugins, aliases, etc.
-[ -f $HOME/.zshrc.os ] && source $HOME/.zshrc.os
 [ -f $HOME/.zshrc.local ] && source $HOME/.zshrc.local

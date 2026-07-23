@@ -52,6 +52,7 @@ prepare_setup_sandbox() {
 
   mkdir -p \
     "$dotfiles/bin" \
+    "$dotfiles/zsh" \
     "$dotfiles/nvim" \
     "$dotfiles/atuin" \
     "$dotfiles/herdr" \
@@ -66,9 +67,9 @@ prepare_setup_sandbox() {
 
   touch \
     "$dotfiles/.zshrc" \
-    "$dotfiles/.zshrc.cli" \
-    "$dotfiles/.zshrc.darwin" \
-    "$dotfiles/.zshrc.linux" \
+    "$dotfiles/zsh/cli.zsh" \
+    "$dotfiles/zsh/darwin.zsh" \
+    "$dotfiles/zsh/linux.zsh" \
     "$dotfiles/.ideavimrc" \
     "$dotfiles/.starship.toml" \
     "$dotfiles/.tmux.conf" \
@@ -83,6 +84,9 @@ prepare_setup_sandbox() {
     "$dotfiles/.gnupg/gpg.conf" \
     "$dotfiles/.gnupg/gpg-agent.conf" \
     "$dotfiles/bin/idea.darwin.sh"
+
+  ln -s "$dotfiles/.zshrc.cli" "$home/.zshrc.cli"
+  ln -s "$dotfiles/.zshrc.darwin" "$home/.zshrc.os"
 
   write_executable "$dotfiles/bin/prelude.darwin.sh" '#!/bin/zsh
 exit 0'
@@ -157,7 +161,10 @@ test_setup_runs_twice() {
   grep -Fxq "mise install-context cd=$home ceiling=$home" "$test_sandbox/calls.log" || \
     fail 'mise install does not isolate global config discovery from the caller directory'
   assert_symlink "$home/.config/mise/config.toml" "$home/.dotfiles/mise/config.toml"
-  assert_symlink "$home/.zshrc.cli" "$home/.dotfiles/.zshrc.cli"
+  [[ ! -e "$home/.zshrc.cli" && ! -L "$home/.zshrc.cli" ]] || \
+    fail "$home/.zshrc.cli legacy link was not removed"
+  [[ ! -e "$home/.zshrc.os" && ! -L "$home/.zshrc.os" ]] || \
+    fail "$home/.zshrc.os legacy link was not removed"
   [[ -d "$home/.ntfs" ]] || fail "$home/.ntfs was not created"
   assert_symlink "$home/.config/nvim" "$home/.dotfiles/nvim"
   assert_symlink "$home/.config/herdr/config.toml" "$home/.dotfiles/herdr/config.toml"
@@ -906,8 +913,11 @@ prepare_zshrc_herdr_sandbox() {
   local home="$test_sandbox/home"
   local fake_bin="$test_sandbox/bin"
 
-  mkdir -p "$home/.local/share/zinit/zinit.git" "$fake_bin"
-  ln -s "$repo_root/.zshrc.cli" "$home/.zshrc.cli"
+  mkdir -p "$home/.local/share/zinit/zinit.git" "$home/.dotfiles/zsh" "$fake_bin"
+  ln -s "$repo_root/zsh/cli.zsh" "$home/.dotfiles/zsh/cli.zsh"
+
+  print 'typeset -g ZSHRC_OS_FRAGMENT=darwin' > "$home/.dotfiles/zsh/darwin.zsh"
+  print 'typeset -g ZSHRC_OS_FRAGMENT=linux' > "$home/.dotfiles/zsh/linux.zsh"
 
   write_executable "$home/.local/share/zinit/zinit.git/zinit.zsh" '#!/bin/zsh
 zinit() { :; }
@@ -953,6 +963,30 @@ test_zshrc_leaves_non_remote_herdr_commands_unchanged() {
   assert_zshrc_herdr_invocation 'status client' status client
 }
 
+test_zshrc_loads_fragment_for_current_os() {
+  prepare_zshrc_herdr_sandbox
+
+  local expected_os
+  if [[ $OSTYPE == darwin* ]]; then
+    expected_os=darwin
+  elif [[ $OSTYPE == linux* ]]; then
+    expected_os=linux
+  else
+    fail "unsupported test OS: $OSTYPE"
+  fi
+
+  local actual
+  actual="$(
+    HOME="$test_sandbox/home" \
+      PATH="$test_sandbox/bin:/usr/bin:/bin" \
+      ZSHRC_UNDER_TEST="$repo_root/.zshrc" \
+      /bin/zsh -c 'source "$ZSHRC_UNDER_TEST"; print -r -- "$ZSHRC_OS_FRAGMENT"'
+  )"
+
+  [[ "$actual" == "$expected_os" ]] || \
+    fail "OS fragment: expected '$expected_os', got '$actual'"
+}
+
 prepare_zshrc_cli_sandbox() {
   test_sandbox="$(mktemp -d)"
 
@@ -996,15 +1030,17 @@ fi'
 
 run_zshrc_cli() {
   local command_text="$1"
+  local prelude_text="${2:-}"
 
   HOME="$test_sandbox/home" \
     CALLS_LOG="$test_sandbox/calls.log" \
     PATH="$test_sandbox/bin:/usr/bin:/bin" \
-    ZSHRC_CLI_UNDER_TEST="$repo_root/.zshrc.cli" \
+    ZSHRC_CLI_UNDER_TEST="$repo_root/zsh/cli.zsh" \
     ZSHRC_CLI_COMMAND="$command_text" \
+    ZSHRC_CLI_PRELUDE="$prelude_text" \
     MISE_FAKE_PRUNABLE="${MISE_FAKE_PRUNABLE:-}" \
     BREW_FAKE_FAIL_UPGRADE="${BREW_FAKE_FAIL_UPGRADE:-0}" \
-    /bin/zsh -c 'source "$ZSHRC_CLI_UNDER_TEST"; eval "$ZSHRC_CLI_COMMAND"'
+    /bin/zsh -c 'eval "$ZSHRC_CLI_PRELUDE"; source "$ZSHRC_CLI_UNDER_TEST"; eval "$ZSHRC_CLI_COMMAND"'
 }
 
 test_zshrc_cli_tree_aliases_default_to_depth_two() {
@@ -1031,6 +1067,20 @@ arg=--pager=less -R +G
 arg=notes.md'
   [[ "$actual" == "$expected" ]] || \
     fail "less wrapper: expected '$expected', got '$actual'"
+}
+
+test_zshrc_cli_replaces_existing_less_alias_with_wrapper() {
+  prepare_zshrc_cli_sandbox
+
+  run_zshrc_cli 'less notes.md' 'alias less=bat'
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected='bat
+arg=--paging=always
+arg=--pager=less -R +G
+arg=notes.md'
+  [[ "$actual" == "$expected" ]] || \
+    fail "less alias migration: expected '$expected', got '$actual'"
 }
 
 test_zshrc_cli_agent_wrappers_default_to_full_access_and_support_safe_mode() {
@@ -1257,6 +1307,7 @@ run_test() {
       test_zshrc_defaults_remote_herdr_to_server_keybindings
       test_zshrc_preserves_explicit_remote_keybindings
       test_zshrc_leaves_non_remote_herdr_commands_unchanged
+      test_zshrc_loads_fragment_for_current_os
       test_herdr_config_supports_cjk_prefix
       test_herdr_config_focuses_agents_by_number
       test_herdr_config_opens_lazygit_popup
@@ -1289,6 +1340,9 @@ run_test() {
       cleanup
       test_sandbox=""
       test_zshrc_cli_less_uses_bat_pager_at_end_of_input
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_replaces_existing_less_alias_with_wrapper
       cleanup
       test_sandbox=""
       test_zshrc_cli_agent_wrappers_default_to_full_access_and_support_safe_mode
