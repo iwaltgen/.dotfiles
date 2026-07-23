@@ -49,6 +49,28 @@ pushd "$HOME/.dotfiles/brew" || exit 1
 brew bundle || exit 1
 popd || exit 1
 
+# jetendard font (JetBrainsMono Nerd Font Mono + Pretendard Korean glyphs; no Homebrew cask upstream)
+jetendard_fonts_dir="$HOME/Library/Fonts"
+mkdir -p "$jetendard_fonts_dir" || exit 1
+if [[ ! -f "$jetendard_fonts_dir/Jetendard-Regular.ttf" ]]; then
+  pushd "$jetendard_fonts_dir" || exit 1
+  wget --output-document Jetendard.zip https://github.com/kuskhan/jetendard/releases/download/v0.1.0/Jetendard-TTF.zip || exit 1
+  unzip -oqj Jetendard.zip 'ttf/*' -d . || exit 1
+  rm Jetendard.zip || exit 1
+  popd || exit 1
+fi
+
+# yeomil mono nerd font (Geist Mono + Pretendard, Nerd Fonts patched; no Homebrew cask upstream)
+yeomil_fonts_dir="$HOME/Library/Fonts"
+mkdir -p "$yeomil_fonts_dir" || exit 1
+if [[ ! -f "$yeomil_fonts_dir/YeomilMonoNerdFont-Regular.ttf" ]]; then
+  pushd "$yeomil_fonts_dir" || exit 1
+  wget --output-document YeomilMono.zip https://github.com/taevel02/yeomil-mono/releases/download/v1.1.2/YeomilMono-NerdFont-TTF.zip || exit 1
+  unzip -oq YeomilMono.zip -d . || exit 1
+  rm YeomilMono.zip || exit 1
+  popd || exit 1
+fi
+
 # key repeat
 defaults write -g ApplePressAndHoldEnabled -bool false || exit 1
 defaults write -g InitialKeyRepeat -int 10 || exit 1 # normal minimum is 15 (225 ms)

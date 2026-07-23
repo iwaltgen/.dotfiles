@@ -57,6 +57,29 @@ if ! fc-list : family | grep -Eqi 'D2Coding.*Nerd Font'; then
   fonts_changed=true
 fi
 
+if ! fc-list : family | grep -Fqi 'JetBrainsMono Nerd Font'; then
+  wget --output-document JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/JetBrainsMono.zip || exit 1
+  unzip -oq JetBrainsMono.zip -d . || exit 1
+  rm JetBrainsMono.zip || exit 1
+  fonts_changed=true
+fi
+
+# jetendard: JetBrainsMono Nerd Font Mono + Pretendard Korean glyphs (no nerd-fonts release; personal build)
+if ! fc-list : family | grep -Fqi 'Jetendard'; then
+  wget --output-document Jetendard.zip https://github.com/kuskhan/jetendard/releases/download/v0.1.0/Jetendard-TTF.zip || exit 1
+  unzip -oqj Jetendard.zip 'ttf/*' -d . || exit 1
+  rm Jetendard.zip || exit 1
+  fonts_changed=true
+fi
+
+# yeomil mono nerd font: Geist Mono + Pretendard, patched with Nerd Fonts symbols
+if ! fc-list : family | grep -Fqi 'YeomilMono Nerd Font'; then
+  wget --output-document YeomilMono.zip https://github.com/taevel02/yeomil-mono/releases/download/v1.1.2/YeomilMono-NerdFont-TTF.zip || exit 1
+  unzip -oq YeomilMono.zip -d . || exit 1
+  rm YeomilMono.zip || exit 1
+  fonts_changed=true
+fi
+
 if [[ "$fonts_changed" == true ]]; then
   fc-cache -fv || exit 1
 fi

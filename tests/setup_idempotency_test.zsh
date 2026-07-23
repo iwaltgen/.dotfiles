@@ -293,7 +293,7 @@ test_brewfile_contains_only_approved_formulae() {
 
   [[ "$actual_formulae" == "$expected_formulae" ]] || \
     fail "Brewfile formulae differ from the approved set:\n$actual_formulae"
-  [[ "$(grep -c '^cask ' "$brewfile")" == 17 ]] || fail 'Brewfile cask count changed'
+  [[ "$(grep -c '^cask ' "$brewfile")" == 18 ]] || fail 'Brewfile cask count changed'
   [[ "$(grep -c '^mas ' "$brewfile")" == 3 ]] || fail 'Brewfile Mac App Store count changed'
   grep -Fxq 'brew "syncthing", restart_service: :changed' "$brewfile" || \
     fail 'Syncthing service restart policy changed'
@@ -421,6 +421,12 @@ wget() {
     touch Hack.zip
   elif [[ "$*" == *D2Coding.zip* ]]; then
     touch D2Coding.zip
+  elif [[ "$*" == *JetBrainsMono.zip* ]]; then
+    touch JetBrainsMono.zip
+  elif [[ "$*" == *Jetendard.zip* ]]; then
+    touch Jetendard.zip
+  elif [[ "$*" == *YeomilMono.zip* ]]; then
+    touch YeomilMono.zip
   fi
 }
 
@@ -430,6 +436,14 @@ unzip() {
     print "Hack Nerd Font" >> "$FONTS_LIST"
   elif [[ "$*" == *D2Coding.zip* ]]; then
     print "D2CodingLigature Nerd Font" >> "$FONTS_LIST"
+  elif [[ "$*" == *JetBrainsMono.zip* ]]; then
+    print "JetBrainsMono Nerd Font" >> "$FONTS_LIST"
+  elif [[ "$*" == *Jetendard.zip* ]]; then
+    print "Jetendard" >> "$FONTS_LIST"
+    touch Jetendard-Regular.ttf
+  elif [[ "$*" == *YeomilMono.zip* ]]; then
+    print "YeomilMono Nerd Font" >> "$FONTS_LIST"
+    touch YeomilMonoNerdFont-Regular.ttf
   fi
 }
 
@@ -467,6 +481,8 @@ test_darwin_prelude_runs_twice() {
   assert_call_count '^brew install git$' 2
   assert_call_count '^brew install --cask font-' 0
   assert_call_count '^brew install zsh ' 0
+  assert_call_count '^wget .*Jetendard.zip' 1
+  assert_call_count '^wget .*YeomilMono.zip' 1
   assert_call_count '^defaults write ' 6
 }
 
@@ -481,6 +497,9 @@ test_linux_prelude_runs_twice() {
   assert_call_count '^chsh ' 0
   assert_call_count '^wget .*Hack.zip' 1
   assert_call_count '^wget .*D2Coding.zip' 1
+  assert_call_count '^wget .*JetBrainsMono.zip' 1
+  assert_call_count '^wget .*Jetendard.zip' 1
+  assert_call_count '^wget .*YeomilMono.zip' 1
   assert_call_count '^sudo add-apt-repository --yes ppa:git-core/ppa$' 2
   local apt_install_call
   apt_install_call="$(grep -m1 '^sudo apt-get install --yes ' "$test_sandbox/calls.log" || true)"
