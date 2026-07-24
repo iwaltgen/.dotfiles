@@ -55,7 +55,9 @@ fi
 [[ -n "$pane_id" ]] || fail "no active Herdr pane"
 [[ -n "$pane_cwd" ]] || fail "no active pane directory"
 [[ -x "$mise_bin" ]] || fail "mise is unavailable at $mise_bin"
-"$mise_bin" which hunk >/dev/null 2>&1 || fail "hunk is not installed through mise"
+hunk_bin="$("$mise_bin" which hunk 2>/dev/null)" ||
+  fail "hunk is not installed through mise"
+[[ -n "$hunk_bin" ]] || fail "hunk is not installed through mise"
 
 git_root="$(git -C "$pane_cwd" rev-parse --show-toplevel 2>/dev/null)" ||
   fail "not a Git repository: $pane_cwd"
@@ -65,6 +67,7 @@ split_json="$(
     --direction right \
     --ratio 0.5 \
     --cwd "$git_root" \
+    --env "HERDR_EXEC=$hunk_bin diff --watch" \
     --no-focus 2>/dev/null
 )" || fail "could not open the Hunk pane"
 
@@ -83,11 +86,6 @@ if ! "$herdr_bin" pane rename "$new_pane_id" "$pane_label" >/dev/null 2>&1; then
   fail "could not label the Hunk pane"
 fi
 
-mise_quoted="${(q)mise_bin}"
-hunk_command="exec $mise_quoted exec -- hunk diff --watch"
-if ! "$herdr_bin" pane run "$new_pane_id" "$hunk_command" >/dev/null 2>&1; then
-  cleanup_new_pane
-  fail "could not start Hunk"
-fi
-
+# Hunk starts via the HERDR_EXEC fast path in ~/.zshrc: the new pane's shell
+# execs `hunk diff --watch` directly, skipping interactive init (~325ms).
 print -- "herdr-hunk: opened $new_pane_id in $workspace_id"

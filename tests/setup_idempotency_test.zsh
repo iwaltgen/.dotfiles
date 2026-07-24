@@ -662,8 +662,8 @@ test_herdr_config_opens_lazygit_popup() {
   grep -Fxq 'key = "cmd+ctrl+g"' "$config" || fail 'Herdr does not bind Cmd-Ctrl-G'
   grep -Fxq 'type = "popup"' "$config" || fail 'Herdr does not open lazygit in a popup'
   grep -Fxq 'command = "lazygit"' "$config" || fail 'Herdr does not run lazygit'
-  grep -Fxq 'width = "80%"' "$config" || fail 'Herdr lazygit popup width is not 80%'
-  grep -Fxq 'height = "80%"' "$config" || fail 'Herdr lazygit popup height is not 80%'
+  grep -Fxq 'width = "90%"' "$config" || fail 'Herdr lazygit popup width is not 90%'
+  grep -Fxq 'height = "90%"' "$config" || fail 'Herdr lazygit popup height is not 90%'
 }
 
 prepare_herdr_hunk_sandbox() {
@@ -766,7 +766,6 @@ run_herdr_hunk() {
     HERDR_FAKE_LIST_FAIL="${HERDR_FAKE_LIST_FAIL:-0}" \
     HERDR_FAKE_NOT_GIT="${HERDR_FAKE_NOT_GIT:-0}" \
     HERDR_FAKE_RENAME_FAIL="${HERDR_FAKE_RENAME_FAIL:-0}" \
-    HERDR_FAKE_RUN_FAIL="${HERDR_FAKE_RUN_FAIL:-0}" \
     HUNK_MISSING="${HUNK_MISSING:-0}" \
     /bin/zsh "$repo_root/bin/herdr-hunk-toggle.sh"
 }
@@ -867,12 +866,13 @@ test_herdr_hunk_opens_right_split_without_focus() {
 
   grep -Fxq 'pane list --workspace w1' "$test_sandbox/calls.log" || \
     fail 'Herdr-Hunk does not list panes in the active workspace'
-  grep -Fxq "pane split w1:p1 --direction right --ratio 0.5 --cwd $test_sandbox/repo --no-focus" \
-    "$test_sandbox/calls.log" || fail 'Herdr-Hunk does not open a right split without focus'
+  grep -Fxq "pane split w1:p1 --direction right --ratio 0.5 --cwd $test_sandbox/repo --env HERDR_EXEC=$test_sandbox/home/.local/share/mise/installs/hunk/bin/hunk diff --watch --no-focus" \
+    "$test_sandbox/calls.log" || fail 'Herdr-Hunk does not open a right split carrying the Hunk fast-path exec'
   grep -Fxq 'pane rename w1:p2 hunk-watch' "$test_sandbox/calls.log" || \
     fail 'Herdr-Hunk does not label the new pane'
-  grep -Fxq "pane run w1:p2 exec $test_sandbox/home/.local/bin/mise exec -- hunk diff --watch" \
-    "$test_sandbox/calls.log" || fail 'Herdr-Hunk does not start Hunk watch mode'
+  # Hunk now starts via the HERDR_EXEC fast path in the split above, so the
+  # toggle never issues a separate `pane run` for the watch command.
+  assert_call_count '^pane run ' 0
 }
 
 test_herdr_hunk_closes_existing_pane_in_active_tab() {
@@ -896,15 +896,15 @@ test_herdr_hunk_refuses_non_git_directory() {
   assert_call_count '^pane split ' 0
 }
 
-test_herdr_hunk_closes_new_pane_when_run_fails() {
+test_herdr_hunk_closes_new_pane_when_rename_fails() {
   prepare_herdr_hunk_sandbox
 
-  if HERDR_FAKE_RUN_FAIL=1 run_herdr_hunk 2>/dev/null; then
-    fail 'Herdr-Hunk succeeded after Hunk launch failed'
+  if HERDR_FAKE_RENAME_FAIL=1 run_herdr_hunk 2>/dev/null; then
+    fail 'Herdr-Hunk succeeded after labeling the new pane failed'
   fi
 
   grep -Fxq 'pane close w1:p2' "$test_sandbox/calls.log" || \
-    fail 'Herdr-Hunk did not clean up the pane after launch failure'
+    fail 'Herdr-Hunk did not clean up the pane after a labeling failure'
 }
 
 test_ghostty_maps_physical_herdr_keys() {
@@ -921,6 +921,10 @@ test_ghostty_maps_physical_herdr_keys() {
     fail 'Ghostty does not map the physical R key to Cmd-Ctrl-R'
   grep -Fxq 'keybind = cmd+ctrl+KeyG=csi:103;13u' "$config" || \
     fail 'Ghostty does not map the physical G key to Cmd-Ctrl-G'
+  grep -Fxq 'keybind = cmd+ctrl+KeyE=csi:101;13u' "$config" || \
+    fail 'Ghostty does not map the physical E key to Cmd-Ctrl-E'
+  grep -Fxq 'keybind = cmd+ctrl+KeyT=csi:116;13u' "$config" || \
+    fail 'Ghostty does not map the physical T key to Cmd-Ctrl-T'
   if [[ -x "$ghostty_bin" ]]; then
     "$ghostty_bin" +validate-config --config-file="$config"
   fi
@@ -1343,7 +1347,7 @@ run_test() {
       test_herdr_hunk_refuses_non_git_directory
       cleanup
       test_sandbox=""
-      test_herdr_hunk_closes_new_pane_when_run_fails
+      test_herdr_hunk_closes_new_pane_when_rename_fails
       cleanup
       test_sandbox=""
       test_herdr_hunk_prompt_targets_idle_codex_with_current_skill_path

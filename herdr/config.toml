@@ -20,8 +20,22 @@ command = "$HOME/.dotfiles/bin/herdr-hunk-prompt.sh"
 key = "cmd+ctrl+g"
 type = "popup"
 command = "lazygit"
-width = "80%"
-height = "80%"
+width = "90%"
+height = "90%"
+
+[[keys.command]]
+key = "cmd+ctrl+t"
+type = "popup"
+command = "exec ${SHELL:-zsh}"
+width = "90%"
+height = "90%"
+
+[[keys.command]]
+key = "cmd+ctrl+e"
+type = "popup"
+command = "exec nvim -c \"Neotree show\""
+width = "90%"
+height = "90%"
 
 [experimental]
 switch_ascii_input_source_in_prefix = true

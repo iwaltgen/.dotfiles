@@ -1,8 +1,15 @@
 # Docs: https://zsh.sourceforge.io/Doc/Release/
 
+# Fast path: Herdr tool panes (e.g. cmd+ctrl+r hunk) inject HERDR_EXEC and exec
+# their command directly, skipping the whole interactive init below (~325ms).
+if [[ -n "${HERDR_EXEC:-}" ]]; then
+  export PATH="/opt/homebrew/bin:/usr/bin:/bin:$PATH"
+  exec ${(z)HERDR_EXEC}
+fi
+
 export LANG=en_US.UTF-8
 export TERM=xterm-256color
-export EDITOR=vim
+export EDITOR=nvim
 
 # mise
 if [[ -x "$HOME/.local/bin/mise" ]]; then
