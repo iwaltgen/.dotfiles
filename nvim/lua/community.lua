@@ -25,4 +25,11 @@ return {
   { import = "astrocommunity.pack.sql" },
   { import = "astrocommunity.pack.proto" },
   { import = "astrocommunity.pack.html-css" },
+  { import = "astrocommunity.pack.tailwindcss" },
+  { import = "astrocommunity.pack.mdx" },
+  { import = "astrocommunity.pack.dart" },
+  { import = "astrocommunity.pack.rust" },
+  { import = "astrocommunity.pack.terraform" },
+  { import = "astrocommunity.pack.docker" },
+  { import = "astrocommunity.pack.harper" },
 }
