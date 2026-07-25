@@ -3,7 +3,9 @@
 return {
   "mg979/vim-visual-multi",
   branch = "master",
-  lazy = false,
+  keys = {
+    { "<C-d>", mode = { "n", "x" }, desc = "Visual Multi: find under cursor" },
+  },
   init = function()
     vim.g.VM_maps = {
       ["Find Under"] = "<C-d>",

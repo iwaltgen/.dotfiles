@@ -2,8 +2,9 @@
 
 return {
   "m4xshen/smartcolumn.nvim",
-  opts = {
-    colorcolumn = { "120", "160" },
-    disabled_filetypes = { "lazy", "mason", "help", "checkhealth", "zsh" },
-  },
+  opts = function(_, opts)
+    opts.colorcolumn = { "120", "160" }
+    opts.disabled_filetypes = opts.disabled_filetypes or {}
+    table.insert(opts.disabled_filetypes, "zsh")
+  end,
 }
