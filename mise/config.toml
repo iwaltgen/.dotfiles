@@ -13,13 +13,17 @@ go = "latest"
 rust = "latest"
 
 # General-purpose CLI tools
+# fd·eza·delta·atuin은 arm64/Linux는 prebuilt, Intel Mac은 바로 아래 cargo로 설치(실행 파일명 동일)
 sd = "latest"
-fd = "latest"
-"conda:eza" = "latest"
+fd = { version = "latest", os = ["linux", "macos/arm64"] }
+"cargo:fd-find" = { version = "latest", os = ["macos/x64"] }
+"conda:eza" = { version = "latest", os = ["linux", "macos/arm64"] }
+"cargo:eza" = { version = "latest", os = ["macos/x64"] }
 bat = "latest"
 hyperfine = "latest"
 ripgrep = "latest"
-delta = "latest"
+delta = { version = "latest", os = ["linux", "macos/arm64"] }
+"cargo:git-delta" = { version = "latest", os = ["macos/x64"] }
 gdu = "latest"
 duf = "latest"
 dust = "latest"
@@ -32,7 +36,8 @@ bottom = "latest"
 lazygit = "latest"
 lazydocker = "latest"
 direnv = "latest"
-atuin = "latest"
+atuin = { version = "latest", os = ["linux", "macos/arm64"] }
+"cargo:atuin" = { version = "latest", os = ["macos/x64"] }
 gh = "latest"
 neovim = "latest"
 fzf = "latest"

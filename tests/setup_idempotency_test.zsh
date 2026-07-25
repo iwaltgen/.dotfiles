@@ -259,7 +259,8 @@ test_mise_config_declares_approved_tools() {
     }
   ' "$config" | LC_ALL=C sort)"
   expected_tools="$(print -l \
-    act atuin bat bottom buf bun claude clang-format cmake codex conda:eza ctop curlie \
+    act atuin bat bottom buf bun cargo:atuin cargo:eza cargo:fd-find cargo:git-delta \
+    claude clang-format cmake codex conda:eza ctop curlie \
     delta deno direnv dive duf dust elixir erlang fastfetch fd fx fzf gdu gh git-lfs go goreleaser \
     gping gradle helm herdr hunk hyperfine java jq lazydocker lazygit maven mc mkcert neovim node \
     npm:agent-browser pipx:httpie pipx:mercurial pnpm python ripgrep rust sd starship terraform tmux \
@@ -268,7 +269,7 @@ test_mise_config_declares_approved_tools() {
   [[ "$actual_tools" == "$expected_tools" ]] || \
     fail "mise tools differ from the approved set:\n$actual_tools"
   grep -Fxq 'java = "temurin-25"' "$config" || fail 'mise config does not select Temurin 25'
-  grep -Fxq '"conda:eza" = "latest"' "$config" || fail 'mise config does not use conda eza'
+  grep -Fxq '"conda:eza" = { version = "latest", os = ["linux", "macos/arm64"] }' "$config" || fail 'mise config does not use conda eza'
   grep -Fxq 'buf = "latest"' "$config" || fail 'mise config does not use the Buf shorthand'
   grep -Fxq '"pipx:httpie" = { version = "latest", depends = ["uv"] }' "$config" || \
     fail 'HTTPie does not depend on uv'
