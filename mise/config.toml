@@ -2,7 +2,6 @@
 # Runtimes and SDKs
 bun = "latest"
 node = "lts"
-# pnpm은 aqua prebuilt가 Intel Mac에서 실패하여 전 플랫폼 npm 백엔드로 통일
 "npm:pnpm" = "latest"
 python = "latest"
 uv = "latest"
@@ -14,7 +13,6 @@ go = "latest"
 rust = "latest"
 
 # General-purpose CLI tools
-# fd·eza·delta·atuin은 arm64/Linux는 prebuilt, Intel Mac은 바로 아래 cargo로 설치(실행 파일명 동일)
 sd = "latest"
 fd = { version = "latest", os = ["linux", "macos/arm64"] }
 "cargo:fd-find" = { version = "latest", os = ["macos/x64"] }
