@@ -2,7 +2,8 @@
 # Runtimes and SDKs
 bun = "latest"
 node = "lts"
-pnpm = "latest"
+# pnpm은 aqua prebuilt가 Intel Mac에서 실패하여 전 플랫폼 npm 백엔드로 통일
+"npm:pnpm" = "latest"
 python = "latest"
 uv = "latest"
 deno = "latest"

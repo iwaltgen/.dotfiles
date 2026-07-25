@@ -263,7 +263,7 @@ test_mise_config_declares_approved_tools() {
     claude clang-format cmake codex conda:eza ctop curlie \
     delta deno direnv dive duf dust elixir erlang fastfetch fd fx fzf gdu gh git-lfs go goreleaser \
     gping gradle helm herdr hunk hyperfine java jq lazydocker lazygit maven mc mkcert neovim node \
-    npm:agent-browser pipx:httpie pipx:mercurial pnpm python ripgrep rust sd starship terraform tmux \
+    npm:agent-browser npm:pnpm pipx:httpie pipx:mercurial python ripgrep rust sd starship terraform tmux \
     uv wrangler zoxide | LC_ALL=C sort)"
 
   [[ "$actual_tools" == "$expected_tools" ]] || \
