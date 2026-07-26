@@ -1,0 +1,52 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  // Zed has no built-in settings sync, so the extension list is declared here
+  // and Zed installs anything missing on startup.
+  "auto_install_extensions": {
+    "github-theme": true,
+    "html": true,
+    "material-icon-theme": true,
+    "toml": true,
+  },
+  "cli_default_open_behavior": "new_window",
+  "project_panel": {
+    "dock": "left"
+  },
+  "outline_panel": {
+    "dock": "left"
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
+  "edit_predictions": {
+    "provider": "zed"
+  },
+  "icon_theme": "Material Icon Theme",
+  "agent": {
+    "dock": "right",
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "claude-haiku-4.5",
+    },
+  },
+  "theme": "GitHub Dark Dimmed",
+  "buffer_font_family": "Jetendard",
+  "buffer_font_size": 14,
+  "autosave": "on_focus_change",
+  "format_on_save": "on",
+  "formatter": "language_server",
+  "preferred_line_length": 120,
+  "soft_wrap": "editor_width",
+  "vim_mode": true,
+  "base_keymap": "VSCode",
+}

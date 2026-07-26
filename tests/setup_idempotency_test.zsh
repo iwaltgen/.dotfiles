@@ -57,6 +57,7 @@ prepare_setup_sandbox() {
     "$dotfiles/atuin" \
     "$dotfiles/herdr" \
     "$dotfiles/hunk" \
+    "$dotfiles/zed" \
     "$dotfiles/mise" \
     "$dotfiles/.gnupg" \
     "$home/.local/bin" \
@@ -81,6 +82,8 @@ prepare_setup_sandbox() {
     "$dotfiles/atuin/config.toml" \
     "$dotfiles/herdr/config.toml" \
     "$dotfiles/hunk/config.toml" \
+    "$dotfiles/zed/settings.json" \
+    "$dotfiles/zed/keymap.json" \
     "$dotfiles/.gnupg/gpg.conf" \
     "$dotfiles/.gnupg/gpg-agent.conf" \
     "$dotfiles/bin/idea.darwin.sh"
@@ -169,7 +172,10 @@ test_setup_runs_twice() {
   assert_symlink "$home/.config/nvim" "$home/.dotfiles/nvim"
   assert_symlink "$home/.config/herdr/config.toml" "$home/.dotfiles/herdr/config.toml"
   assert_symlink "$home/.config/hunk/config.toml" "$home/.dotfiles/hunk/config.toml"
+  assert_symlink "$home/.config/zed/settings.json" "$home/.dotfiles/zed/settings.json"
+  assert_symlink "$home/.config/zed/keymap.json" "$home/.dotfiles/zed/keymap.json"
   assert_symlink "$home/.config/agents/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
+  assert_symlink "$home/.config/zed/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.claude/CLAUDE.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.codex/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   [[ ! -e "$home/.dotfiles/nvim/nvim" ]] || fail "nested nvim link was created"

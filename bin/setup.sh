@@ -104,6 +104,7 @@ mkdir -p \
   "$config_home/ghostty" \
   "$config_home/herdr" \
   "$config_home/hunk" \
+  "$config_home/zed" \
   "$config_home/agents" \
   "$HOME/.local/bin" \
   "$HOME/.claude" \
@@ -125,7 +126,12 @@ link_dotfile "$HOME/.dotfiles/herdr/config.toml" "$config_home/herdr/config.toml
 link_dotfile "$HOME/.dotfiles/hunk/config.toml" "$config_home/hunk/config.toml" || exit 1
 link_dotfile "$HOME/.dotfiles/.starship.toml" "$HOME/.starship.toml" || exit 1
 
+# zed (config_home is the same on macOS and Linux, so no OS split is needed)
+link_dotfile "$HOME/.dotfiles/zed/settings.json" "$config_home/zed/settings.json" || exit 1
+link_dotfile "$HOME/.dotfiles/zed/keymap.json" "$config_home/zed/keymap.json" || exit 1
+
 link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$config_home/agents/AGENTS.md" || exit 1
+link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$config_home/zed/AGENTS.md" || exit 1
 link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$HOME/.claude/CLAUDE.md" || exit 1
 link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$HOME/.codex/AGENTS.md" || exit 1
 
