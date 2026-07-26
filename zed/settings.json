@@ -42,12 +42,11 @@
     "provider": "zed"
   },
   "icon_theme": "Material Icon Theme",
+  // No default_model is pinned: Copilot flags its own base model as the chat
+  // default and Zed hoists it to the top of the picker, so the model is chosen
+  // in the agent panel rather than frozen here.
   "agent": {
     "dock": "right",
-    "default_model": {
-      "provider": "copilot_chat",
-      "model": "claude-haiku-4.5",
-    },
   },
   "theme": "GitHub Dark Dimmed",
   "buffer_font_family": "Jetendard",
