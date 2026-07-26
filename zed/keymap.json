@@ -7,15 +7,15 @@
 // from the command palette.
 [
   {
-    "context": "Workspace",
+    // JetBrains-style navigation. The Editor context is more specific than the
+    // Workspace context these keys are bound to by default, so the defaults
+    // (cmd-b ToggleLeftDock, cmd-shift-b outline_panel::ToggleFocus,
+    // cmd-shift-r task::Spawn) stay reachable whenever focus is outside the editor.
+    "context": "Editor",
     "bindings": {
-      // "shift shift": "file_finder::Toggle"
-    }
-  },
-  {
-    "context": "Editor && vim_mode == insert && !menu",
-    "bindings": {
-      // "j k": "vim::SwitchToNormalMode"
+      "cmd-shift-r": "editor::Rename",
+      "cmd-b": "editor::GoToDefinition",
+      "cmd-shift-b": "editor::GoToDefinitionSplit"
     }
   }
 ]
