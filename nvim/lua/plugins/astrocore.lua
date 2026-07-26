@@ -14,6 +14,7 @@ return {
           relativenumber = true, -- sets vim.opt.relativenumber
           number = true, -- sets vim.opt.number
           spell = true, -- sets vim.opt.spell
+          spelllang = "en,cjk", -- cjk 플래그로 한글이 오타로 표시되는 것을 방지 (:h spell-cjk)
           signcolumn = "auto", -- sets vim.opt.signcolumn to auto
           wrap = false, -- sets vim.opt.wrap
         },
