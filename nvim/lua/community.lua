@@ -31,5 +31,4 @@ return {
   { import = "astrocommunity.pack.rust" },
   { import = "astrocommunity.pack.terraform" },
   { import = "astrocommunity.pack.docker" },
-  { import = "astrocommunity.pack.harper" },
 }
