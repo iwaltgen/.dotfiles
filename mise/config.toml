@@ -64,14 +64,9 @@ terraform = "latest"
 wrangler = "latest"
 
 # Agent CLI tools
+# 릴리스 주기가 짧아 기본 격리(24h)보다 짧은 6h를 적용한다.
 "npm:agent-browser" = "latest"
-claude = "latest"
-codex = "latest"
+claude = { version = "latest", minimum_release_age = "6h" }
+codex = { version = "latest", minimum_release_age = "6h" }
 hunk = "latest"
 herdr = "latest"
-
-[settings]
-minimum_release_age = "0s"
-
-[settings.npm]
-package_manager = "bun"

@@ -281,8 +281,12 @@ test_mise_config_declares_approved_tools() {
     fail 'HTTPie does not depend on uv'
   grep -Fxq '"pipx:mercurial" = { version = "latest", depends = ["uv"] }' "$config" || \
     fail 'Mercurial does not depend on uv'
-  grep -Fxq 'minimum_release_age = "0s"' "$config" || fail 'mise minimum release age is not 0s'
-  grep -Fxq 'package_manager = "bun"' "$config" || fail 'npm package manager is not Bun'
+  grep -Fxq 'claude = { version = "latest", minimum_release_age = "6h" }' "$config" || \
+    fail 'Claude CLI does not shorten the release cooldown to 6h'
+  grep -Fxq 'codex = { version = "latest", minimum_release_age = "6h" }' "$config" || \
+    fail 'Codex CLI does not shorten the release cooldown to 6h'
+  ! grep -Eq '^\[settings' "$config" || \
+    fail 'mise config overrides settings instead of relying on the secure defaults'
   ! grep -Eq '^"(aqua:caddyserver/caddy|conda:clang-format|aqua:FiloSottile/mkcert|aqua:bufbuild/buf)"[[:space:]]*=' \
     "$config" || fail 'mise config pins a backend already selected by the default registry'
   ! grep -Fq '# CLI tools migrated from Homebrew or another mise backend' "$config" || \
