@@ -88,17 +88,16 @@ zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %
 zstyle ':completion:*:descriptions' format '-- %d --'
 zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:complete:*:options' sort false
-zstyle ':completion:*:processes' command 'ps -au$USER'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
-zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
 zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
-zstyle ':fzf-tab:complete:(cd|z|vi):*' fzf-preview \
-  'if [ -d $realpath ]; then
-    eza -1 --color=always $realpath
-  else
-    bat --color=always $realpath
-  fi'
+(( $+commands[eza] && $+commands[bat] )) && \
+  zstyle ':fzf-tab:complete:(cd|z|vi):*' fzf-preview \
+    'if [ -d $realpath ]; then
+      eza -1 --color=always $realpath
+    else
+      bat --color=always $realpath
+    fi'
 zstyle ':fzf-tab:*' switch-group ',' '.'
 
 export STARSHIP_CONFIG=~/.starship.toml
