@@ -75,7 +75,7 @@ elif [[ $OSTYPE == linux* ]]; then
 fi
 
 # ls_colors (https://github.com/zdharma-continuum/zinit-packages/tree/main/ls_colors)
-zinit pack for ls_colors
+zinit pack'no-dir-color-swap' for ls_colors
 
 # fzf is installed by mise; fzf-tab remains a Zinit plugin
 (( $+commands[fzf] )) && source <(fzf --zsh)

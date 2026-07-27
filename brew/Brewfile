@@ -1,4 +1,5 @@
 brew "cocoapods"
+brew "coreutils"
 brew "efl"
 brew "ffmpeg"
 brew "git"

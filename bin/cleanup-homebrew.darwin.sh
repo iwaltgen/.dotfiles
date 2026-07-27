@@ -18,7 +18,7 @@ formula_candidates=(
   act caddy clang-format cmake dive git-lfs goreleaser gradle helm httpie
   maven mercurial mkcert protobuf scc terraform eza fastfetch gh git-delta
   minio-mc openjdk@17 python@3.10 tmux aha asciinema autoconf certbot
-  coreutils ctags diffutils fop graphviz libev libpcap libpq libxslt m-cli
+  ctags diffutils fop graphviz libev libpcap libpq libxslt m-cli
   msgpack rename tree unixodbc wrk axe crush curlie codexbar codex
   claude-code claude-code@latest opencode jmeter beads duckdb grpcurl jqp
   subfinder the_platinum_searcher witr node openjdk openjdk@21 ripgrep
