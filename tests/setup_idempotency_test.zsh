@@ -1104,6 +1104,29 @@ xh compat=1 --https example.com/get'
     fail "xh http aliases: expected '$expected', got '$actual'"
 }
 
+test_zshrc_cli_myip_alias_uses_plaintext_endpoint() {
+  prepare_zshrc_cli_sandbox
+
+  run_zshrc_cli 'myip'
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected='xh compat= --ignore-stdin --body https://ifconfig.me/ip'
+  [[ "$actual" == "$expected" ]] || \
+    fail "myip alias: expected '$expected', got '$actual'"
+}
+
+test_zshrc_cli_ipwho_defaults_to_own_address() {
+  prepare_zshrc_cli_sandbox
+
+  run_zshrc_cli 'ipwho; ipwho 8.8.8.8'
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected='xh compat= --ignore-stdin --body https://ipwho.is/
+xh compat= --ignore-stdin --body https://ipwho.is/8.8.8.8'
+  [[ "$actual" == "$expected" ]] || \
+    fail "ipwho function: expected '$expected', got '$actual'"
+}
+
 test_zshrc_cli_less_uses_bat_pager_at_end_of_input() {
   prepare_zshrc_cli_sandbox
 
@@ -1389,6 +1412,12 @@ run_test() {
       cleanup
       test_sandbox=""
       test_zshrc_cli_http_aliases_enable_httpie_compat_mode
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_myip_alias_uses_plaintext_endpoint
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_ipwho_defaults_to_own_address
       cleanup
       test_sandbox=""
       test_zshrc_cli_less_uses_bat_pager_at_end_of_input

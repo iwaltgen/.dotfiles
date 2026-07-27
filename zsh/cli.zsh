@@ -20,6 +20,15 @@ fi
 if (( $+commands[xh] )); then
   alias http='XH_HTTPIE_COMPAT_MODE=1 xh'
   alias https='XH_HTTPIE_COMPAT_MODE=1 xh --https'
+
+  # ifconfig.me 루트는 User-Agent로 평문/HTML을 가르므로 전용 엔드포인트를 쓴다.
+  alias myip='xh --ignore-stdin --body https://ifconfig.me/ip'
+
+  # 인자를 주면 그 IP를, 없으면 내 IP를 조회한다.
+  # ip-api.com은 무료 티어가 HTTP 전용이라 제외했다.
+  ipwho() {
+    xh --ignore-stdin --body "https://ipwho.is/${1:-}"
+  }
 fi
 
 if (( $+commands[herdr] )); then
