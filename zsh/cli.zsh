@@ -16,6 +16,12 @@ fi
 (( $+commands[lazygit] )) && alias lg=lazygit
 (( $+commands[lazydocker] )) && alias ld=lazydocker
 
+# xh는 argv[0]으로 HTTPie 호환 모드를 판별하므로 alias로는 켜지지 않는다.
+if (( $+commands[xh] )); then
+  alias http='XH_HTTPIE_COMPAT_MODE=1 xh'
+  alias https='XH_HTTPIE_COMPAT_MODE=1 xh --https'
+fi
+
 if (( $+commands[herdr] )); then
   herdr() {
     local -a args=("$@")

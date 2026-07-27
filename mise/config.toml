@@ -2,7 +2,8 @@
 # Runtimes and SDKs
 bun = "latest"
 node = "lts"
-"npm:pnpm" = "latest"
+pnpm = { version = "latest", os = ["linux", "macos/arm64"] }
+"npm:pnpm" = { version = "latest", os = ["macos/x64"] }
 python = "latest"
 uv = "latest"
 deno = "latest"
@@ -43,14 +44,13 @@ fzf = "latest"
 starship = "latest"
 fastfetch = "latest"
 curlie = "latest"
-"pipx:httpie" = { version = "latest", depends = ["uv"] }
+xh = "latest"
 mc = "latest"
 tmux = "latest"
 
 # Development and deployment CLI tools
 act = "latest"
 buf = "latest"
-clang-format = "latest"
 cmake = "latest"
 dive = "latest"
 git-lfs = "latest"
@@ -58,10 +58,8 @@ goreleaser = "latest"
 gradle = "latest"
 helm = "latest"
 maven = "latest"
-"pipx:mercurial" = { version = "latest", depends = ["uv"] }
 mkcert = "latest"
 terraform = "latest"
-wrangler = "latest"
 
 # Agent CLI tools
 # 릴리스 주기가 짧아 기본 격리(24h)보다 짧은 6h를 적용한다.

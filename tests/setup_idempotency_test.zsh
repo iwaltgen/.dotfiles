@@ -266,21 +266,21 @@ test_mise_config_declares_approved_tools() {
   ' "$config" | LC_ALL=C sort)"
   expected_tools="$(print -l \
     act atuin bat bottom buf bun cargo:atuin cargo:eza cargo:fd-find cargo:git-delta \
-    claude clang-format cmake codex conda:eza ctop curlie \
+    claude cmake codex conda:eza ctop curlie \
     delta deno direnv dive duf dust elixir erlang fastfetch fd fx fzf gdu gh git-lfs go goreleaser \
     gping gradle helm herdr hunk hyperfine java jq lazydocker lazygit maven mc mkcert neovim node \
-    npm:agent-browser npm:pnpm pipx:httpie pipx:mercurial python ripgrep rust sd starship terraform tmux \
-    uv wrangler zoxide | LC_ALL=C sort)"
+    npm:agent-browser npm:pnpm pnpm python ripgrep rust sd starship terraform tmux \
+    uv xh zoxide | LC_ALL=C sort)"
 
   [[ "$actual_tools" == "$expected_tools" ]] || \
     fail "mise tools differ from the approved set:\n$actual_tools"
   grep -Fxq 'java = "temurin-25"' "$config" || fail 'mise config does not select Temurin 25'
   grep -Fxq '"conda:eza" = { version = "latest", os = ["linux", "macos/arm64"] }' "$config" || fail 'mise config does not use conda eza'
   grep -Fxq 'buf = "latest"' "$config" || fail 'mise config does not use the Buf shorthand'
-  grep -Fxq '"pipx:httpie" = { version = "latest", depends = ["uv"] }' "$config" || \
-    fail 'HTTPie does not depend on uv'
-  grep -Fxq '"pipx:mercurial" = { version = "latest", depends = ["uv"] }' "$config" || \
-    fail 'Mercurial does not depend on uv'
+  grep -Fxq 'pnpm = { version = "latest", os = ["linux", "macos/arm64"] }' "$config" || \
+    fail 'pnpm does not use the aqua backend outside macOS Intel'
+  grep -Fxq '"npm:pnpm" = { version = "latest", os = ["macos/x64"] }' "$config" || \
+    fail 'pnpm does not fall back to the npm backend on macOS Intel'
   grep -Fxq 'claude = { version = "latest", minimum_release_age = "6h" }' "$config" || \
     fail 'Claude CLI does not shorten the release cooldown to 6h'
   grep -Fxq 'codex = { version = "latest", minimum_release_age = "6h" }' "$config" || \
@@ -1037,6 +1037,9 @@ done'
   write_executable "$fake_bin/eza" '#!/bin/zsh
 print -r -- "eza $*" >> "$CALLS_LOG"'
 
+  write_executable "$fake_bin/xh" '#!/bin/zsh
+print -r -- "xh compat=${XH_HTTPIE_COMPAT_MODE:-} $*" >> "$CALLS_LOG"'
+
   write_executable "$fake_bin/claude" '#!/bin/zsh
 print -r -- "claude env=${CLAUDE_CODE_NO_FLICKER:-}" >> "$CALLS_LOG"
 for arg in "$@"; do
@@ -1087,6 +1090,18 @@ test_zshrc_cli_tree_aliases_default_to_depth_two() {
 eza --tree --level=2 --level=4 --icons=never'
   [[ "$actual" == "$expected" ]] || \
     fail "eza tree aliases: expected '$expected', got '$actual'"
+}
+
+test_zshrc_cli_http_aliases_enable_httpie_compat_mode() {
+  prepare_zshrc_cli_sandbox
+
+  run_zshrc_cli 'http example.com/get; https example.com/get'
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected='xh compat=1 example.com/get
+xh compat=1 --https example.com/get'
+  [[ "$actual" == "$expected" ]] || \
+    fail "xh http aliases: expected '$expected', got '$actual'"
 }
 
 test_zshrc_cli_less_uses_bat_pager_at_end_of_input() {
@@ -1371,6 +1386,9 @@ run_test() {
       ;;
     cli)
       test_zshrc_cli_tree_aliases_default_to_depth_two
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_http_aliases_enable_httpie_compat_mode
       cleanup
       test_sandbox=""
       test_zshrc_cli_less_uses_bat_pager_at_end_of_input
