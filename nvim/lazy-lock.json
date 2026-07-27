@@ -45,7 +45,7 @@
   "nvim-vtsls": { "branch": "main", "commit": "0b5f73c9e50ce95842ea07bb3f05c7d66d87d14a" },
   "nvim-window-picker": { "branch": "main", "commit": "6382540b2ae5de6c793d4aa2e3fe6dbb518505ec" },
   "octo.nvim": { "branch": "master", "commit": "d05b852ad7eba6e34ffe38ee2db430f0fd6f6225" },
-  "package-info.nvim": { "branch": "master", "commit": "9725099fb118bab8360e560c1219bff60763b7e1" },
+  "package-info.nvim": { "branch": "master", "commit": "24099acd58f8aab06795c92ddea59f5ba5cd6eeb" },
   "plenary.nvim": { "branch": "master", "commit": "74b06c6c75e4eeb3108ec01852001636d85a932b" },
   "resession.nvim": { "branch": "master", "commit": "cc819b0489938d03e4f3532a583354f0287c015b" },
   "rustaceanvim": { "branch": "main", "commit": "5a3a4158857ee1f7ec839b6ddd87cc0083a19c5f" },
