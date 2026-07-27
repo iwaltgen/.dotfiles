@@ -299,7 +299,7 @@ test_brewfile_contains_only_approved_formulae() {
   local expected_formulae
   actual_formulae="$(sed -n 's/^brew "\([^"]*\)".*/\1/p' "$brewfile" | LC_ALL=C sort)"
   expected_formulae="$(print -l \
-    cocoapods efl ffmpeg git gnupg htop ideviceinstaller ios-deploy mas mingw-w64 pinentry-mac \
+    cocoapods efl ffmpeg git gnupg htop ideviceinstaller ios-deploy mas mingw-w64 mole pinentry-mac \
     sqlite ssh-copy-id syncthing telnet wget wxwidgets | LC_ALL=C sort)"
 
   [[ "$actual_formulae" == "$expected_formulae" ]] || \
