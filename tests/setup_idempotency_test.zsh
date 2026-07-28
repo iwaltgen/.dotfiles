@@ -304,7 +304,7 @@ test_brewfile_contains_only_approved_formulae() {
 
   [[ "$actual_formulae" == "$expected_formulae" ]] || \
     fail "Brewfile formulae differ from the approved set:\n$actual_formulae"
-  [[ "$(grep -c '^cask ' "$brewfile")" == 18 ]] || fail 'Brewfile cask count changed'
+  [[ "$(grep -c '^cask ' "$brewfile")" == 19 ]] || fail 'Brewfile cask count changed'
   [[ "$(grep -c '^mas ' "$brewfile")" == 3 ]] || fail 'Brewfile Mac App Store count changed'
   grep -Fxq 'brew "syncthing", restart_service: :changed' "$brewfile" || \
     fail 'Syncthing service restart policy changed'
