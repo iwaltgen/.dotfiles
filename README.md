@@ -43,6 +43,34 @@ Homebrew는 macOS 부트스트랩, 서비스, 시스템 통합, 네이티브 라
 
 이 스크립트는 현재 활성화된 Keybase 계정에서 키를 가져오고, 코드에 고정된 개인 키 ID에 대한 대화형 GPG 신뢰도 편집기를 엽니다. 다른 계정에서 사용하기 전에 스크립트를 검토하세요.
 
+Keybase 경로는 계정 로그인과 앱 상태에 의존합니다. 새 장비에서 `keybase login`은 기존 장비의 승인이나 paper key를 요구하며, 앱이 오래되면 서버 인증서 검증에 실패해 `keybase pgp export --secret`이 동작하지 않습니다. 그래서 이 경로에만 의존하지 말고 아래 오프라인 백업을 함께 유지합니다.
+
+#### 키 백업
+
+`~/.ssh`와 `~/.gnupg`를 각각 대칭키로 암호화해 별도 보관합니다. tar 출력을 파이프로 넘겨 평문이 디스크에 남지 않게 합니다.
+
+```sh
+tar -C "$HOME" --exclude='.ssh/agent' -czf - .ssh \
+  | gpg --symmetric --cipher-algo AES256 --s2k-digest-algo SHA512 \
+        -o "$HOME/SECRET_KEY_PATH/ssh-$(date +%Y%m%d).tar.gz.gpg"
+
+tar -C "$HOME" --exclude='.gnupg/S.*' -czf - .gnupg \
+  | gpg --symmetric --cipher-algo AES256 --s2k-digest-algo SHA512 \
+        -o "$HOME/SECRET_KEY_PATH/gnupg-$(date +%Y%m%d).tar.gz.gpg"
+```
+
+#### 키 복원
+
+```sh
+gpg -d "$HOME/SECRET_KEY_PATH/ssh-<날짜>.tar.gz.gpg"   | tar -C "$HOME" -xzf -
+gpg -d "$HOME/SECRET_KEY_PATH/gnupg-<날짜>.tar.gz.gpg" | tar -C "$HOME" -xzf -
+
+chmod 700 "$HOME/.gnupg" && rm -f "$HOME"/.gnupg/.\#lk*
+gpg --list-secret-keys
+```
+
+`.#lk*`는 GnuPG가 남긴 락 파일이라 복원 후 지웁니다. 아카이브를 만들면 옮기기 전에 `gpg -d <파일> | tar tzf -`로 목록을 확인해 복원 가능 여부를 검증합니다.
+
 ### Zinit
 
 모든 Zinit 플러그인을 다시 설치합니다.
