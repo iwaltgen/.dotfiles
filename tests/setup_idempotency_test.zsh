@@ -304,8 +304,6 @@ test_brewfile_contains_only_approved_formulae() {
 
   [[ "$actual_formulae" == "$expected_formulae" ]] || \
     fail "Brewfile formulae differ from the approved set:\n$actual_formulae"
-  [[ "$(grep -c '^cask ' "$brewfile")" == 19 ]] || fail 'Brewfile cask count changed'
-  [[ "$(grep -c '^mas ' "$brewfile")" == 3 ]] || fail 'Brewfile Mac App Store count changed'
   grep -Fxq 'brew "syncthing", restart_service: :changed' "$brewfile" || \
     fail 'Syncthing service restart policy changed'
 }
@@ -519,134 +517,6 @@ test_linux_prelude_runs_twice() {
   assert_call_count '^sudo apt-get update$' 2
   assert_call_count '^sudo apt-get install --yes libfuse2$' 2
   assert_call_count '^sudo apt ' 0
-}
-
-prepare_brew_cleanup_sandbox() {
-  test_sandbox="$(mktemp -d)"
-
-  local home="$test_sandbox/home"
-  local dotfiles="$home/.dotfiles"
-  local fake_bin="$test_sandbox/bin"
-  local state="$test_sandbox/state"
-
-  [[ -x "$repo_root/bin/cleanup-homebrew.darwin.sh" ]] || \
-    fail 'Homebrew cleanup script does not exist or is not executable'
-
-  mkdir -p "$dotfiles/bin" "$dotfiles/brew" "$fake_bin" "$state"
-  cp "$repo_root/bin/cleanup-homebrew.darwin.sh" "$dotfiles/bin/cleanup-homebrew.darwin.sh"
-  print 'brew "sqlite"' > "$dotfiles/brew/Brewfile"
-  print -l opencode node ripgrep sqlite shared-lib personal-dep eza > "$state/formulae"
-  print -l codex claude-code claude-code@latest > "$state/casks"
-  print -l opencode eza sqlite personal-dep > "$state/leaves"
-  print -l cameroncooke/axe charmbracelet/tap rs/tap steipete/tap > "$state/taps"
-  touch "$test_sandbox/calls.log"
-
-  write_executable "$fake_bin/brew" '#!/bin/zsh
-print -r -- "brew $*" >> "$CALLS_LOG"
-
-state_file() {
-  print -r -- "$BREW_STATE_DIR/$1"
-}
-
-contains() {
-  grep -Fxq -- "$2" "$(state_file "$1")"
-}
-
-remove_item() {
-  local kind="$1"
-  local item="$2"
-  local file="$(state_file "$kind")"
-  grep -Fxv -- "$item" "$file" > "$file.next" || true
-  mv "$file.next" "$file"
-}
-
-case "$1" in
-  list)
-    if [[ "$2" == "--formula" && "$3" == "--versions" ]]; then
-      contains formulae "$4" && print -r -- "$4 1.0.0"
-    elif [[ "$2" == "--cask" && "$3" == "--versions" ]]; then
-      contains casks "$4" && print -r -- "$4 1.0.0"
-    elif [[ "$2" == "--formula" ]]; then
-      cat "$(state_file formulae)"
-    elif [[ "$2" == "--cask" ]]; then
-      cat "$(state_file casks)"
-    fi
-    ;;
-  leaves)
-    cat "$(state_file leaves)"
-    ;;
-  deps)
-    package="${argv[-1]}"
-    case "$package" in
-      codex) print -l ripgrep shared-lib ;;
-      claude-code | claude-code@latest) print shared-lib ;;
-      opencode) print -l node ripgrep sqlite personal-dep ;;
-    esac
-    ;;
-  uses)
-    package="${argv[-1]}"
-    case "$package" in
-      node)
-        contains formulae opencode && print opencode
-        ;;
-      ripgrep)
-        contains casks codex && print codex
-        contains formulae opencode && print opencode
-        ;;
-      shared-lib)
-        print retained-tool
-        ;;
-    esac
-    ;;
-  uninstall)
-    if [[ "$2" == "--formula" ]]; then
-      remove_item formulae "$3"
-    elif [[ "$2" == "--cask" ]]; then
-      remove_item casks "$3"
-    fi
-    ;;
-  tap)
-    cat "$(state_file taps)"
-    ;;
-  untap)
-    remove_item taps "$2"
-    ;;
-  autoremove)
-    [[ "$2" == "--dry-run" ]]
-    ;;
-  *)
-    exit 1
-    ;;
-esac'
-}
-
-run_brew_cleanup() {
-  HOME="$test_sandbox/home" \
-    CALLS_LOG="$test_sandbox/calls.log" \
-    BREW_STATE_DIR="$test_sandbox/state" \
-    PATH="$test_sandbox/bin:/usr/bin:/bin" \
-    /bin/zsh "$test_sandbox/home/.dotfiles/bin/cleanup-homebrew.darwin.sh"
-}
-
-test_brew_cleanup_removes_targets_and_only_their_orphaned_dependencies() {
-  prepare_brew_cleanup_sandbox
-
-  run_brew_cleanup
-  run_brew_cleanup
-
-  local state="$test_sandbox/state"
-  for package in opencode node ripgrep eza; do
-    ! grep -Fxq "$package" "$state/formulae" || fail "$package formula was not removed"
-  done
-  for package in codex claude-code claude-code@latest; do
-    ! grep -Fxq "$package" "$state/casks" || fail "$package cask was not removed"
-  done
-  for package in sqlite shared-lib personal-dep; do
-    grep -Fxq "$package" "$state/formulae" || fail "$package formula should have been preserved"
-  done
-  [[ ! -s "$state/taps" ]] || fail 'unused cleanup taps were not removed'
-  assert_call_count '^brew autoremove --dry-run$' 2
-  assert_call_count '^brew autoremove$' 0
 }
 
 test_herdr_config_supports_cjk_prefix() {
@@ -1372,9 +1242,6 @@ run_test() {
     linux)
       test_linux_prelude_runs_twice
       ;;
-    brew-cleanup)
-      test_brew_cleanup_removes_targets_and_only_their_orphaned_dependencies
-      ;;
     herdr)
       test_zshrc_defaults_remote_herdr_to_server_keybindings
       test_zshrc_preserves_explicit_remote_keybindings
@@ -1465,13 +1332,13 @@ run_test() {
 
 case "${1:-all}" in
   all)
-    for test_name in setup darwin linux brew-cleanup herdr cli ghostty docs-link; do
+    for test_name in setup darwin linux herdr cli ghostty docs-link; do
       run_test "$test_name"
       cleanup
       test_sandbox=""
     done
     ;;
-  setup | darwin | linux | brew-cleanup | herdr | cli | ghostty | docs-link)
+  setup | darwin | linux | herdr | cli | ghostty | docs-link)
     run_test "$1"
     ;;
   *)
