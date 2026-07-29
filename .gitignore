@@ -1,5 +1,12 @@
 # Docs: https://git-scm.com/docs/gitignore
 
+# Key material
+*.tar.gz.gpg
+.gnupg/private-keys-v1.d/
+.gnupg/public-keys.d/
+.gnupg/*.kbx
+.gnupg/trustdb.gpg
+
 # Homebrew
 *.lock.json
 
