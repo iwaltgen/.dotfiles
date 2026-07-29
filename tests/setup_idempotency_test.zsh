@@ -1127,10 +1127,14 @@ print -r -- "${TEST_UNAME:-Darwin}"'
 run_superpowers_docs_link() {
   local home="$test_sandbox/home"
 
-  HOME="$home" \
-    TEST_UNAME="${TEST_UNAME:-Darwin}" \
-    PATH="$test_sandbox/bin:/usr/bin:/bin" \
-    /bin/zsh "$home/.dotfiles/bin/ensure-superpowers-docs-link.darwin.sh"
+  (
+    cd "$home/.dotfiles" || exit 1
+
+    HOME="$home" \
+      TEST_UNAME="${TEST_UNAME:-Darwin}" \
+      PATH="$test_sandbox/bin:/usr/bin:/bin" \
+      /bin/zsh "$home/.dotfiles/bin/ensure-superpowers-docs-link.darwin.sh" "$@"
+  )
 }
 
 test_superpowers_docs_link_is_idempotent_on_macos() {
@@ -1162,7 +1166,7 @@ test_superpowers_docs_link_is_noop_on_linux() {
     fail 'Linux created the macOS-only superpowers docs link'
 }
 
-test_superpowers_docs_link_waits_for_syncthing_target() {
+test_superpowers_docs_link_waits_for_syncthing_root() {
   prepare_superpowers_docs_link_sandbox
 
   local home="$test_sandbox/home"
@@ -1171,7 +1175,64 @@ test_superpowers_docs_link_waits_for_syncthing_target() {
   run_superpowers_docs_link
 
   [[ ! -e "$link_path" && ! -L "$link_path" ]] || \
-    fail 'link was created before the Syncthing target existed'
+    fail 'link was created before the Syncthing root existed'
+}
+
+test_superpowers_docs_link_creates_missing_project_target() {
+  prepare_superpowers_docs_link_sandbox
+
+  local home="$test_sandbox/home"
+  local target="$home/syncthing/agents/superpowers/dotfiles"
+  local link_path="$home/.dotfiles/docs/superpowers"
+
+  mkdir -p "$home/syncthing/agents/superpowers"
+
+  run_superpowers_docs_link
+
+  [[ -d "$target" ]] || fail "missing project target was not created: $target"
+  assert_symlink "$link_path" "$target"
+}
+
+test_superpowers_docs_link_accepts_project_arguments() {
+  prepare_superpowers_docs_link_sandbox
+
+  local home="$test_sandbox/home"
+  local project="$test_sandbox/other-project"
+  local target="$home/syncthing/agents/superpowers/custom"
+  local link_path="$project/docs/superpowers"
+
+  mkdir -p "$home/syncthing/agents/superpowers" "$project"
+
+  run_superpowers_docs_link custom "$project"
+
+  assert_symlink "$link_path" "$target"
+}
+
+test_superpowers_docs_link_strips_leading_dot_from_project_name() {
+  prepare_superpowers_docs_link_sandbox
+
+  local home="$test_sandbox/home"
+  local project="$test_sandbox/.hidden-project"
+  local target="$home/syncthing/agents/superpowers/hidden-project"
+  local link_path="$project/docs/superpowers"
+
+  mkdir -p "$home/syncthing/agents/superpowers" "$project"
+
+  run_superpowers_docs_link "" "$project"
+
+  assert_symlink "$link_path" "$target"
+}
+
+test_superpowers_docs_link_rejects_missing_project_path() {
+  prepare_superpowers_docs_link_sandbox
+
+  local home="$test_sandbox/home"
+
+  mkdir -p "$home/syncthing/agents/superpowers"
+
+  if run_superpowers_docs_link custom "$test_sandbox/absent" 2>/dev/null; then
+    fail 'missing project path did not fail'
+  fi
 }
 
 test_superpowers_docs_link_preserves_conflicting_path() {
@@ -1199,8 +1260,8 @@ test_mise_project_config_declares_macos_docs_link_hook() {
   grep -Fq '[hooks]' "$config" || fail 'project mise config does not declare hooks'
   grep -Fq 'if [ "$(uname -s)" = "Darwin" ]; then' "$config" || \
     fail 'mise enter hook is not restricted to macOS'
-  grep -Fq '"$MISE_PROJECT_ROOT/bin/ensure-superpowers-docs-link.darwin.sh"' "$config" || \
-    fail 'mise enter hook does not call the docs link script'
+  grep -Fq '"$MISE_PROJECT_ROOT/bin/ensure-superpowers-docs-link.darwin.sh" "" "$MISE_PROJECT_ROOT"' "$config" || \
+    fail 'mise enter hook does not pass the project root to the docs link script'
 }
 
 run_test() {
@@ -1317,7 +1378,19 @@ run_test() {
       test_superpowers_docs_link_is_noop_on_linux
       cleanup
       test_sandbox=""
-      test_superpowers_docs_link_waits_for_syncthing_target
+      test_superpowers_docs_link_waits_for_syncthing_root
+      cleanup
+      test_sandbox=""
+      test_superpowers_docs_link_creates_missing_project_target
+      cleanup
+      test_sandbox=""
+      test_superpowers_docs_link_accepts_project_arguments
+      cleanup
+      test_sandbox=""
+      test_superpowers_docs_link_strips_leading_dot_from_project_name
+      cleanup
+      test_sandbox=""
+      test_superpowers_docs_link_rejects_missing_project_path
       cleanup
       test_sandbox=""
       test_superpowers_docs_link_preserves_conflicting_path
