@@ -11,7 +11,7 @@ sudo apt-get install --yes \
 oh_my_zsh_dir="$HOME/.oh-my-zsh"
 if [[ ! -d "$oh_my_zsh_dir/.git" ]]; then
   if [[ -e "$oh_my_zsh_dir" || -L "$oh_my_zsh_dir" ]]; then
-    print -u2 "Oh My Zsh path exists but is not a Git repository: $oh_my_zsh_dir"
+    print -u2 -- "Oh My Zsh path exists but is not a Git repository: $oh_my_zsh_dir"
     exit 1
   fi
   git clone https://github.com/ohmyzsh/ohmyzsh.git "$oh_my_zsh_dir" || exit 1
@@ -20,7 +20,7 @@ fi
 zsh_path="${commands[zsh]}"
 current_shell="$(getent passwd "$USER" | cut -d: -f7)"
 if [[ -z "$current_shell" ]]; then
-  print -u2 "Unable to determine the current login shell"
+  print -u2 -- "Unable to determine the current login shell"
   exit 1
 fi
 if [[ "$current_shell" != "$zsh_path" ]]; then
@@ -32,7 +32,7 @@ zinit_script="$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 if [[ ! -f "$zinit_script" ]]; then
   zsh -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)" || exit 1
   if [[ ! -f "$zinit_script" ]]; then
-    print -u2 "Zinit installation failed"
+    print -u2 -- "Zinit installation failed"
     exit 1
   fi
 fi

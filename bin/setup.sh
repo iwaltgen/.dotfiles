@@ -13,7 +13,7 @@ link_dotfile() {
   local target_path="$2"
 
   if [[ ! -e "$source_path" ]]; then
-    print -u2 "Link source does not exist: $source_path"
+    print -u2 -- "Link source does not exist: $source_path"
     return 1
   fi
 
@@ -32,7 +32,7 @@ link_dotfile() {
     mv "$target_path" "$backup_path" || return 1
     if ! ln -sfn "$source_path" "$target_path"; then
       if ! mv "$backup_path" "$target_path"; then
-        print -u2 "Failed to restore existing path: $target_path"
+        print -u2 -- "Failed to restore existing path: $target_path"
       fi
       return 1
     fi
@@ -67,7 +67,7 @@ remove_managed_legacy_link() {
 tpm_dir="$HOME/.tmux/plugins/tpm"
 if [[ ! -d "$tpm_dir/.git" ]]; then
   if [[ -e "$tpm_dir" || -L "$tpm_dir" ]]; then
-    print -u2 "TPM path exists but is not a Git repository: $tpm_dir"
+    print -u2 -- "TPM path exists but is not a Git repository: $tpm_dir"
     exit 1
   fi
   mkdir -p "${tpm_dir:h}" || exit 1
@@ -79,7 +79,7 @@ if [[ ! -x "$HOME/.local/bin/mise" ]]; then
   curl --fail --show-error --silent --location https://mise.run | sh
 fi
 if [[ ! -x "$HOME/.local/bin/mise" ]]; then
-  print -u2 "mise installation failed"
+  print -u2 -- "mise installation failed"
   exit 1
 fi
 
@@ -90,7 +90,7 @@ elixir_version="$("$HOME/.local/bin/mise" latest elixir@1.20)" || exit 1
 case "$elixir_version" in
   1.20.<->-otp-29) ;;
   *)
-    print -u2 "Expected Elixir 1.20.x built for OTP 29, got: $elixir_version"
+    print -u2 -- "Expected Elixir 1.20.x built for OTP 29, got: $elixir_version"
     exit 1
     ;;
 esac
