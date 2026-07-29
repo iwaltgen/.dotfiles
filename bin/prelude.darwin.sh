@@ -7,7 +7,7 @@ if [[ ! -x "$brew_bin" ]]; then
   brew_bin=/opt/homebrew/bin/brew
 fi
 if [[ ! -x "$brew_bin" ]]; then
-  print -u2 -- "Homebrew installation failed"
+  print -u2 -- "Homebrew 설치에 실패했습니다"
   exit 1
 fi
 eval "$("$brew_bin" shellenv)"
@@ -18,7 +18,7 @@ brew install git || exit 1
 oh_my_zsh_dir="$HOME/.oh-my-zsh"
 if [[ ! -d "$oh_my_zsh_dir/.git" ]]; then
   if [[ -e "$oh_my_zsh_dir" || -L "$oh_my_zsh_dir" ]]; then
-    print -u2 -- "Oh My Zsh path exists but is not a Git repository: $oh_my_zsh_dir"
+    print -u2 -- "Oh My Zsh 경로가 Git 저장소가 아닙니다: $oh_my_zsh_dir"
     exit 1
   fi
   git clone https://github.com/ohmyzsh/ohmyzsh.git "$oh_my_zsh_dir" || exit 1
@@ -27,7 +27,7 @@ fi
 zsh_path=/bin/zsh
 current_shell="$(dscl . -read "/Users/$USER" UserShell | awk '{print $2}')"
 if [[ -z "$current_shell" ]]; then
-  print -u2 -- "Unable to determine the current login shell"
+  print -u2 -- "현재 로그인 셸을 확인할 수 없습니다"
   exit 1
 fi
 if [[ "$current_shell" != "$zsh_path" ]]; then
@@ -39,7 +39,7 @@ zinit_script="$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 if [[ ! -f "$zinit_script" ]]; then
   zsh -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)" || exit 1
   if [[ ! -f "$zinit_script" ]]; then
-    print -u2 -- "Zinit installation failed"
+    print -u2 -- "Zinit 설치에 실패했습니다"
     exit 1
   fi
 fi
@@ -49,7 +49,7 @@ pushd "$HOME/.dotfiles/brew" || exit 1
 brew bundle || exit 1
 popd || exit 1
 
-# jetendard font (JetBrainsMono Nerd Font Mono + Pretendard Korean glyphs; no Homebrew cask upstream)
+# jetendard 폰트 (JetBrainsMono Nerd Font Mono + Pretendard 한글 글리프. 상위 Homebrew cask 없음)
 jetendard_fonts_dir="$HOME/Library/Fonts"
 mkdir -p "$jetendard_fonts_dir" || exit 1
 if [[ ! -f "$jetendard_fonts_dir/Jetendard-Regular.ttf" ]]; then
@@ -60,7 +60,7 @@ if [[ ! -f "$jetendard_fonts_dir/Jetendard-Regular.ttf" ]]; then
   popd || exit 1
 fi
 
-# yeomil mono nerd font (Geist Mono + Pretendard, Nerd Fonts patched; no Homebrew cask upstream)
+# yeomil mono nerd font (Geist Mono + Pretendard, Nerd Fonts 패치. 상위 Homebrew cask 없음)
 yeomil_fonts_dir="$HOME/Library/Fonts"
 mkdir -p "$yeomil_fonts_dir" || exit 1
 if [[ ! -f "$yeomil_fonts_dir/YeomilMonoNerdFont-Regular.ttf" ]]; then
@@ -71,7 +71,7 @@ if [[ ! -f "$yeomil_fonts_dir/YeomilMonoNerdFont-Regular.ttf" ]]; then
   popd || exit 1
 fi
 
-# key repeat
+# 키 반복
 defaults write -g ApplePressAndHoldEnabled -bool false || exit 1
-defaults write -g InitialKeyRepeat -int 10 || exit 1 # normal minimum is 15 (225 ms)
-defaults write -g KeyRepeat -int 1 || exit 1 # normal minimum is 2 (30 ms)
+defaults write -g InitialKeyRepeat -int 10 || exit 1 # 일반 최솟값은 15 (225 ms)
+defaults write -g KeyRepeat -int 1 || exit 1 # 일반 최솟값은 2 (30 ms)

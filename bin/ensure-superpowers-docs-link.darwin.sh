@@ -12,17 +12,17 @@ if [[ -L "$docs_link" ]]; then
     exit 0
   fi
 
-  print -u2 -- "Superpowers docs link points elsewhere: $docs_link"
+  print -u2 -- "Superpowers 문서 링크가 다른 곳을 가리킵니다: $docs_link"
   exit 1
 fi
 
 if [[ -e "$docs_link" ]]; then
-  print -u2 -- "Superpowers docs path already exists and is not a link: $docs_link"
+  print -u2 -- "Superpowers 문서 경로가 링크가 아닌 파일로 존재합니다: $docs_link"
   exit 1
 fi
 
 if [[ ! -d "$docs_target" ]]; then
-  print -u2 -- "Syncthing target is not ready; skipping docs link: $docs_target"
+  print -u2 -- "Syncthing 대상이 준비되지 않아 문서 링크를 건너뜁니다: $docs_target"
   exit 0
 fi
 

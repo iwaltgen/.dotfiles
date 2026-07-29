@@ -13,7 +13,7 @@ link_dotfile() {
   local target_path="$2"
 
   if [[ ! -e "$source_path" ]]; then
-    print -u2 -- "Link source does not exist: $source_path"
+    print -u2 -- "링크 원본이 없습니다: $source_path"
     return 1
   fi
 
@@ -32,11 +32,11 @@ link_dotfile() {
     mv "$target_path" "$backup_path" || return 1
     if ! ln -sfn "$source_path" "$target_path"; then
       if ! mv "$backup_path" "$target_path"; then
-        print -u2 -- "Failed to restore existing path: $target_path"
+        print -u2 -- "기존 경로를 복구하지 못했습니다: $target_path"
       fi
       return 1
     fi
-    print "Backed up existing path: $target_path -> $backup_path"
+    print "기존 경로를 백업했습니다: $target_path -> $backup_path"
     return 0
   fi
 
@@ -67,7 +67,7 @@ remove_managed_legacy_link() {
 tpm_dir="$HOME/.tmux/plugins/tpm"
 if [[ ! -d "$tpm_dir/.git" ]]; then
   if [[ -e "$tpm_dir" || -L "$tpm_dir" ]]; then
-    print -u2 -- "TPM path exists but is not a Git repository: $tpm_dir"
+    print -u2 -- "TPM 경로가 Git 저장소가 아닙니다: $tpm_dir"
     exit 1
   fi
   mkdir -p "${tpm_dir:h}" || exit 1
@@ -79,7 +79,7 @@ if [[ ! -x "$HOME/.local/bin/mise" ]]; then
   curl --fail --show-error --silent --location https://mise.run | sh
 fi
 if [[ ! -x "$HOME/.local/bin/mise" ]]; then
-  print -u2 -- "mise installation failed"
+  print -u2 -- "mise 설치에 실패했습니다"
   exit 1
 fi
 
@@ -90,7 +90,7 @@ elixir_version="$("$HOME/.local/bin/mise" latest elixir@1.20)" || exit 1
 case "$elixir_version" in
   1.20.<->-otp-29) ;;
   *)
-    print -u2 -- "Expected Elixir 1.20.x built for OTP 29, got: $elixir_version"
+    print -u2 -- "OTP 29 기반 Elixir 1.20.x 가 필요합니다. 확인된 버전: $elixir_version"
     exit 1
     ;;
 esac
@@ -126,7 +126,7 @@ link_dotfile "$HOME/.dotfiles/herdr/config.toml" "$config_home/herdr/config.toml
 link_dotfile "$HOME/.dotfiles/hunk/config.toml" "$config_home/hunk/config.toml" || exit 1
 link_dotfile "$HOME/.dotfiles/.starship.toml" "$HOME/.starship.toml" || exit 1
 
-# zed (config_home is the same on macOS and Linux, so no OS split is needed)
+# zed (config_home 은 macOS 와 Linux 가 같아 OS 분기가 필요 없다)
 link_dotfile "$HOME/.dotfiles/zed/settings.json" "$config_home/zed/settings.json" || exit 1
 link_dotfile "$HOME/.dotfiles/zed/keymap.json" "$config_home/zed/keymap.json" || exit 1
 
@@ -155,4 +155,4 @@ link_dotfile "$HOME/.dotfiles/.gnupg/gpg-agent.conf" "$HOME/.gnupg/gpg-agent.con
 # ntfs
 mkdir -p "$HOME/.ntfs" || exit 1
 
-print "Setup complete. Open a new terminal to load the updated shell configuration."
+print "설치를 마쳤습니다. 새 터미널을 열어 셸 설정을 다시 읽으세요."

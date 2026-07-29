@@ -191,7 +191,7 @@ test_setup_does_not_source_shell_config() {
   if ! output="$(run_setup)"; then
     fail 'setup sourced the interactive shell config'
   fi
-  [[ "$output" == *'Setup complete. Open a new terminal to load the updated shell configuration.'* ]] || \
+  [[ "$output" == *'설치를 마쳤습니다. 새 터미널을 열어 셸 설정을 다시 읽으세요.'* ]] || \
     fail 'setup does not tell the user to open a new terminal'
 }
 
@@ -1063,7 +1063,7 @@ mise ls --prunable --no-header
 mise prune --yes'
   [[ "$actual" == "$expected" ]] || \
     fail "CLI update order: expected '$expected', got '$actual'"
-  [[ "$output" == *'Pruned mise versions:'* ]] || \
+  [[ "$output" == *'정리한 mise 버전:'* ]] || \
     fail 'CLI update does not label the pruned mise versions'
   [[ "$output" == *'node 20.0.0'* && "$output" == *'python 3.10.0'* ]] || \
     fail "CLI update does not report the pruned mise versions: $output"
@@ -1105,7 +1105,7 @@ test_zshrc_cli_update_reports_when_nothing_was_pruned() {
   local output
   output="$(run_zshrc_cli 'update-cli-tools')"
 
-  [[ "$output" == *'No mise versions were pruned.'* ]] || \
+  [[ "$output" == *'정리한 mise 버전이 없습니다.'* ]] || \
     fail "CLI update does not report an empty prune result: $output"
 }
 

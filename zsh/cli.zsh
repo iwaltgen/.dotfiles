@@ -1,6 +1,6 @@
-# Common command-line aliases and wrappers.
+# 공통 명령줄 alias 와 래퍼.
 
-# standalone CLI tools are installed by mise
+# 독립 실행형 CLI 도구는 mise 로 설치한다
 (( $+commands[bat] && $+aliases[less] )) && unalias less
 
 if (( $+commands[bat] )); then
@@ -57,7 +57,7 @@ fi
 
 (( $+commands[nvim] )) && alias vi=nvim
 
-# Agent CLIs run with full host access by default; pass --safe to keep their safeguards enabled.
+# 에이전트 CLI 는 기본적으로 호스트 전체 접근으로 실행한다. --safe 를 주면 자체 보호 장치를 켠 채 실행한다.
 if (( $+commands[claude] )); then
   claude() {
     local -a args=()
@@ -115,21 +115,21 @@ update-cli-tools() {
   fi
 
   if (( ! $+commands[mise] )); then
-    print -u2 -- 'mise is not installed'
+    print -u2 -- 'mise 가 설치되어 있지 않습니다'
     return 127
   fi
 
   command mise self-update --yes || return
   command mise upgrade --interactive || return
 
-  # Capture candidates before pruning because deleted versions cannot be queried afterwards.
+  # prune 후에는 삭제된 버전을 조회할 수 없으므로 미리 목록을 확보한다.
   prunable_versions="$(command mise ls --prunable --no-header)" || return
   command mise prune --yes || return
 
   if [[ -n "$prunable_versions" ]]; then
-    print -- 'Pruned mise versions:'
+    print -- '정리한 mise 버전:'
     print -r -- "$prunable_versions"
   else
-    print -- 'No mise versions were pruned.'
+    print -- '정리한 mise 버전이 없습니다.'
   fi
 }

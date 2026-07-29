@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# essential cli tools
+# 필수 CLI 도구
 sudo add-apt-repository --yes ppa:git-core/ppa || exit 1
 sudo apt-get update || exit 1
 sudo apt-get install --yes \
@@ -11,7 +11,7 @@ sudo apt-get install --yes \
 oh_my_zsh_dir="$HOME/.oh-my-zsh"
 if [[ ! -d "$oh_my_zsh_dir/.git" ]]; then
   if [[ -e "$oh_my_zsh_dir" || -L "$oh_my_zsh_dir" ]]; then
-    print -u2 -- "Oh My Zsh path exists but is not a Git repository: $oh_my_zsh_dir"
+    print -u2 -- "Oh My Zsh 경로가 Git 저장소가 아닙니다: $oh_my_zsh_dir"
     exit 1
   fi
   git clone https://github.com/ohmyzsh/ohmyzsh.git "$oh_my_zsh_dir" || exit 1
@@ -20,7 +20,7 @@ fi
 zsh_path="${commands[zsh]}"
 current_shell="$(getent passwd "$USER" | cut -d: -f7)"
 if [[ -z "$current_shell" ]]; then
-  print -u2 -- "Unable to determine the current login shell"
+  print -u2 -- "현재 로그인 셸을 확인할 수 없습니다"
   exit 1
 fi
 if [[ "$current_shell" != "$zsh_path" ]]; then
@@ -32,12 +32,12 @@ zinit_script="$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 if [[ ! -f "$zinit_script" ]]; then
   zsh -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)" || exit 1
   if [[ ! -f "$zinit_script" ]]; then
-    print -u2 -- "Zinit installation failed"
+    print -u2 -- "Zinit 설치에 실패했습니다"
     exit 1
   fi
 fi
 
-# fonts
+# 폰트
 fonts_dir="$HOME/.local/share/fonts"
 mkdir -p "$fonts_dir" || exit 1
 pushd "$fonts_dir" || exit 1
@@ -64,7 +64,7 @@ if ! fc-list : family | grep -Fqi 'JetBrainsMono Nerd Font'; then
   fonts_changed=true
 fi
 
-# jetendard: JetBrainsMono Nerd Font Mono + Pretendard Korean glyphs (no nerd-fonts release; personal build)
+# jetendard: JetBrainsMono Nerd Font Mono + Pretendard 한글 글리프 (nerd-fonts 릴리스 없음. 개인 빌드)
 if ! fc-list : family | grep -Fqi 'Jetendard'; then
   wget --output-document Jetendard.zip https://github.com/kuskhan/jetendard/releases/download/v0.1.0/Jetendard-TTF.zip || exit 1
   unzip -oqj Jetendard.zip 'ttf/*' -d . || exit 1
@@ -72,7 +72,7 @@ if ! fc-list : family | grep -Fqi 'Jetendard'; then
   fonts_changed=true
 fi
 
-# yeomil mono nerd font: Geist Mono + Pretendard, patched with Nerd Fonts symbols
+# yeomil mono nerd font: Geist Mono + Pretendard, Nerd Fonts 심볼 패치
 if ! fc-list : family | grep -Fqi 'YeomilMono Nerd Font'; then
   wget --output-document YeomilMono.zip https://github.com/taevel02/yeomil-mono/releases/download/v1.1.2/YeomilMono-NerdFont-TTF.zip || exit 1
   unzip -oq YeomilMono.zip -d . || exit 1
