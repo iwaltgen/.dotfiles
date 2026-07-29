@@ -86,7 +86,8 @@ prepare_setup_sandbox() {
     "$dotfiles/zed/keymap.json" \
     "$dotfiles/.gnupg/gpg.conf" \
     "$dotfiles/.gnupg/gpg-agent.conf" \
-    "$dotfiles/bin/idea.darwin.sh"
+    "$dotfiles/bin/idea.darwin.sh" \
+    "$dotfiles/bin/ensure-superpowers-docs-link.darwin.sh"
 
   ln -s "$dotfiles/.zshrc.cli" "$home/.zshrc.cli"
   ln -s "$dotfiles/.zshrc.darwin" "$home/.zshrc.os"
@@ -178,6 +179,11 @@ test_setup_runs_twice() {
   assert_symlink "$home/.config/zed/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.claude/CLAUDE.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.codex/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
+  if [[ $OSTYPE == darwin* ]]; then
+    assert_symlink "$home/.local/bin/idea" "$home/.dotfiles/bin/idea.darwin.sh"
+    assert_symlink "$home/.local/bin/link-superpowers-docs" \
+      "$home/.dotfiles/bin/ensure-superpowers-docs-link.darwin.sh"
+  fi
   [[ ! -e "$home/.dotfiles/nvim/nvim" ]] || fail "nested nvim link was created"
 }
 

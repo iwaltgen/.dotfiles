@@ -137,6 +137,8 @@ link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$HOME/.codex/AGENTS.md" || exit
 
 if [[ $OSTYPE == darwin* ]]; then
   link_dotfile "$HOME/.dotfiles/bin/idea.darwin.sh" "$HOME/.local/bin/idea" || exit 1
+  link_dotfile "$HOME/.dotfiles/bin/ensure-superpowers-docs-link.darwin.sh" \
+    "$HOME/.local/bin/link-superpowers-docs" || exit 1
 fi
 
 link_dotfile "$HOME/.dotfiles/.tmux.conf" "$HOME/.tmux.conf" || exit 1
