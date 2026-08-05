@@ -107,8 +107,6 @@ if (( $+commands[codex] )); then
 fi
 
 update-cli-tools() {
-  local prunable_versions
-
   if (( $+commands[brew] )); then
     command brew upgrade -y || return
     command brew cleanup --prune=all || return
@@ -121,15 +119,4 @@ update-cli-tools() {
 
   command mise self-update --yes || return
   command mise upgrade --interactive || return
-
-  # prune 후에는 삭제된 버전을 조회할 수 없으므로 미리 목록을 확보한다.
-  prunable_versions="$(command mise ls --prunable --no-header)" || return
-  command mise prune --yes || return
-
-  if [[ -n "$prunable_versions" ]]; then
-    print -- '정리한 mise 버전:'
-    print -r -- "$prunable_versions"
-  else
-    print -- '정리한 mise 버전이 없습니다.'
-  fi
 }

@@ -935,10 +935,7 @@ if [[ "$1 $2" == "upgrade -y" && "${BREW_FAKE_FAIL_UPGRADE:-0}" == 1 ]]; then
 fi'
 
   write_executable "$fake_bin/mise" '#!/bin/zsh
-print -r -- "mise $*" >> "$CALLS_LOG"
-if [[ "$1 $2 $3" == "ls --prunable --no-header" ]]; then
-  print -r -- "${MISE_FAKE_PRUNABLE:-}"
-fi'
+print -r -- "mise $*" >> "$CALLS_LOG"'
 }
 
 run_zshrc_cli() {
@@ -951,7 +948,6 @@ run_zshrc_cli() {
     ZSHRC_CLI_UNDER_TEST="$repo_root/zsh/cli.zsh" \
     ZSHRC_CLI_COMMAND="$command_text" \
     ZSHRC_CLI_PRELUDE="$prelude_text" \
-    MISE_FAKE_PRUNABLE="${MISE_FAKE_PRUNABLE:-}" \
     BREW_FAKE_FAIL_UPGRADE="${BREW_FAKE_FAIL_UPGRADE:-0}" \
     /bin/zsh -c 'eval "$ZSHRC_CLI_PRELUDE"; source "$ZSHRC_CLI_UNDER_TEST"; eval "$ZSHRC_CLI_COMMAND"'
 }
@@ -1053,26 +1049,18 @@ arg=inspect'
     fail "agent wrappers: expected '$expected', got '$actual'"
 }
 
-test_zshrc_cli_updates_tools_and_reports_pruned_versions() {
+test_zshrc_cli_updates_tools() {
   prepare_zshrc_cli_sandbox
 
-  local output
-  output="$(MISE_FAKE_PRUNABLE='node 20.0.0
-python 3.10.0' run_zshrc_cli 'update-cli-tools')"
+  run_zshrc_cli 'update-cli-tools'
 
   local actual="$(<"$test_sandbox/calls.log")"
   local expected='brew upgrade -y
 brew cleanup --prune=all
 mise self-update --yes
-mise upgrade --interactive
-mise ls --prunable --no-header
-mise prune --yes'
+mise upgrade --interactive'
   [[ "$actual" == "$expected" ]] || \
     fail "CLI update order: expected '$expected', got '$actual'"
-  [[ "$output" == *'정리한 mise 버전:'* ]] || \
-    fail 'CLI update does not label the pruned mise versions'
-  [[ "$output" == *'node 20.0.0'* && "$output" == *'python 3.10.0'* ]] || \
-    fail "CLI update does not report the pruned mise versions: $output"
 }
 
 test_zshrc_cli_update_stops_after_brew_failure() {
@@ -1091,28 +1079,13 @@ test_zshrc_cli_update_supports_hosts_without_homebrew() {
   prepare_zshrc_cli_sandbox
   rm "$test_sandbox/bin/brew"
 
-  local output
-  output="$(MISE_FAKE_PRUNABLE='node 20.0.0' run_zshrc_cli 'update-cli-tools')"
+  run_zshrc_cli 'update-cli-tools'
 
   local actual="$(<"$test_sandbox/calls.log")"
   local expected='mise self-update --yes
-mise upgrade --interactive
-mise ls --prunable --no-header
-mise prune --yes'
+mise upgrade --interactive'
   [[ "$actual" == "$expected" ]] || \
     fail "CLI update without Homebrew: expected '$expected', got '$actual'"
-  [[ "$output" == *'node 20.0.0'* ]] || \
-    fail "CLI update without Homebrew does not report the pruned version: $output"
-}
-
-test_zshrc_cli_update_reports_when_nothing_was_pruned() {
-  prepare_zshrc_cli_sandbox
-
-  local output
-  output="$(run_zshrc_cli 'update-cli-tools')"
-
-  [[ "$output" == *'정리한 mise 버전이 없습니다.'* ]] || \
-    fail "CLI update does not report an empty prune result: $output"
 }
 
 prepare_superpowers_docs_link_sandbox() {
@@ -1363,7 +1336,7 @@ run_test() {
       test_zshrc_cli_agent_wrappers_default_to_full_access_and_support_safe_mode
       cleanup
       test_sandbox=""
-      test_zshrc_cli_updates_tools_and_reports_pruned_versions
+      test_zshrc_cli_updates_tools
       cleanup
       test_sandbox=""
       test_zshrc_cli_update_stops_after_brew_failure
@@ -1372,7 +1345,6 @@ run_test() {
       test_zshrc_cli_update_supports_hosts_without_homebrew
       cleanup
       test_sandbox=""
-      test_zshrc_cli_update_reports_when_nothing_was_pruned
       ;;
     ghostty)
       test_ghostty_maps_physical_herdr_keys
