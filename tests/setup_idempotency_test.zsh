@@ -549,8 +549,27 @@ test_herdr_config_opens_lazygit_popup() {
   grep -Fxq 'key = "cmd+ctrl+g"' "$config" || fail 'Herdr does not bind Cmd-Ctrl-G'
   grep -Fxq 'type = "popup"' "$config" || fail 'Herdr does not open lazygit in a popup'
   grep -Fxq 'command = "lazygit"' "$config" || fail 'Herdr does not run lazygit'
-  grep -Fxq 'width = "90%"' "$config" || fail 'Herdr lazygit popup width is not 90%'
-  grep -Fxq 'height = "90%"' "$config" || fail 'Herdr lazygit popup height is not 90%'
+}
+
+test_herdr_config_uses_95_percent_popups() {
+  local config="$repo_root/herdr/config.toml"
+  local popup_count
+
+  popup_count="$(grep -Fxc 'type = "popup"' "$config")"
+  (( popup_count > 0 )) || fail 'Herdr does not configure any popups'
+  [[ "$(grep -Fxc 'width = "95%"' "$config")" == "$popup_count" ]] || \
+    fail 'Herdr popup widths are not all 95%'
+  [[ "$(grep -Fxc 'height = "95%"' "$config")" == "$popup_count" ]] || \
+    fail 'Herdr popup heights are not all 95%'
+}
+
+test_herdr_config_opens_neovim_file_picker() {
+  local config="$repo_root/herdr/config.toml"
+
+  grep -Fxq 'key = "cmd+ctrl+e"' "$config" || fail 'Herdr does not bind Cmd-Ctrl-E'
+  grep -Fxq 'command = "exec nvim -c \"lua require('\''snacks'\'').picker.files { hidden = vim.fn.isdirectory('\''.git'\'') == 1 }\""' \
+    "$config" || fail 'Herdr does not open the Neovim file picker'
+  ! grep -Fq 'Neotree show' "$config" || fail 'Herdr still opens Neo-tree from Cmd-Ctrl-E'
 }
 
 prepare_herdr_hunk_sandbox() {
@@ -1290,6 +1309,8 @@ run_test() {
       test_herdr_config_supports_cjk_prefix
       test_herdr_config_focuses_agents_by_number
       test_herdr_config_opens_lazygit_popup
+      test_herdr_config_uses_95_percent_popups
+      test_herdr_config_opens_neovim_file_picker
       test_herdr_config_toggles_hunk
       test_herdr_config_uses_hunk_default_save_shortcut
       test_hunk_config_starts_with_hidden_menu_bar
