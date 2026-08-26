@@ -118,5 +118,5 @@ update-cli-tools() {
   fi
 
   command mise self-update --yes || return
-  command mise upgrade --interactive || return
+  command mise upgrade --minimum-release-age 0s --interactive || return
 }

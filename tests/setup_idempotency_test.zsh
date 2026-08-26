@@ -1077,7 +1077,7 @@ test_zshrc_cli_updates_tools() {
   local expected='brew upgrade -y
 brew cleanup --prune=all
 mise self-update --yes
-mise upgrade --interactive'
+mise upgrade --minimum-release-age 0s --interactive'
   [[ "$actual" == "$expected" ]] || \
     fail "CLI update order: expected '$expected', got '$actual'"
 }
@@ -1102,7 +1102,7 @@ test_zshrc_cli_update_supports_hosts_without_homebrew() {
 
   local actual="$(<"$test_sandbox/calls.log")"
   local expected='mise self-update --yes
-mise upgrade --interactive'
+mise upgrade --minimum-release-age 0s --interactive'
   [[ "$actual" == "$expected" ]] || \
     fail "CLI update without Homebrew: expected '$expected', got '$actual'"
 }
