@@ -12,6 +12,7 @@ elixir = { version = "1.20", depends = ["erlang"] }
 java = "temurin-25"
 go = "latest"
 rust = "latest"
+postgres = "14"
 
 # General-purpose CLI tools
 sd = "latest"
