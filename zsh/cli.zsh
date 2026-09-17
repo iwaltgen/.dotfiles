@@ -31,18 +31,6 @@ if (( $+commands[xh] )); then
   }
 fi
 
-if (( $+commands[herdr] )); then
-  herdr() {
-    local -a args=("$@")
-
-    if (( ${args[(I)--remote]} && ! ${args[(I)--remote-keybindings]} )); then
-      args+=(--remote-keybindings server)
-    fi
-
-    command herdr "${args[@]}"
-  }
-fi
-
 if (( $+commands[eza] )); then
   eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group' '--color-scale=all')
 

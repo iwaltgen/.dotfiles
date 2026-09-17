@@ -852,44 +852,6 @@ prepare_zshrc_herdr_sandbox() {
 zinit() { :; }
 zi() { :; }'
 
-  write_executable "$fake_bin/herdr" '#!/bin/zsh
-print -r -- "$*" >> "$CALLS_LOG"'
-}
-
-assert_zshrc_herdr_invocation() {
-  local expected="$1"
-  shift
-
-  prepare_zshrc_herdr_sandbox
-
-  HOME="$test_sandbox/home" \
-    CALLS_LOG="$test_sandbox/calls.log" \
-    PATH="$test_sandbox/bin:/usr/bin:/bin" \
-    ZSHRC_UNDER_TEST="$repo_root/.zshrc" \
-    /bin/zsh -c 'source "$ZSHRC_UNDER_TEST"; herdr "$@"' zsh "$@"
-
-  local actual="$(<"$test_sandbox/calls.log")"
-  [[ "$actual" == "$expected" ]] || \
-    fail "Herdr invocation: expected '$expected', got '$actual'"
-
-  cleanup
-  test_sandbox=""
-}
-
-test_zshrc_defaults_remote_herdr_to_server_keybindings() {
-  assert_zshrc_herdr_invocation \
-    '--remote workbox --remote-keybindings server' \
-    --remote workbox
-}
-
-test_zshrc_preserves_explicit_remote_keybindings() {
-  assert_zshrc_herdr_invocation \
-    '--remote workbox --remote-keybindings local' \
-    --remote workbox --remote-keybindings local
-}
-
-test_zshrc_leaves_non_remote_herdr_commands_unchanged() {
-  assert_zshrc_herdr_invocation 'status client' status client
 }
 
 test_zshrc_loads_fragment_for_current_os() {
@@ -1302,9 +1264,6 @@ run_test() {
       test_linux_prelude_runs_twice
       ;;
     herdr)
-      test_zshrc_defaults_remote_herdr_to_server_keybindings
-      test_zshrc_preserves_explicit_remote_keybindings
-      test_zshrc_leaves_non_remote_herdr_commands_unchanged
       test_zshrc_loads_fragment_for_current_os
       test_herdr_config_supports_cjk_prefix
       test_herdr_config_focuses_agents_by_number
