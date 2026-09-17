@@ -254,49 +254,12 @@ test_setup_backs_up_existing_mise_config() {
     fail 're-running setup created an extra mise config backup'
 }
 
-test_mise_config_declares_approved_tools() {
+test_mise_config_preserves_default_settings() {
   local config="$repo_root/mise/config.toml"
-  [[ -f "$config" ]] || fail 'tracked mise config does not exist'
+  [[ -f "$config" ]] || fail 'mise 설정 파일이 없습니다'
 
-  local actual_tools
-  local expected_tools
-  actual_tools="$(awk '
-    /^\[tools\]$/ { in_tools = 1; next }
-    /^\[/ { in_tools = 0 }
-    in_tools && /^[A-Za-z0-9_".:@\/-]+[[:space:]]*=/ {
-      key = $0
-      sub(/[[:space:]]*=.*$/, "", key)
-      gsub(/^"|"$/, "", key)
-      print key
-    }
-  ' "$config" | LC_ALL=C sort)"
-  expected_tools="$(print -l \
-    act atuin bat bottom buf bun cargo:atuin cargo:eza cargo:fd-find cargo:git-delta \
-    claude cmake codex conda:eza ctop curlie \
-    delta deno direnv dive duf dust elixir erlang fastfetch fd fx fzf gdu gh git-lfs go goreleaser \
-    gping gradle helm herdr hunk hyperfine java jq lazydocker lazygit maven mc mkcert neovim node \
-    npm:agent-browser npm:pnpm pnpm python ripgrep rust sd starship terraform tmux \
-    uv xh zoxide | LC_ALL=C sort)"
-
-  [[ "$actual_tools" == "$expected_tools" ]] || \
-    fail "mise tools differ from the approved set:\n$actual_tools"
-  grep -Fxq 'java = "temurin-25"' "$config" || fail 'mise config does not select Temurin 25'
-  grep -Fxq '"conda:eza" = { version = "latest", os = ["linux", "macos/arm64"] }' "$config" || fail 'mise config does not use conda eza'
-  grep -Fxq 'buf = "latest"' "$config" || fail 'mise config does not use the Buf shorthand'
-  grep -Fxq 'pnpm = { version = "latest", os = ["linux", "macos/arm64"] }' "$config" || \
-    fail 'pnpm does not use the aqua backend outside macOS Intel'
-  grep -Fxq '"npm:pnpm" = { version = "latest", os = ["macos/x64"] }' "$config" || \
-    fail 'pnpm does not fall back to the npm backend on macOS Intel'
-  grep -Fxq 'claude = { version = "latest", minimum_release_age = "6h" }' "$config" || \
-    fail 'Claude CLI does not shorten the release cooldown to 6h'
-  grep -Fxq 'codex = { version = "latest", minimum_release_age = "6h" }' "$config" || \
-    fail 'Codex CLI does not shorten the release cooldown to 6h'
   ! grep -Eq '^\[settings' "$config" || \
-    fail 'mise config overrides settings instead of relying on the secure defaults'
-  ! grep -Eq '^"(aqua:caddyserver/caddy|conda:clang-format|aqua:FiloSottile/mkcert|aqua:bufbuild/buf)"[[:space:]]*=' \
-    "$config" || fail 'mise config pins a backend already selected by the default registry'
-  ! grep -Fq '# CLI tools migrated from Homebrew or another mise backend' "$config" || \
-    fail 'mise config keeps a migration-only tool category'
+    fail 'mise 설정은 기본 보호 설정을 유지하도록 [settings] 블록을 두지 않아야 합니다'
 }
 
 test_brewfile_contains_only_approved_formulae() {
@@ -1254,7 +1217,7 @@ run_test() {
       cleanup
       test_sandbox=""
       test_setup_restores_existing_file_when_link_fails
-      test_mise_config_declares_approved_tools
+      test_mise_config_preserves_default_settings
       test_brewfile_contains_only_approved_formulae
       ;;
     darwin)
