@@ -74,6 +74,7 @@ if (( $+commands[codex] )); then
   codex() {
     local -a args=()
     local arg
+    local on_daemon=0
     local safe=0
     local parse_options=1
 
@@ -81,10 +82,15 @@ if (( $+commands[codex] )); then
       if (( parse_options )) && [[ "$arg" == --safe ]]; then
         safe=1
         continue
+      elif (( parse_options )) && [[ "$arg" == --on-daemon ]]; then
+        on_daemon=1
+        continue
       fi
       args+=("$arg")
       [[ "$arg" == -- ]] && parse_options=0
     done
+
+    (( on_daemon )) || args=(--no-daemon "${args[@]}")
 
     if (( safe )); then
       command codex "${args[@]}"

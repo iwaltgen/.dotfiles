@@ -971,10 +971,10 @@ arg=notes.md'
     fail "less alias migration: expected '$expected', got '$actual'"
 }
 
-test_zshrc_cli_agent_wrappers_default_to_full_access_and_support_safe_mode() {
+test_zshrc_cli_agent_wrappers_apply_default_options_and_support_opt_outs() {
   prepare_zshrc_cli_sandbox
 
-  run_zshrc_cli 'claude "review this" --model opus; claude "review safely" --safe; codex "fix it"; codex "inspect" --safe'
+  run_zshrc_cli 'claude "review this" --model opus; claude "review safely" --safe; codex "fix it"; codex "inspect" --safe; codex "use daemon" --on-daemon; codex --on-daemon "use daemon safely" --safe'
 
   local actual="$(<"$test_sandbox/calls.log")"
   local expected='claude env=1
@@ -986,9 +986,16 @@ claude env=1
 arg=review safely
 codex
 arg=--dangerously-bypass-approvals-and-sandbox
+arg=--no-daemon
 arg=fix it
 codex
-arg=inspect'
+arg=--no-daemon
+arg=inspect
+codex
+arg=--dangerously-bypass-approvals-and-sandbox
+arg=use daemon
+codex
+arg=use daemon safely'
   [[ "$actual" == "$expected" ]] || \
     fail "agent wrappers: expected '$expected', got '$actual'"
 }
@@ -1276,7 +1283,7 @@ run_test() {
       test_zshrc_cli_replaces_existing_less_alias_with_wrapper
       cleanup
       test_sandbox=""
-      test_zshrc_cli_agent_wrappers_default_to_full_access_and_support_safe_mode
+      test_zshrc_cli_agent_wrappers_apply_default_options_and_support_opt_outs
       cleanup
       test_sandbox=""
       test_zshrc_cli_updates_tools
