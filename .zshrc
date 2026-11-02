@@ -78,6 +78,7 @@ fi
 zinit pack'no-dir-color-swap' for ls_colors
 
 # fzf is installed by mise; fzf-tab remains a Zinit plugin
+export FZF_DEFAULT_OPTS='--color=base16'
 (( $+commands[fzf] )) && source <(fzf --zsh)
 zinit light Aloxaf/fzf-tab
 
@@ -99,6 +100,7 @@ zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl
       bat --color=always $realpath
     fi'
 zstyle ':fzf-tab:*' switch-group ',' '.'
+zstyle ':fzf-tab:*' fzf-flags --color=base16
 
 export STARSHIP_CONFIG=~/.starship.toml
 
