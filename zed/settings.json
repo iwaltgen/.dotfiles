@@ -48,7 +48,11 @@
   "agent": {
     "dock": "right",
   },
-  "theme": "GitHub Dark Dimmed",
+  "theme": {
+    "mode": "system",
+    "light": "GitHub Light",
+    "dark": "GitHub Dark Dimmed"
+  },
   "buffer_font_family": "Jetendard",
   "buffer_font_size": 14,
   "autosave": "on_focus_change",
