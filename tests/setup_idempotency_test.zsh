@@ -859,6 +859,9 @@ done'
   write_executable "$fake_bin/eza" '#!/bin/zsh
 print -r -- "eza $*" >> "$CALLS_LOG"'
 
+  write_executable "$fake_bin/btm" '#!/bin/zsh
+print -r -- "btm $*" >> "$CALLS_LOG"'
+
   write_executable "$fake_bin/xh" '#!/bin/zsh
 print -r -- "xh compat=${XH_HTTPIE_COMPAT_MODE:-} $*" >> "$CALLS_LOG"'
 
@@ -908,6 +911,13 @@ test_zshrc_cli_tree_aliases_default_to_depth_two() {
 eza --tree --level=2 --level=4 --icons=never'
   [[ "$actual" == "$expected" ]] || \
     fail "eza tree aliases: expected '$expected', got '$actual'"
+}
+
+test_zshrc_cli_btm_preserves_explicit_theme() {
+  prepare_zshrc_cli_sandbox
+  run_zshrc_cli 'btm --theme gruvbox'
+  [[ "$(<"$test_sandbox/calls.log")" == 'btm --theme gruvbox' ]] || \
+    fail 'btm wrapper did not preserve the explicit theme'
 }
 
 test_zshrc_cli_http_aliases_enable_httpie_compat_mode() {
@@ -1275,6 +1285,9 @@ run_test() {
       test_herdr_hunk_prompt_refuses_working_agent
       ;;
     cli)
+      test_zshrc_cli_btm_preserves_explicit_theme
+      cleanup
+      test_sandbox=""
       test_zshrc_cli_bat_themes_are_exported
       cleanup
       test_sandbox=""
