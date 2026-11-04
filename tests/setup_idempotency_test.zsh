@@ -665,6 +665,7 @@ test_hunk_config_starts_with_hidden_menu_bar() {
   [[ "$(grep -Fxc 'menu_bar = false' "$config" || true)" == 1 ]] || \
     fail 'Hunk menu bar is not disabled exactly once'
   grep -Fxq 'mode = "auto"' "$config" || fail 'Hunk mode is not auto'
+  grep -Fxq 'theme = "terminal"' "$config" || fail 'Hunk does not follow terminal colors'
 }
 
 test_herdr_config_sends_hunk_review_prompt() {

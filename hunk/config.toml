@@ -1,4 +1,5 @@
 # Docs: https://github.com/modem-dev/hunk#config
 
 mode = "auto"
+theme = "terminal"
 menu_bar = false
