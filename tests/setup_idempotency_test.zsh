@@ -943,6 +943,14 @@ xh compat= --ignore-stdin --body https://ipwho.is/8.8.8.8'
     fail "ipwho function: expected '$expected', got '$actual'"
 }
 
+test_zshrc_cli_bat_themes_are_exported() {
+  prepare_zshrc_cli_sandbox
+
+  local actual="$(run_zshrc_cli 'print -r -- "$BAT_THEME_LIGHT|$BAT_THEME_DARK"')"
+  [[ "$actual" == 'GitHub|TwoDark' ]] || \
+    fail "bat themes: expected 'GitHub|TwoDark', got '$actual'"
+}
+
 test_zshrc_cli_less_uses_bat_pager_at_end_of_input() {
   prepare_zshrc_cli_sandbox
 
@@ -1265,6 +1273,9 @@ run_test() {
       test_herdr_hunk_prompt_refuses_working_agent
       ;;
     cli)
+      test_zshrc_cli_bat_themes_are_exported
+      cleanup
+      test_sandbox=""
       test_zshrc_cli_tree_aliases_default_to_depth_two
       cleanup
       test_sandbox=""

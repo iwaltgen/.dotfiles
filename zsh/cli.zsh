@@ -4,6 +4,8 @@
 (( $+commands[bat] && $+aliases[less] )) && unalias less
 
 if (( $+commands[bat] )); then
+  export BAT_THEME_LIGHT="GitHub"
+  export BAT_THEME_DARK="TwoDark"
   alias cat=bat
 
   less() {
