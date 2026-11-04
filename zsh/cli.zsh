@@ -13,6 +13,7 @@ if (( $+commands[bat] )); then
   }
 fi
 (( $+commands[delta] )) && alias diff=delta
+(( $+commands[duf] )) && alias duf='duf -theme ansi'
 (( $+commands[dust] )) && alias du=dust
 (( $+commands[gping] )) && alias ping=gping
 (( $+commands[lazygit] )) && alias lg=lazygit
