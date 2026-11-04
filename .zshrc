@@ -95,7 +95,7 @@ zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl
 (( $+commands[eza] && $+commands[bat] )) && \
   zstyle ':fzf-tab:complete:(cd|z|vi):*' fzf-preview \
     'if [ -d $realpath ]; then
-      eza -1 --color=always $realpath
+      "$HOME/.dotfiles/bin/eza-themed.sh" -1 --color=always $realpath
     else
       bat --color=always $realpath
     fi'

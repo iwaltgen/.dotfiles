@@ -34,6 +34,10 @@ if (( $+commands[xh] )); then
 fi
 
 if (( $+commands[eza] )); then
+  eza() {
+    "$HOME/.dotfiles/bin/eza-themed.sh" "$@"
+  }
+
   eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group' '--color-scale=all')
 
   alias ls='eza ${eza_params}'

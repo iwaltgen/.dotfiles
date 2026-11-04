@@ -846,6 +846,8 @@ prepare_zshrc_cli_sandbox() {
 
   local fake_bin="$test_sandbox/bin"
   mkdir -p "$fake_bin"
+  mkdir -p "$test_sandbox/home"
+  ln -s "$repo_root" "$test_sandbox/home/.dotfiles"
   touch "$test_sandbox/calls.log"
 
   write_executable "$fake_bin/bat" '#!/bin/zsh
