@@ -134,6 +134,8 @@ link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$config_home/agents/AGENTS.md" 
 link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$config_home/zed/AGENTS.md" || exit 1
 link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$HOME/.claude/CLAUDE.md" || exit 1
 link_dotfile "$HOME/.dotfiles/GLOBAL_AGENTS.md" "$HOME/.codex/AGENTS.md" || exit 1
+link_dotfile "$HOME/.dotfiles/claude/shared.settings.json" "$HOME/.claude/shared.settings.json" || exit 1
+link_dotfile "$HOME/.dotfiles/codex/shared.config.toml" "$HOME/.codex/shared.config.toml" || exit 1
 
 if [[ $OSTYPE == darwin* ]]; then
   link_dotfile "$HOME/.dotfiles/bin/idea.darwin.sh" "$HOME/.local/bin/idea" || exit 1

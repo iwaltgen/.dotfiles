@@ -64,6 +64,8 @@ if (( $+commands[claude] )); then
     local -a args=()
     local arg
     local safe=0
+    local explicit_settings=0
+    local shared_settings="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/shared.settings.json"
     local parse_options=1
 
     for arg in "$@"; do
@@ -71,9 +73,16 @@ if (( $+commands[claude] )); then
         safe=1
         continue
       fi
+      if (( parse_options )) && [[ "$arg" == --settings || "$arg" == --settings=* ]]; then
+        explicit_settings=1
+      fi
       args+=("$arg")
       [[ "$arg" == -- ]] && parse_options=0
     done
+
+    if (( ! explicit_settings )) && [[ -f "$shared_settings" ]]; then
+      args=(--settings "$shared_settings" "${args[@]}")
+    fi
 
     if (( safe )); then
       CLAUDE_CODE_NO_FLICKER=1 command claude "${args[@]}"
@@ -89,6 +98,8 @@ if (( $+commands[codex] )); then
     local arg
     local on_daemon=0
     local safe=0
+    local explicit_profile=0
+    local shared_config="${CODEX_HOME:-$HOME/.codex}/shared.config.toml"
     local parse_options=1
 
     for arg in "$@"; do
@@ -99,10 +110,34 @@ if (( $+commands[codex] )); then
         on_daemon=1
         continue
       fi
+      if (( parse_options )) && [[ "$arg" == --profile || "$arg" == --profile=* || "$arg" == -p || "$arg" == -p?* ]]; then
+        explicit_profile=1
+      fi
       args+=("$arg")
       [[ "$arg" == -- ]] && parse_options=0
     done
 
+    # 프로필을 지원하지 않는 관리 명령은 기존 사용자 설정으로 실행합니다.
+    local option_value=0
+    for arg in "${args[@]}"; do
+      if (( option_value )); then
+        option_value=0
+        continue
+      fi
+      case "$arg" in
+        --) break ;;
+        -c | --config | --enable | --disable | --remote | --remote-auth-token-env | -i | --image | -m | --model | --local-provider | -p | --profile | -s | --sandbox | -C | --cd | --add-dir | -a | --ask-for-approval)
+          option_value=1 ;;
+        agents | login | logout | plugin | app-server | remote-control | app | completion | update | doctor | debug | apply | a | migrate-rollouts | cloud | exec-server | features | help)
+          explicit_profile=1
+          break ;;
+        -*) ;;
+        *) break ;;
+      esac
+    done
+    if (( ! explicit_profile )) && [[ -f "$shared_config" ]]; then
+      args=(--profile shared "${args[@]}")
+    fi
     (( on_daemon )) || args=(--no-daemon "${args[@]}")
 
     if (( safe )); then

@@ -59,6 +59,8 @@ prepare_setup_sandbox() {
     "$dotfiles/hunk" \
     "$dotfiles/zed" \
     "$dotfiles/mise" \
+    "$dotfiles/codex" \
+    "$dotfiles/claude" \
     "$dotfiles/.gnupg" \
     "$home/.local/bin" \
     "$fake_bin"
@@ -79,6 +81,8 @@ prepare_setup_sandbox() {
     "$dotfiles/.gitconfig" \
     "$dotfiles/GLOBAL_AGENTS.md" \
     "$dotfiles/ghostty.conf" \
+    "$dotfiles/codex/shared.config.toml" \
+    "$dotfiles/claude/shared.settings.json" \
     "$dotfiles/atuin/config.toml" \
     "$dotfiles/herdr/config.toml" \
     "$dotfiles/hunk/config.toml" \
@@ -147,6 +151,10 @@ test_setup_runs_twice() {
   local elixir_check_line
   local install_line
 
+  mkdir -p "$home/.codex" "$home/.claude"
+  print -r -- '로컬 Codex 설정' > "$home/.codex/config.toml"
+  print -r -- '로컬 Claude 설정' > "$home/.claude/settings.json"
+
   run_setup
   run_setup
 
@@ -179,6 +187,10 @@ test_setup_runs_twice() {
   assert_symlink "$home/.config/zed/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.claude/CLAUDE.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
   assert_symlink "$home/.codex/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
+  assert_symlink "$home/.codex/shared.config.toml" "$home/.dotfiles/codex/shared.config.toml"
+  assert_symlink "$home/.claude/shared.settings.json" "$home/.dotfiles/claude/shared.settings.json"
+  [[ "$(<"$home/.codex/config.toml")" == '로컬 Codex 설정' ]] || fail '로컬 Codex 설정이 변경되었습니다'
+  [[ "$(<"$home/.claude/settings.json")" == '로컬 Claude 설정' ]] || fail '로컬 Claude 설정이 변경되었습니다'
   if [[ $OSTYPE == darwin* ]]; then
     assert_symlink "$home/.local/bin/idea" "$home/.dotfiles/bin/idea.darwin.sh"
     assert_symlink "$home/.local/bin/link-superpowers-docs" \
@@ -897,6 +909,8 @@ run_zshrc_cli() {
 
   HOME="$test_sandbox/home" \
     CALLS_LOG="$test_sandbox/calls.log" \
+    CODEX_HOME="$test_sandbox/home/.codex" \
+    CLAUDE_CONFIG_DIR="$test_sandbox/home/.claude" \
     PATH="$test_sandbox/bin:/usr/bin:/bin" \
     ZSHRC_CLI_UNDER_TEST="$repo_root/zsh/cli.zsh" \
     ZSHRC_CLI_COMMAND="$command_text" \
@@ -1031,6 +1045,83 @@ codex
 arg=use daemon safely'
   [[ "$actual" == "$expected" ]] || \
     fail "agent wrappers: expected '$expected', got '$actual'"
+}
+
+prepare_shared_agent_configs() {
+  mkdir -p "$test_sandbox/home/.codex" "$test_sandbox/home/.claude"
+  touch "$test_sandbox/home/.codex/shared.config.toml" "$test_sandbox/home/.claude/shared.settings.json"
+}
+
+test_zshrc_cli_agents_load_shared_configs() {
+  prepare_zshrc_cli_sandbox
+  prepare_shared_agent_configs
+
+  run_zshrc_cli 'claude --safe "검토"; codex --safe "검토"'
+
+  local actual="$(<"$test_sandbox/calls.log")"
+  local expected="claude env=1
+arg=--settings
+arg=$test_sandbox/home/.claude/shared.settings.json
+arg=검토
+codex
+arg=--no-daemon
+arg=--profile
+arg=shared
+arg=검토"
+  [[ "$actual" == "$expected" ]] || fail "공통 에이전트 설정이 로드되지 않았습니다: $actual"
+}
+
+test_zshrc_cli_agents_preserve_explicit_configs_and_option_terminator() {
+  prepare_zshrc_cli_sandbox
+  prepare_shared_agent_configs
+
+  run_zshrc_cli 'claude --safe --settings custom.json; claude --safe --settings="{}"; codex --safe --profile work; codex --safe --profile=work; codex --safe -p work; codex --safe -pwork'
+
+  ! grep -Fq 'shared' "$test_sandbox/calls.log" || fail '명시적인 설정을 공통 설정으로 덮어썼습니다'
+  assert_call_count '^arg=--settings$' 1
+  assert_call_count '^arg=--settings=\{\}$' 1
+  assert_call_count '^arg=--profile$' 1
+  assert_call_count '^arg=--profile=work$' 1
+  assert_call_count '^arg=-p$' 1
+  assert_call_count '^arg=-pwork$' 1
+
+  : > "$test_sandbox/calls.log"
+  run_zshrc_cli 'claude --safe -- --settings; codex --safe -- --profile'
+  assert_call_count '^arg=--settings$' 2
+  assert_call_count '^arg=--profile$' 2
+  assert_call_count '^arg=--$' 2
+}
+
+test_zshrc_cli_codex_management_commands_skip_shared_profile() {
+  prepare_zshrc_cli_sandbox
+  prepare_shared_agent_configs
+
+  run_zshrc_cli 'codex --safe features list; codex --safe --on-daemon completion zsh; codex --safe -C /tmp features list; codex --safe --config model="other" doctor'
+  ! grep -Fq 'arg=--profile' "$test_sandbox/calls.log" || fail '관리 명령에 지원하지 않는 프로필을 전달했습니다'
+  assert_call_count '^arg=features$' 2
+  assert_call_count '^arg=completion$' 1
+  assert_call_count '^arg=doctor$' 1
+
+  : > "$test_sandbox/calls.log"
+  run_zshrc_cli 'codex --safe -C /tmp exec "검토"; codex --safe --model other "검토"; codex --safe -- "features"'
+  assert_call_count '^arg=shared$' 3
+}
+
+test_zshrc_cli_agents_respect_custom_config_directories() {
+  prepare_zshrc_cli_sandbox
+  prepare_shared_agent_configs
+
+  run_zshrc_cli 'claude --safe "검토"; codex --safe "검토"' \
+    'export CODEX_HOME="$HOME/custom codex" CLAUDE_CONFIG_DIR="$HOME/custom claude"'
+  ! grep -Fq 'shared' "$test_sandbox/calls.log" || fail '사용자 지정 설정 경로에서 기본 경로 설정을 읽었습니다'
+
+  mkdir -p "$test_sandbox/home/custom codex" "$test_sandbox/home/custom claude"
+  touch "$test_sandbox/home/custom codex/shared.config.toml" "$test_sandbox/home/custom claude/shared.settings.json"
+  : > "$test_sandbox/calls.log"
+  run_zshrc_cli 'claude --safe "검토"; codex --safe "검토"' \
+    'export CODEX_HOME="$HOME/custom codex" CLAUDE_CONFIG_DIR="$HOME/custom claude"'
+  grep -Fxq "arg=$test_sandbox/home/custom claude/shared.settings.json" "$test_sandbox/calls.log" || fail 'Claude 사용자 지정 설정 경로를 무시했습니다'
+  assert_call_count '^arg=shared$' 1
 }
 
 test_zshrc_cli_updates_tools() {
@@ -1326,6 +1417,18 @@ run_test() {
       cleanup
       test_sandbox=""
       test_zshrc_cli_agent_wrappers_apply_default_options_and_support_opt_outs
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_agents_load_shared_configs
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_agents_preserve_explicit_configs_and_option_terminator
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_codex_management_commands_skip_shared_profile
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_agents_respect_custom_config_directories
       cleanup
       test_sandbox=""
       test_zshrc_cli_updates_tools

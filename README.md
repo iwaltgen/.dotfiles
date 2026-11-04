@@ -33,6 +33,10 @@ cd "$HOME/.dotfiles"
 
 Homebrew는 macOS 부트스트랩, 서비스, 시스템 통합, 네이티브 라이브러리와 그래픽 애플리케이션을 담당합니다. setup은 Brewfile에서 빠진 기존 formula를 자동으로 제거하지 않습니다. mise 이전이 확인된 뒤 기존 Homebrew 설치를 정리하는 방법은 [`brew/README.md`](brew/README.md)를 참고하세요.
 
+### Codex·Claude 공통 설정
+
+[`codex/shared.config.toml`](codex/shared.config.toml)과 [`claude/shared.settings.json`](claude/shared.settings.json)은 setup이 각 도구의 홈 디렉터리에 심볼릭 링크로 연결하고, Zsh 실행 함수가 로드합니다. 머신 전용 설정과 인증·상태 파일은 기존 위치에 유지합니다.
+
 ### GPG
 
 선택 사항인 GPG 키 가져오기를 사용하려면 [Keybase](https://keybase.io/docs/the_app/install_macos)와 GnuPG가 필요합니다.
