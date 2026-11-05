@@ -1,5 +1,7 @@
 {
   "language": "Korean",
+  "model": "opusplan",
+  "advisorModel": "opus",
   "theme": "auto",
   "voiceEnabled": false,
   "remoteControlAtStartup": false,
