@@ -4,15 +4,24 @@
 (( $+commands[bat] && $+aliases[less] )) && unalias less
 
 if (( $+commands[bat] )); then
-  export BAT_THEME_LIGHT="GitHub"
-  export BAT_THEME_DARK="TwoDark"
+  export BAT_THEME_LIGHT="Catppuccin Latte"
+  export BAT_THEME_DARK="Catppuccin Mocha"
   alias cat=bat
 
   less() {
     command bat --paging=always --pager='less -R +G' "$@"
   }
 fi
-(( $+commands[delta] )) && alias diff=delta
+if (( $+commands[delta] )); then
+  delta() {
+    "$HOME/.dotfiles/bin/delta-themed.sh" "$@"
+  }
+  alias diff=delta
+fi
+
+# ANSI 색상은 Ghostty의 Mocha/Latte 팔레트를 따릅니다.
+export FX_THEME=1
+export JQ_COLORS='0;90:0;33:0;33:0;36:0;32:1;39:1;39:1;34'
 (( $+commands[duf] )) && alias duf='duf -theme ansi'
 (( $+commands[dust] )) && alias du=dust
 (( $+commands[gping] )) && alias ping=gping
@@ -45,7 +54,7 @@ if (( $+commands[eza] )); then
     "$HOME/.dotfiles/bin/eza-themed.sh" "$@"
   }
 
-  eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group' '--color-scale=all')
+  eza_params=('--git' '--icons' '--classify' '--group-directories-first' '--time-style=long-iso' '--group')
 
   alias ls='eza ${eza_params}'
   alias ll='eza --header --long ${eza_params}'
@@ -81,7 +90,17 @@ if (( $+commands[claude] )); then
     done
 
     if (( ! explicit_settings )) && [[ -f "$shared_settings" ]]; then
-      args=(--settings "$shared_settings" "${args[@]}")
+      local theme detected
+      source "$HOME/.dotfiles/bin/terminal-theme.zsh"
+      local flavour=mocha
+      [[ "$theme" == light ]] && flavour=latte
+      local selected_theme="$theme-ansi"
+      if [[ -f "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/themes/catppuccin-$flavour.json" ]]; then
+        selected_theme="custom:catppuccin-$flavour"
+      fi
+      local settings
+      settings=$(command jq -c --arg theme "$selected_theme" '.theme = $theme' "$shared_settings") || return 1
+      args=(--settings "$settings" "${args[@]}")
     fi
 
     if (( safe )); then
@@ -136,7 +155,11 @@ if (( $+commands[codex] )); then
       esac
     done
     if (( ! explicit_profile )) && [[ -f "$shared_config" ]]; then
-      args=(--profile shared "${args[@]}")
+      local theme detected
+      source "$HOME/.dotfiles/bin/terminal-theme.zsh"
+      local flavour=mocha
+      [[ "$theme" == light ]] && flavour=latte
+      args=(-c "tui.theme=\"catppuccin-$flavour\"" --profile shared "${args[@]}")
     fi
     (( on_daemon )) || args=(--no-daemon "${args[@]}")
 

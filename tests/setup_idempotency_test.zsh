@@ -67,6 +67,7 @@ prepare_setup_sandbox() {
 
   cp "$repo_root/bin/setup.sh" "$dotfiles/bin/setup.sh"
   cp "$repo_root/mise/config.toml" "$dotfiles/mise/config.toml"
+  cp -R "$repo_root/themes" "$dotfiles/themes"
 
   touch \
     "$dotfiles/.zshrc" \
@@ -181,6 +182,14 @@ test_setup_runs_twice() {
   assert_symlink "$home/.config/nvim" "$home/.dotfiles/nvim"
   assert_symlink "$home/.config/herdr/config.toml" "$home/.dotfiles/herdr/config.toml"
   assert_symlink "$home/.config/hunk/config.toml" "$home/.dotfiles/hunk/config.toml"
+  assert_symlink "$home/.config/atuin/themes/catppuccin-terminal.toml" "$home/.dotfiles/themes/atuin.toml"
+  assert_symlink "$home/.gdu.yaml" "$home/.dotfiles/themes/gdu.yaml"
+  assert_symlink "$home/.claude/themes/catppuccin-mocha.json" "$home/.dotfiles/themes/claude/catppuccin-mocha.json"
+  assert_symlink "$home/.claude/themes/catppuccin-latte.json" "$home/.dotfiles/themes/claude/catppuccin-latte.json"
+  local app_config_home="$home/.config"
+  [[ $OSTYPE == darwin* ]] && app_config_home="$home/Library/Application Support"
+  assert_symlink "$app_config_home/lazygit/config.yml" "$home/.dotfiles/themes/lazygit.yml"
+  assert_symlink "$app_config_home/lazydocker/config.yml" "$home/.dotfiles/themes/lazydocker.yml"
   assert_symlink "$home/.config/zed/settings.json" "$home/.dotfiles/zed/settings.json"
   assert_symlink "$home/.config/zed/keymap.json" "$home/.dotfiles/zed/keymap.json"
   assert_symlink "$home/.config/agents/AGENTS.md" "$home/.dotfiles/GLOBAL_AGENTS.md"
@@ -863,6 +872,12 @@ prepare_zshrc_cli_sandbox() {
   ln -s "$repo_root" "$test_sandbox/home/.dotfiles"
   touch "$test_sandbox/calls.log"
 
+  ln -s "${commands[jq]}" "$fake_bin/jq"
+  write_executable "$fake_bin/defaults" '#!/bin/zsh
+print Dark'
+  write_executable "$fake_bin/gsettings" '#!/bin/zsh
+print "\"prefer-dark\""'
+
   write_executable "$fake_bin/bat" '#!/bin/zsh
 print -r -- "bat" >> "$CALLS_LOG"
 for arg in "$@"; do
@@ -986,8 +1001,8 @@ test_zshrc_cli_bat_themes_are_exported() {
   prepare_zshrc_cli_sandbox
 
   local actual="$(run_zshrc_cli 'print -r -- "$BAT_THEME_LIGHT|$BAT_THEME_DARK"')"
-  [[ "$actual" == 'GitHub|TwoDark' ]] || \
-    fail "bat themes: expected 'GitHub|TwoDark', got '$actual'"
+  [[ "$actual" == 'Catppuccin Latte|Catppuccin Mocha' ]] || \
+    fail "bat themes: expected 'Catppuccin Latte|Catppuccin Mocha', got '$actual'"
 }
 
 test_zshrc_cli_less_uses_bat_pager_at_end_of_input() {
@@ -1049,7 +1064,9 @@ arg=use daemon safely'
 
 prepare_shared_agent_configs() {
   mkdir -p "$test_sandbox/home/.codex" "$test_sandbox/home/.claude"
-  touch "$test_sandbox/home/.codex/shared.config.toml" "$test_sandbox/home/.claude/shared.settings.json"
+  touch "$test_sandbox/home/.codex/shared.config.toml"
+  print -r -- '{}' > "$test_sandbox/home/.claude/shared.settings.json"
+  ln -s "$repo_root/themes/claude" "$test_sandbox/home/.claude/themes"
 }
 
 test_zshrc_cli_agents_load_shared_configs() {
@@ -1061,14 +1078,26 @@ test_zshrc_cli_agents_load_shared_configs() {
   local actual="$(<"$test_sandbox/calls.log")"
   local expected="claude env=1
 arg=--settings
-arg=$test_sandbox/home/.claude/shared.settings.json
+arg={\"theme\":\"custom:catppuccin-mocha\"}
 arg=검토
 codex
 arg=--no-daemon
+arg=-c
+arg=tui.theme=\"catppuccin-mocha\"
 arg=--profile
 arg=shared
 arg=검토"
   [[ "$actual" == "$expected" ]] || fail "공통 에이전트 설정이 로드되지 않았습니다: $actual"
+}
+
+test_zshrc_cli_agents_select_latte_for_light_terminals() {
+  prepare_zshrc_cli_sandbox
+  prepare_shared_agent_configs
+  write_executable "$test_sandbox/bin/tmux" '#!/bin/zsh
+print light'
+  run_zshrc_cli 'claude --safe "검토"; codex --safe "검토"' 'export TMUX=test TMUX_PANE=%1'
+  grep -Fxq 'arg={"theme":"custom:catppuccin-latte"}' "$test_sandbox/calls.log" || fail 'Claude Latte 테마 선택 실패'
+  grep -Fxq 'arg=tui.theme="catppuccin-latte"' "$test_sandbox/calls.log" || fail 'Codex Latte 테마 선택 실패'
 }
 
 test_zshrc_cli_agents_preserve_explicit_configs_and_option_terminator() {
@@ -1116,11 +1145,12 @@ test_zshrc_cli_agents_respect_custom_config_directories() {
   ! grep -Fq 'shared' "$test_sandbox/calls.log" || fail '사용자 지정 설정 경로에서 기본 경로 설정을 읽었습니다'
 
   mkdir -p "$test_sandbox/home/custom codex" "$test_sandbox/home/custom claude"
-  touch "$test_sandbox/home/custom codex/shared.config.toml" "$test_sandbox/home/custom claude/shared.settings.json"
+  touch "$test_sandbox/home/custom codex/shared.config.toml"
+  print -r -- '{}' > "$test_sandbox/home/custom claude/shared.settings.json"
   : > "$test_sandbox/calls.log"
   run_zshrc_cli 'claude --safe "검토"; codex --safe "검토"' \
     'export CODEX_HOME="$HOME/custom codex" CLAUDE_CONFIG_DIR="$HOME/custom claude"'
-  grep -Fxq "arg=$test_sandbox/home/custom claude/shared.settings.json" "$test_sandbox/calls.log" || fail 'Claude 사용자 지정 설정 경로를 무시했습니다'
+  grep -Fxq 'arg={"theme":"dark-ansi"}' "$test_sandbox/calls.log" || fail 'Claude 사용자 지정 설정 경로의 ANSI 폴백이 적용되지 않았습니다'
   assert_call_count '^arg=shared$' 1
 }
 
@@ -1417,6 +1447,9 @@ run_test() {
       cleanup
       test_sandbox=""
       test_zshrc_cli_agent_wrappers_apply_default_options_and_support_opt_outs
+      cleanup
+      test_sandbox=""
+      test_zshrc_cli_agents_select_latte_for_light_terminals
       cleanup
       test_sandbox=""
       test_zshrc_cli_agents_load_shared_configs

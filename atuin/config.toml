@@ -77,3 +77,7 @@ show_preview = true
 #   "^secret-cmd",
 #   "^innocuous-cmd .*--secret=.+"
 # ]
+
+# 명암 전환은 터미널의 Catppuccin 팔레트를 따릅니다.
+[theme]
+name = "catppuccin-terminal"

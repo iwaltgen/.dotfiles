@@ -7,7 +7,6 @@ return {
   { import = "astrocommunity.recipes.heirline-nvchad-statusline" },
   { import = "astrocommunity.recipes.picker-nvchad-theme" },
   { import = "astrocommunity.recipes.vscode" },
-  { import = "astrocommunity.recipes.vscode-icons" },
 
   { import = "astrocommunity.bars-and-lines.smartcolumn-nvim" },
 

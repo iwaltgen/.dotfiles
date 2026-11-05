@@ -10,15 +10,17 @@
   // Zed has no built-in settings sync, so the extension list is declared here
   // and Zed installs anything missing on startup.
   "auto_install_extensions": {
+    "catppuccin": true,
+    "catppuccin-icons": true,
+    "github-theme": true,
+    "material-icon-theme": true,
     "dart": true,
     "docker-compose": true,
     "dockerfile": true,
     "elixir": true,
     "git-firefly": true,
-    "github-theme": true,
     "html": true,
     "lua": true,
-    "material-icon-theme": true,
     "mdx": true,
     "proto": true,
     "sql": true,
@@ -41,7 +43,11 @@
   "edit_predictions": {
     "provider": "zed"
   },
-  "icon_theme": "Material Icon Theme",
+  "icon_theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Mocha"
+  },
   // No default_model is pinned: Copilot flags its own base model as the chat
   // default and Zed hoists it to the top of the picker, so the model is chosen
   // in the agent panel rather than frozen here.
@@ -50,8 +56,8 @@
   },
   "theme": {
     "mode": "system",
-    "light": "GitHub Light",
-    "dark": "GitHub Dark Dimmed"
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Mocha"
   },
   "buffer_font_family": "Jetendard",
   "buffer_font_size": 14,

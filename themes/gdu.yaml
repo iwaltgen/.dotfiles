@@ -1,0 +1,18 @@
+# 터미널의 Catppuccin ANSI 색상을 사용합니다.
+style:
+  selected-row:
+    text-color: blue
+    background-color: default
+  marked:
+    text-color: yellow
+    background-color: default
+  header:
+    text-color: blue
+    background-color: default
+  footer:
+    text-color: default
+    background-color: default
+    number-color: blue
+  result-row:
+    number-color: green
+    directory-color: blue

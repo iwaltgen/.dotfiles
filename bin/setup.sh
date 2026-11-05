@@ -126,6 +126,20 @@ link_dotfile "$HOME/.dotfiles/herdr/config.toml" "$config_home/herdr/config.toml
 link_dotfile "$HOME/.dotfiles/hunk/config.toml" "$config_home/hunk/config.toml" || exit 1
 link_dotfile "$HOME/.dotfiles/.starship.toml" "$HOME/.starship.toml" || exit 1
 
+# CLI 테마: 앱별 기본 경로를 유지합니다.
+app_config_home="$config_home"
+[[ $OSTYPE == darwin* ]] && app_config_home="$HOME/Library/Application Support"
+mkdir -p "$config_home/atuin/themes" "$HOME/.claude/themes" \
+  "$app_config_home/lazygit" "$app_config_home/lazydocker" || exit 1
+link_dotfile "$HOME/.dotfiles/themes/atuin.toml" "$config_home/atuin/themes/catppuccin-terminal.toml" || exit 1
+link_dotfile "$HOME/.dotfiles/themes/gdu.yaml" "$HOME/.gdu.yaml" || exit 1
+link_dotfile "$HOME/.dotfiles/themes/lazygit.yml" "$app_config_home/lazygit/config.yml" || exit 1
+link_dotfile "$HOME/.dotfiles/themes/lazydocker.yml" "$app_config_home/lazydocker/config.yml" || exit 1
+for flavour in mocha latte; do
+  link_dotfile "$HOME/.dotfiles/themes/claude/catppuccin-$flavour.json" \
+    "$HOME/.claude/themes/catppuccin-$flavour.json" || exit 1
+done
+
 # zed (config_home 은 macOS 와 Linux 가 같아 OS 분기가 필요 없다)
 link_dotfile "$HOME/.dotfiles/zed/settings.json" "$config_home/zed/settings.json" || exit 1
 link_dotfile "$HOME/.dotfiles/zed/keymap.json" "$config_home/zed/keymap.json" || exit 1

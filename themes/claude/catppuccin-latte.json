@@ -1,0 +1,19 @@
+{
+  "name": "Catppuccin Latte",
+  "base": "light-ansi",
+  "overrides": {
+    "claude": "#8839ef",
+    "text": "#4c4f69",
+    "inverseText": "#eff1f5",
+    "inactive": "#6c6f85",
+    "subtle": "#9ca0b0",
+    "suggestion": "#1e66f5",
+    "permission": "#8839ef",
+    "success": "#40a02b",
+    "error": "#d20f39",
+    "warning": "#df8e1d",
+    "diffAdded": "#cce1cd",
+    "diffRemoved": "#e9c4cf",
+    "userMessageBackground": "#ccd0da"
+  }
+}

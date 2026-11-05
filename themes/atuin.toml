@@ -1,0 +1,18 @@
+# Ghostty의 Catppuccin Mocha/Latte ANSI 팔레트를 사용합니다.
+[theme]
+name = "catppuccin-terminal"
+
+[colors]
+AlertInfo = "green"
+AlertWarn = "yellow"
+AlertError = "red"
+Annotation = "blue"
+Guidance = "cyan"
+Important = "magenta"
+Title = "blue"
+SyntaxCommand = "blue"
+SyntaxFlag = "yellow"
+SyntaxString = "green"
+SyntaxVariable = "magenta"
+SyntaxOperator = "cyan"
+SyntaxComment = "darkgray"

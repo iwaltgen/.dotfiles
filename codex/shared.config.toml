@@ -3,5 +3,5 @@ model = "gpt-6.1-sol"
 model_reasoning_effort = "low"
 
 [tui]
-theme = "base16"
+theme = "catppuccin-latte"
 status_line = ["model-with-reasoning", "context-remaining", "current-dir", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "fast-mode"]

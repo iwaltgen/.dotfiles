@@ -1,0 +1,6 @@
+# RGB 값을 고정하지 않고 터미널의 Catppuccin 팔레트를 따릅니다.
+gui:
+  theme:
+    activeBorderColor: [blue, bold]
+    inactiveBorderColor: [default]
+    optionsTextColor: [blue]

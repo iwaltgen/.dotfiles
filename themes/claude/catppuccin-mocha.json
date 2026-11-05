@@ -1,0 +1,19 @@
+{
+  "name": "Catppuccin Mocha",
+  "base": "dark-ansi",
+  "overrides": {
+    "claude": "#cba6f7",
+    "text": "#cdd6f4",
+    "inverseText": "#1e1e2e",
+    "inactive": "#a6adc8",
+    "subtle": "#6c7086",
+    "suggestion": "#89b4fa",
+    "permission": "#cba6f7",
+    "success": "#a6e3a1",
+    "error": "#f38ba8",
+    "warning": "#f9e2af",
+    "diffAdded": "#394545",
+    "diffRemoved": "#493447",
+    "userMessageBackground": "#313244"
+  }
+}

@@ -7,7 +7,7 @@
 
 [core]
 	excludesfile = ~/.gitignore_global
-	pager = delta
+	pager = ~/.dotfiles/bin/delta-themed.sh
 
 [column]
 	ui = auto
@@ -56,3 +56,6 @@
 
 [delta]
 	features = side-by-side line-numbers decorations
+
+[include]
+	path = ~/.dotfiles/themes/delta.gitconfig

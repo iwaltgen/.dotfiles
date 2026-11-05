@@ -22,14 +22,14 @@ unset TMUX
 "$tmux_bin" -L "$socket" set-hook -R client-light-theme
 light_style=$("$tmux_bin" -L "$socket" show -gv status-style)
 light_left=$("$tmux_bin" -L "$socket" show -gv status-left)
-[[ "$light_style" == *'#ffffff'* && "$light_left" == *'#ffffff'* ]] || {
+[[ "$light_style" == *'#eff1f5'* && "$light_left" == *'#eff1f5'* ]] || {
   print -u2 -- "밝은 테마가 상태 표시줄에 적용되지 않았습니다: $light_style"
   exit 1
 }
 "$tmux_bin" -L "$socket" set-hook -R client-dark-theme
 dark_style=$("$tmux_bin" -L "$socket" show -gv status-style)
 dark_left=$("$tmux_bin" -L "$socket" show -gv status-left)
-[[ "$dark_style" == *'#080808'* && "$dark_left" == *'#080808'* ]] || {
+[[ "$dark_style" == *'#1e1e2e'* && "$dark_left" == *'#1e1e2e'* ]] || {
   print -u2 -- "어두운 테마가 상태 표시줄에 적용되지 않았습니다: $dark_style"
   exit 1
 }

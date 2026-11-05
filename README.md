@@ -37,6 +37,20 @@ Homebrew는 macOS 부트스트랩, 서비스, 시스템 통합, 네이티브 라
 
 [`codex/shared.config.toml`](codex/shared.config.toml)과 [`claude/shared.settings.json`](claude/shared.settings.json)은 setup이 각 도구의 홈 디렉터리에 심볼릭 링크로 연결하고, Zsh 실행 함수가 로드합니다. 머신 전용 설정과 인증·상태 파일은 기존 위치에 유지합니다.
 
+### CLI 테마
+
+공통 팔레트는 **Catppuccin Mocha(다크) / Latte(라이트)** 입니다. Ghostty가 시스템 화면 모드에 따라 ANSI 팔레트를 바꾸고, fzf·duf·Hunk·Herdr·Starship·Atuin·lazygit·lazydocker·gdu 등은 해당 팔레트를 사용합니다. eza·bat·delta·bottom·Neovim·Claude·Codex에는 대응 테마를 지정합니다.
+
+- bottom·delta·Claude·Codex는 실행할 때 `bin/terminal-theme.zsh`로 tmux 클라이언트 모드를 확인하고, 확인할 수 없으면 macOS/GNOME 설정을 사용합니다. 실행 중인 앱의 명암 전환은 각 앱의 지원 여부에 따릅니다.
+- Neovim은 0.12 이상에 내장된 `catppuccin` 색상 테마를 사용합니다. `background=dark`는 Mocha, `background=light`는 Latte이며 터미널 배경 감지를 따릅니다.
+- 사용자 지정 bottom 테마·설정, delta의 `--features`, Claude의 `--settings`, Codex의 `--profile`은 공통 설정보다 우선합니다. 별도 `CLAUDE_CONFIG_DIR`에 커스텀 테마 파일이 없으면 `dark-ansi/light-ansi`로 터미널 팔레트를 사용합니다.
+- bottom 기본 설정에 색상 설정이 없으면 기존 설정과 Catppuccin을 임시 파일로 합칩니다. 사용자 색상 설정이 있거나 Python 3.11 이상으로 설정을 읽을 수 없으면 기존 설정을 우선합니다.
+- htop·ctop·dive·dust·gping·ripgrep·fastfetch·xh처럼 별도 Catppuccin 테마가 없는 도구는 기본 ANSI 색상을 사용합니다. fx 40은 `FX_THEME=1`, jq는 `JQ_COLORS`로 맞추며, 도구 내부에 고정된 256색까지 완전히 일치시키지는 않습니다.
+
+setup은 `themes/`의 앱 설정과 Claude 테마를 연결하며 기존 일반 파일은 날짜가 붙은 백업으로 보존합니다. 가져온 bottom·delta 테마는 [Catppuccin](https://github.com/catppuccin)의 MIT 라이선스이며 [`themes/LICENSE`](themes/LICENSE)에 원문을 보관합니다. 다른 테마 파일은 같은 팔레트를 각 앱 형식에 맞춘 설정입니다.
+
+검증: `zsh tests/setup_idempotency_test.zsh`, `zsh tests/bottom_theme_test.zsh`, `zsh tests/delta_theme_test.zsh`, `zsh tests/eza_theme_test.zsh`, `zsh tests/tmux_theme_test.zsh`.
+
 ### GPG
 
 선택 사항인 GPG 키 가져오기를 사용하려면 [Keybase](https://keybase.io/docs/the_app/install_macos)와 GnuPG가 필요합니다.
