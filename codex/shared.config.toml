@@ -1,7 +1,7 @@
 # 머신 경로·인증·설치 상태와 무관한 개인 선호만 공유합니다.
-model = "gpt-6.1-sol"
+model = "gpt-6.1-terra"
 model_reasoning_effort = "low"
 
 [tui]
 theme = "catppuccin-latte"
-status_line = ["model-with-reasoning", "context-remaining", "current-dir", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "fast-mode"]
+status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-remaining", "weekly-limit", "fast-mode"]
