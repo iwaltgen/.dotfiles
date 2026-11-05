@@ -281,6 +281,8 @@ test_mise_config_preserves_default_settings() {
 
   ! grep -Eq '^\[settings' "$config" || \
     fail 'mise 설정은 기본 보호 설정을 유지하도록 [settings] 블록을 두지 않아야 합니다'
+  grep -Fxq 'postgres = { version = "14", os = ["macos"] }' "$config" || \
+    fail 'PostgreSQL은 macOS에서만 설치해야 합니다'
 }
 
 test_brewfile_contains_only_approved_formulae() {
