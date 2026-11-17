@@ -4,3 +4,6 @@ gui:
     activeBorderColor: [blue, bold]
     inactiveBorderColor: [default]
     optionsTextColor: [blue]
+os:
+  copyToClipboardCmd: 'printf "\033]52;c;%s\a" "$(printf %s {{text}} | base64 | tr -d "\n")" > /dev/tty'
+  readFromClipboardCmd: 'if command -v pbpaste >/dev/null 2>&1; then pbpaste; elif [ -n "$WAYLAND_DISPLAY" ] && command -v wl-paste >/dev/null 2>&1; then wl-paste --no-newline; elif command -v xclip >/dev/null 2>&1; then xclip -selection clipboard -o; else xsel --clipboard --output; fi'
