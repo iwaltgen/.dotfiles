@@ -9,23 +9,25 @@
 {
   // Zed has no built-in settings sync, so the extension list is declared here
   // and Zed installs anything missing on startup.
+  // > ls ~/Library/Application\ Support/Zed/extensions/installed | jq -R . | jq -s 'map({(.): true}) | add' | pbcopy
   "auto_install_extensions": {
     "catppuccin": true,
     "catppuccin-icons": true,
-    "github-theme": true,
-    "material-icon-theme": true,
-    "dart": true,
-    "docker-compose": true,
     "dockerfile": true,
+    "docker-compose": true,
+    "java": true,
+    "kotlin": true,
     "elixir": true,
-    "git-firefly": true,
+    "dart": true,
     "html": true,
     "lua": true,
-    "mdx": true,
-    "proto": true,
     "sql": true,
-    "terraform": true,
     "toml": true,
+    "proto": true,
+    "mdx": true,
+    "git-firefly": true,
+    "caddyfile": true,
+    "terraform": true
   },
   "cli_default_open_behavior": "new_window",
   "project_panel": {
@@ -52,7 +54,7 @@
   // default and Zed hoists it to the top of the picker, so the model is chosen
   // in the agent panel rather than frozen here.
   "agent": {
-    "dock": "right",
+    "dock": "right"
   },
   "theme": {
     "mode": "system",
@@ -67,5 +69,5 @@
   "preferred_line_length": 120,
   "soft_wrap": "editor_width",
   "vim_mode": true,
-  "base_keymap": "VSCode",
+  "base_keymap": "VSCode"
 }
